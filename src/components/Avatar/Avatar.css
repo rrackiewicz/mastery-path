@@ -1,0 +1,7 @@
+.avatarImage {
+  height: 34px;
+  width: 34px;
+  background-size: cover;
+  background-position-x: 50%;
+  background-position-y: center;
+}

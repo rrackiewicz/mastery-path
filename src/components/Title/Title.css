@@ -1,0 +1,13 @@
+.title, .subtitle {
+  display: inline-block;
+}
+
+.title {
+  font-size: 2em;
+  color:rgba(255, 255, 255, 1);
+}
+
+.subtitle {
+  font-size: 1em;
+  color:rgba(255, 255, 255, .6);
+}

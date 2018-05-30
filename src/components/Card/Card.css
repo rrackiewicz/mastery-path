@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,700');
+
+.card {
+  width: 300px;
+  margin-right: 16px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.cardTitle, .cardBody, .cardFooter {
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
+}
+
+.cardTitle {
+  color:rgba(255, 255, 255, 1);
+  height: 135px;
+  border-radius: 5px 5px 0 0;
+  border-bottom: none;
+  background-size: cover;
+  background-position-x: 50%;
+  background-position-y: center;
+}
+
+.cardBody_Title, .cardBody_Author {
+  color:rgba(255, 255, 255, 1);
+}
+
+.cardBody {
+  color:rgba(255, 255, 255, 1);
+  border-top: none;
+  border-bottom: solid;
+  border-width: 1px;
+}
+
+.cardBody_Title {
+  font-weight: 700;
+}
+
+.cardBody_Author {
+  font-weight: lighter;
+  font-size: .85em;
+}
+
+.cardBody_Copy {
+  font-size: .75em;
+  font-family: 'Roboto Condensed', sans-serif;
+  line-height: 1.5em;
+  color:rgba(255, 255, 255, .6);
+}
+
+.cardBody_Hours {
+  font-size: .75em;
+  color:rgba(255, 255, 255, .6);
+}
+
+.cardFooter {
+  border-top: none;
+  height: 50px;
+  background:rgba(255, 255, 255, .5);
+  border-radius: 0 0 5px 5px;
+}
+
+.ratingContainer {
+  background:rgba(255, 255, 255, 1);
+  border-radius: 3px; 
+}
+
+.cardBody_Rating {
+  font-size: 1.5em;
+  font-weight: 700;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.followButton {
+  background: hsl(141, 71.3%, 47.8%);
+  color: #363636;
+  border-style: solid;
+  border-color: white;
+  font-size: .75em;
+  outline : "none";
+  font-weight: bolder;
+}
+
+.followButton:hover {
+  background: hsl(141, 71.3%, 47.8%, 60%);
+  color: white;
+}

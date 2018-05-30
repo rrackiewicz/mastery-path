@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css?family=Abel');
+
+html * {
+  font-family: 'Abel', sans-serif;
+}
+
+html * {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 1rem;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.flexH {
+  display: flex;
+}
+
+.flexV {
+  display: flex;
+  flex-direction: column;
+}
+
+.jcc {
+  justify-content: center;
+}
+
+.jcfe {
+  justify-content: flex-end;
+}
+
+.jcfs {
+  justify-content: flex-start;
+}
+
+.aic {
+  align-items: center;
+}
+
+.aifs {
+  align-items: flex-start;
+}
+
+.aife {
+  align-items: flex-end;
+}
+
+.mla {
+  margin-left: auto;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.fone {
+  flex: 1;
+}
+
+.ma {
+  margin: auto;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    background-color: 1;
+  }
+}
+
+.background {
+  position:fixed;
+  padding:0;
+  margin:0;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+}
+
+.cursor {
+  animation: pulse 1s infinite;
+  font-size: 1em;
+  margin-bottom: 2.5px;
+  color: white;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.buttong, .button {
+  border-style: solid;
+  border-color: white;
+  font-size: 1em;
+  line-height: 1em;
+  outline : "none";
+}
+
+.button {
+  border-radius: 3px;
+}
+
+.button:hover {
+  border-color: rgba(255, 255, 255, .5);
+}
+
+.buttong:first-child {
+  border-radius: 3px 0 0 3px;
+}
+
+.buttong:last-child {
+  border-radius: 0 3px 3px 0;
+}
+
+.is-selected {
+  color:rgba(255, 255, 255, .6);
+}
+
+.logo {
+  border-style: solid;
+}
+
+.searchField {
+  flex: 1;
+}
+
+inline {
+  display: inline;
+}
+
+input {
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
+  height: 34px;
+  font-size: 1em;
+  line-height: 1em;
+  color: white;
+  font-weight: lighter;
+  padding-left: 10px;
+  border-radius: 3px;
+  outline : none;
+  width: 100%;
+}
+
+input::placeholder {
+  color: hsl(0, 0%, 96%);
+  opacity: .6;
+}
+
+.titleContainer {
+  border-bottom: 1px solid white;
+}
+
+.cardContainer {
+  overflow: auto;
+}
+
+
+
+
+
