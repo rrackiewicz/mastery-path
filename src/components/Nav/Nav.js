@@ -3,6 +3,10 @@ import PNavItem from '../PNavItem/PNavItem'
 import Avatar from '../Avatar/Avatar'
 import { connect } from 'react-redux'
 
+import './Nav.css'
+import '../../spacers.css'
+//import '../../debug.css'
+
 class Nav extends Component {
 	constructor() {
     super()
@@ -43,9 +47,6 @@ function mapStateToProps(state) {
 			isLoggedIn,
 			userContext
   }
-}
-
-let actions = {
 }
 
 export default connect(mapStateToProps)(Nav)

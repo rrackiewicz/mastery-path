@@ -1,0 +1,20 @@
+.buttong {
+  border-style: solid;
+  border-color: white;
+  font-size: 1rem;
+  line-height: 1rem;
+  font-weight: lighter;
+  outline: "none";
+}
+
+.buttong:first-child {
+  border-radius: 3px 0 0 3px;
+}
+
+.buttong:last-child {
+  border-radius: 0 3px 3px 0;
+}
+
+/* .buttong:hover {
+  border-color: rgba(255, 255, 255, .5);
+} */

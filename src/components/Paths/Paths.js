@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
-import Search from '../Search/Search'
+import Header from '../Header/Header'
 import Title from '../Title/Title'
 import Card from '../Card/Card'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import { withRouter } from 'react-router'
+import { action_updatePath } from '../../ducks/reducer'
 
-import '../../App.css'
 import '../../spacers.css'
+import './Paths.css'
 //import '../../debug.css'
 
 class Paths extends Component {
@@ -16,7 +18,8 @@ class Paths extends Component {
       results: [],
       pathQty: 0
     }
-    this.loadResults=this.loadResults.bind(this)
+    this.loadResults = this.loadResults.bind(this)
+    this.loadPath = this.loadPath.bind(this)
   }
 
   componentDidMount(){
@@ -24,14 +27,36 @@ class Paths extends Component {
   }
 
   loadResults(){
-    axios.get(`/api/search/${this.props.match.params.searchid}`).then( res => {
-      console.log(res.data, " Search Results")
+    if (this.props.userContext === 'master') {
+    axios.get(`/api/masterpaths/${this.props.uid}`).then( res => {
       const results = res.data;
       this.setState({ results });
       this.setState({ pathQty : results.length})
     }).catch( err => {
-      alert("fucked")
+      alert("Problem loading search results.")
     })
+    
+    } else {
+      axios.get(`/api/apprenticepaths/${this.props.uid}`).then( res => {
+        const results = res.data;
+        this.setState({ results });
+        this.setState({ pathQty : results.length})
+      }).catch( err => {
+        alert("Problem loading search results.")
+      })
+    }
+  }
+
+  loadPath(path){
+    const { pid } = path
+    axios.get(`/api/paths/${pid}`).then( res => {
+      const path = res.data;
+      this.props.action_updatePath(path)
+      this.props.history.push(`/path/${pid}`)
+    }).catch( err => {
+      alert("Problem loading search results.")
+    })
+
   }
 
   render() {
@@ -42,26 +67,30 @@ class Paths extends Component {
           key={e.path_name}
           isSearching
           img = {e.img}
-          author = {e.full_name}
+          author = {e.username}
           pathName = {e.path_name}
           abstract = {e.abstract.slice(0, 160)}
           tld = {e.skill_name}
           pid = {e.pid}
           hours = {e.hrs}
           rating = {e.rating}
+          callback = {this.loadPath}
         />       
       )
     })
 
     return (
-      <div className="background flexV" style={{'background' : this.props.bgColor}}>
-        <Search 
-          isLoggedIn                                                 
-        />
-        <Title 
-          title = "Paths"
-        />
-        <div className="cardContainer flexH ml-l aifs wrap">
+      <div className="background" style={{'background' : this.props.bgColor}}>
+        <div className="headerWrapper">
+          <Header />
+        </div>
+        <div className="titleWrapper">
+          <Title 
+            title = 'Paths'
+            subtitle = {`${this.state.pathQty} paths found`}
+          />
+        </div>
+        <div className="resultsWrapper flexH ml-xl mr-xl aifs wrap">
           {renderCards}
         </div>
       </div>
@@ -70,12 +99,21 @@ class Paths extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor, isBuilding } = state 
+  const { bgColor, userContext, user, path } = state 
+  const { uid } = user
+  const { pid } = path
   return {
       bgColor,
-      isBuilding
+      userContext,
+      uid,
+      path,
+      pid
   }
 }
 
-export default connect(mapStateToProps)(Paths)
+const actions = {
+  action_updatePath
+}
+
+export default connect(mapStateToProps, actions)(withRouter(Paths))
 

@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import Search from '../Search/Search'
 import { connect } from 'react-redux'
 import Pill from '../Pill/Pill'
 import Badge from '../Badge/Badge'
 
-import '../../App.css'
 import '../../spacers.css'
 import './Card.css'
 //import '../../debug.css'
@@ -15,12 +13,23 @@ class Card extends Component {
     this.state = {
       isHovered: false
     }
-
     this.toggleFollow = this.toggleFollow.bind(this)
+    this.packagePath = this.packagePath.bind(this)
   }
 
   toggleFollow() {
     this.setState({isHovered : !this.state.isHovered})
+  }
+
+  packagePath() {
+    const path = {
+      pid: this.props.pid,
+      path_name: this.props.pathName,
+      abstract: this.props.abstrctFull,
+      img: this.props.img, 
+      learningDomain: this.props.tld,
+    }
+    this.props.callback(path);
   }
   
   render() {
@@ -39,7 +48,7 @@ class Card extends Component {
     }
 
     return (
-      <div onMouseEnter={this.toggleFollow} onMouseLeave={this.toggleFollow} className="card flexV jcc" style={{'background' : this.props.bgColor}}>
+      <div onClick={this.packagePath} onMouseEnter={this.toggleFollow} onMouseLeave={this.toggleFollow} className="card flexV jcc" style={{'background' : this.props.bgColor}}>
         <div className="cardTitle" style={titleImage}>
           {this.state.isHovered ? 
             <button className="followButton mt-xs ml-xs">Follow Path</button>
@@ -58,16 +67,18 @@ class Card extends Component {
           </div>
           <div className="flexH pl-m pr-m pb-m">
             <div className="flexV">
-              <div className="cardBody_Author mb-s">
+              <div className="cardBody_Author mb-xs">
                 {this.props.author}
               </div>
-              <div>
+              <div className="flexH">
                 <Pill 
                   payload={this.props.tld}
                 />
               </div>
               <div className="mt-s cardBody_Hours">
                 <span className="far fa-clock"></span> {this.props.hours} Hours
+              </div>
+              <div>
                 <Badge 
                   payload = "$ Accepting Applications"
                 />

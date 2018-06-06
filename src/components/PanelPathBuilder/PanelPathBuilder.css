@@ -1,0 +1,12 @@
+.pathBuilderToolbar {
+  position: fixed;
+  top: 233px;
+  margin-left: 1;
+  height: 36px;
+  background:rgba(255, 255, 255, .5); 
+  border-style: solid;
+  border-color: white; 
+  border-width: 1px;
+  border-radius: 3px 3px 0 0;
+  border-bottom: none;
+}

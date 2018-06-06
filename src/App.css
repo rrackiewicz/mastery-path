@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Abel');
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700');
 
 html * {
-  font-family: 'Abel', sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 
 html * {
@@ -58,6 +58,10 @@ body {
   flex-wrap: wrap;
 }
 
+.nowrap {
+  flex-wrap: nowrap;
+}
+
 .fone {
   flex: 1;
 }
@@ -101,29 +105,20 @@ body {
   }
 }
 
-.buttong, .button {
+.button {
   border-style: solid;
   border-color: white;
-  font-size: 1em;
-  line-height: 1em;
-  outline : "none";
-}
-
-.button {
   border-radius: 3px;
+  font-size: 1em;
+  font-weight: lighter;
+  line-height: 1rem;
+  outline : "none";
 }
 
 .button:hover {
   border-color: rgba(255, 255, 255, .5);
 }
 
-.buttong:first-child {
-  border-radius: 3px 0 0 3px;
-}
-
-.buttong:last-child {
-  border-radius: 0 3px 3px 0;
-}
 
 .is-selected {
   color:rgba(255, 255, 255, .6);
@@ -146,27 +141,120 @@ input {
   border-color: white;
   border-width: 1px;
   height: 34px;
-  font-size: 1em;
-  line-height: 1em;
+  font-size: 1rem;
+  line-height: 1rem;
   color: white;
   font-weight: lighter;
   padding-left: 10px;
-  border-radius: 3px;
+  padding-right: 10px;
+  /* border-radius: 3px; */
   outline : none;
   width: 100%;
+  overflow: hidden;
 }
 
 input::placeholder {
-  color: hsl(0, 0%, 96%);
-  opacity: .6;
+  color: white;
+  opacity: .5;
 }
+
+textarea::placeholder {
+  color: white;
+  opacity: .5;
+}
+
 
 .titleContainer {
-  border-bottom: 1px solid white;
+  border-bottom: 3px solid white;
 }
 
-.cardContainer {
-  overflow: auto;
+label {
+  font-size: .85rem;
+  color:rgba(255, 255, 255, .8);
+}
+
+textArea {
+  color: white;
+  font-weight: lighter;
+  outline: none;
+}
+
+.border {
+  border-style: solid;
+  border-color: red;
+  border-width: 2px;
+}
+
+.panel {
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
+  border-radius: 3px;
+  position: relative;
+  padding: 30px 20px 20px 20px;
+}
+
+.panelMain {
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
+  border-radius: 0 0 3px 3px;
+  border-top: none;
+  padding: 20px 20px 20px 20px;
+}
+
+.panelTitle {
+  font-size: 1.3rem;
+  font-weight: lighter;
+  position: absolute;
+  top: -17px;
+  left: 14px;
+  color: white;
+}
+
+.headerWrapper {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  /* border-style: solid;
+  border-width: 2px;
+  border-color: blue; */
+  width: 100%;
+}
+
+.titleWrapper {
+  position: fixed;
+  top: 77px;
+  left: 0;
+  /* border-style: solid;
+  border-width: 2px;
+  border-color: rgb(72, 180, 30); */
+  width: 100%;
+}
+
+.scroll {
+  height: 225px;
+}
+
+.resultsWrapper {
+  position: fixed;
+  top: 172px;
+  height: 100vh;
+  overflow-y: scroll;
+  padding-bottom: 300px;
+  /* border-style: solid;
+  border-width: 2px;
+  border-color: red; */
+}
+
+.toolIcon {
+  font-size: 1.25rem;
+  color: white;
+}
+
+.toolDivider {
+  font-size: 1.5rem;
+  font-weight: lighter;
 }
 
 

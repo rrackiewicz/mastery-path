@@ -13,7 +13,7 @@ class Pill extends Component {
 
   render() {
     return (
-        <div className="pill pa-s mt-s mb-s flexH aic jcfs">
+        <div className="pill pa-s mt-s mr-s flexH aic jcc">
           <div>
             {this.props.payload}
           </div>

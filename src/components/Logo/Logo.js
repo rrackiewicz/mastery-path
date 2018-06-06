@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { action_updateUserContext } from '../../ducks/reducer'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router'
 
 import logo from '../../logo_white.svg'
 
-import '../../App.css'
 import './Logo.css'
 import '../../spacers.css'
 //import '../../debug.css'
@@ -20,7 +18,7 @@ class Logo extends Component {
 
   render() {
     const logoSize = {
-      "maxHeight": "2em"
+      "maxHeight": "2rem"
     }
 
     return (

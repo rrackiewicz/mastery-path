@@ -1,0 +1,9 @@
+.posterImage {
+  height: 135px;
+  border-style: solid;
+  border-color: white;
+  border-width: 1px;
+  background-size: cover;
+  background-position-x: 50%;
+  background-position-y: center;
+}

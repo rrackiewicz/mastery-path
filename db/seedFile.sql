@@ -66,6 +66,7 @@ CREATE TABLE paths_skills (
 CREATE TABLE nodes (
     nid SERIAL PRIMARY KEY,
     pid INTEGER REFERENCES paths(pid),
+    node_name VARCHAR(40),
     content VARCHAR(100000),
     ord INTEGER,
     depth INTEGER
@@ -166,5 +167,28 @@ VALUES
     (1, 3, false),
     (2, 3, false),
     (3, 3, false),
-    (4, 3, false);      
+    (4, 3, false);   
+
+INSERT INTO nodes
+    (pid, node_name, ord, depth)
+VALUES
+    (1, 'Introduction', 1, 0),
+    (1, 'Resources', 2, 0),
+    (1, 'Coding Environment', 3, 0),
+    (1, 'Code', 4, 0),
+    (1, 'Types', 5, 0),
+    (1, 'Numbers', 6, 1),
+    (1, 'Strings', 7, 1),
+    (1, 'Booleans', 8, 1),
+    (1, 'Objects', 9, 1),
+    (1, 'Functions', 10, 1),
+    (1, 'Undefined', 11, 1),
+    (1, 'Type Coercion', 12, 1),
+    (1, 'Program Structure', 13, 0),
+    (1, 'Key Words', 14, 1),
+    (1, 'Variables', 15, 1),
+    (1, 'Naming', 16, 2),
+    (1, 'Updatin', 17, 2),
+    (1, 'Assignment', 18, 2)
+   
 -- NOTE TO FUTURE SELF. DON'T FORGET TO DROP NEW TABLES YOU ADD!

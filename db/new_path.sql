@@ -1,4 +1,5 @@
 INSERT INTO paths 
 (pub)
-VALUES (false) 
+VALUES 
+(false) 
 RETURNING pid;

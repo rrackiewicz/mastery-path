@@ -32,7 +32,4 @@ function mapStateToProps(state) {
   }
 }
 
-let actions = {
-}
-
 export default connect(mapStateToProps)(Avatar)

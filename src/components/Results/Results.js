@@ -5,8 +5,8 @@ import Card from '../Card/Card'
 import { connect } from 'react-redux'
 import axios from 'axios'
 
-import '../../App.css'
 import '../../spacers.css'
+import './Results.css'
 //import '../../debug.css'
 
 class Results extends Component {
@@ -25,7 +25,6 @@ class Results extends Component {
 
   loadResults(){
     axios.get(`/api/search/${this.props.match.params.searchid}`).then( res => {
-      console.log(res.data, " Search Results")
       const results = res.data;
       this.setState({ results });
       this.setState({ pathQty : results.length})
@@ -55,12 +54,16 @@ class Results extends Component {
 
     return (
       <div className="background" style={{'background' : this.props.bgColor}}>
-        <Search />
-        <Title 
-          title = {this.props.match.params.searchid}
-          subtitle = {`${this.state.pathQty} paths found`}
-        />
-        <div className="cardContainer flexH ml-xl mr-xl aifs wrap">
+        <div className="headerWrapper">
+          <Search />
+        </div>
+        <div className="titleWrapper">
+          <Title 
+            title = {this.props.match.params.searchid}
+            subtitle = {`${this.state.pathQty} paths found`}
+          />
+        </div>
+        <div className="resultsWrapper flexH ml-xl mr-xl aifs wrap">
           {renderCards}
         </div>
       </div>

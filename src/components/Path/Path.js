@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import Header from '../Header/Header'
 import TitleSimple from '../TitleSimple/TitleSimple'
+import PanelPath from '../PanelPath/PanelPath'
+import PanelPathBuilder from '../PanelPathBuilder/PanelPathBuilder'
+import ButtonGroup from '../ButtonGroup/ButtonGroup'
+import SNav from '../SNav/SNav'
 import { connect } from 'react-redux'
-import axios from 'axios'
 import { action_updateLoggedIn } from '../../ducks/reducer'
+import { action_updatePathContext } from '../../ducks/reducer'
 
 import './Path.css'
 import '../../spacers.css'
@@ -13,11 +17,15 @@ class Path extends Component {
   constructor() {
     super()
     this.state = {
-      pathName: 'New Path',
-      nodes: [],
-      mainWidth: 0
+      // mainWidth: 0, //doubt this is necessary
+      activeLeftPanel: 'Details',
+      activeMainPanel: 'PathBuilder',
+      isCollapsed: false
     }
     this.handleResize = this.handleResize.bind(this)
+    this.updatePanel = this.updatePanel.bind(this)
+    this.collapseLeft = this.collapseLeft.bind(this)
+    this.toggleContext = this.toggleContext.bind(this)
   }
 
   handleResize(e) {
@@ -38,8 +46,68 @@ class Path extends Component {
 
   //Note sure what happens if this is not removed. Do non-React event listeners persist?
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', this.handleResize)
   }
+
+  updatePanel(val) {
+    this.setState({activeLeftPanel : val})
+  }
+
+  collapseLeft() {
+    this.setState({isCollapsed : !this.state.isCollapsed})
+  }
+
+  renderLeftPanel() {
+    switch (this.state.activeLeftPanel) {
+      case 'Details':
+      return (
+        <PanelPath
+          callback = {this.updatePathName}
+          isCollapsed = {this.state.isCollapsed}
+        />
+      )
+
+      // case 'Details' && this.props.pathContext === 'node':
+      // return (
+      //   <PanelPath
+      //     callback = {this.updatePathName}
+      //     isCollapsed = {this.state.isCollapsed}
+      //   />
+      // )
+      default:
+      //FIXME: Add other cases when they come online
+    }
+  }
+
+  renderMainPanel() {
+    switch (this.state.activeMainPanel) {
+      case 'PathBuilder':
+      return (
+        <PanelPathBuilder
+          // isCollapsed = {this.state.isCollapsed} Think this happens naturally
+          windowWidth = {this.state.windowWidth}
+        />
+      )
+
+      case 'DetailsBuilder':
+      return (
+        <PanelPathBuilder
+          // isCollapsed = {this.state.isCollapsed} Think this happens naturally
+          windowWidth = {this.state.windowWidth}
+        />
+      )
+
+      
+      default:
+      //FIXME: Add other cases when they come online
+    }
+  }
+
+  //TODO: Right now, buttonContext is doing nothing. You can pres either button to toggle.
+  toggleContext(buttonContext) {
+    this.props.action_updatePathContext(this.props.pathContext === 'path' ? 'node' : 'path')
+  }
+
 
   render() {
 
@@ -53,29 +121,60 @@ class Path extends Component {
         <div className="headerWrapper">
           <Header />
         </div>
-
+  
         <div className="titleWrapper">
           <TitleSimple 
             title = 'Paths'
-            subtitle = { this.state.pathName }
+            subtitle = { this.props.path_name }
           />
         </div>
 
-        <div className="leftWrapper ml-xl">
-          <div className="buttonNavWrapper">
-            Button Nav Goes Here { this.state.isToggled }
+        {/* FIXME: Need to put margin on bottom of button group instead of top of left container to top of scroll bar is at top of left container */}
+        {this.state.isCollapsed ?
+          null
+          :
+          <div>
+            <div className="buttonNavWrapper ml-xl">
+              <SNav 
+                updatePanel = {this.updatePanel}
+                pid = {this.props.pid}
+              />
+            </div>
+            <div className="leftWrapper ml-xl">
+              {this.renderLeftPanel()}
+            </div>
           </div>
-          <div className="panelWrapper">
-            Panel Goes Here
+        }
+        
+        {/* Don't like hard-coding 64px in here. */}
+        <div style={this.state.isCollapsed ? {marginLeft: '64px'} : {}} className="pathNavigatorWrapper flexH aic">
+          {/* Eventually will have 3 parts in here. Collapse Button, SVG Context Bar, and Path View button group */}
+          <div onClick={this.collapseLeft}>
+            <span className={this.state.isCollapsed ? "fas fa-chevron-circle-right" : "fas fa-chevron-circle-left"}></span>
+          </div>
+          <div className="ml-m">
+            <ButtonGroup 
+              payload = 'Path'
+              callback = {this.toggleContext}
+              context = {this.props.pathContext}
+              bgColor = {this.props.bgColor}
+              textColor = '#ffffff'
+              type = 'path'
+            /> 
+            <ButtonGroup 
+              payload = 'Node'
+              callback = {this.toggleContext}
+              context = {this.props.pathContext}
+              bgColor = {this.props.bgColor}
+              textColor = '#ffffff'
+              type = 'node'
+            /> 
           </div>
         </div>
-        
-        <div className="mainWrapper">
-          <div className="pathNavWrapper">
-            Path Navigation goes here
-          </div>
-          <div style={ mainWidth } className="pathBuilderWrapper">
-            Panel Builder Wrapper
+
+        <div style={this.state.isCollapsed ? {marginLeft: '64px'} : {}} className="mainWrapper mr-xl">
+          <div style={ mainWidth } className="">
+            {this.renderMainPanel()}
           </div>
         </div>
 
@@ -85,18 +184,22 @@ class Path extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor, path } = state
-  const { pid } = path
+  const { bgColor, path, pathContext } = state
+  const { pid, path_name } = path
 
   return {
       bgColor,
       pid,
+      path,
+      pathContext,
+      path_name,
   }
 }
 
 let actions = {
   //FIXME: Remove this after adding in Auth
-  action_updateLoggedIn
+  action_updateLoggedIn,
+  action_updatePathContext
 }
 
 export default connect(mapStateToProps, actions)(Path)

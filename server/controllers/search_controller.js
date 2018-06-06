@@ -1,6 +1,6 @@
 module.exports = {
 
-  //TODO: GET with :postID on params
+  //TODO: GET with searchid on params
   getResults: (req, res) => {
     const dbInstance = req.app.get('db')
     const { searchid } = req.params

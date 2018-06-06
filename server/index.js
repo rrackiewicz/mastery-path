@@ -7,6 +7,7 @@ const express = require('express')
   , bodyParser = require('body-parser')
   , sc = require('./controllers/search_controller')
   , pc = require('./controllers/path_controller')
+  , uc = require('./controllers/user_controller')
 
 const {
   SERVER_PORT,
@@ -107,9 +108,14 @@ massive(CONNECTION_STRING).then((dbInstance) => {
 //   }
 // })
 
-app.get('/api/search/:searchid', sc.getResults);
-app.post('/api/paths', pc.createPath);
-app.post('/api/paths/:pid/:mid', pc.assignPath);
+app.get('/api/search/:searchid', sc.getResults)
+app.get('/api/paths/:pid', pc.getPath)
+app.post('/api/paths', pc.createPath)
+app.post('/api/paths/:pid/:mid', pc.assignPath)
+app.post('/api/paths/:pid', pc.uploadDescription)
+app.post('/api/auth', uc.authorizeUser)
+app.get('/api/masterpaths/:uid', pc.getMasterPaths)
+app.get('/api/apprenticepaths/:uid', pc.getApprenticePaths)
 
 app.listen(SERVER_PORT, () => {
   console.log(`Listening on port: ${SERVER_PORT}`)

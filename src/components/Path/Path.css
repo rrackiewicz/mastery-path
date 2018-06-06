@@ -1,38 +1,60 @@
-
-.headerWrapper {
-  position: fixed;
-  top: 20px;
-  left: 0;
-  /* border-style: solid;
-  border-width: 2px;
-  border-color: blue; */
-  width: 100%;
-}
-
-.titleWrapper {
-  position: fixed;
-  top: 77px;
-  left: 0;
-  /* border-style: solid;
-  border-width: 2px;
-  border-color: rgb(72, 180, 30); */
-  width: 100%;
-}
-
-.leftWrapper, .mainWrapper {
+.buttonNavWrapper {
   position: fixed;
   top: 172px;
-  border-style: solid;
+  /* border-style: solid;
   border-width: 2px;
-  border-color: red;
+  border-color: red; */
 }
 
 .leftWrapper {
+  position: fixed;
+  top: 225px;
+  height: 100vh;
   width: 373px;
-  position: relative;
+  overflow-y: scroll;
+  padding-bottom: 300px;
+}
+
+
+.mainWrapper, .pathNavigatorWrapper {
+  margin-left: 473px;
 }
 
 .mainWrapper {
-  margin-left: 473px;
-  width: auto;
+  position: fixed;
+  top: 269px;
+  height: 100vh;
+  overflow-y: scroll;
+  padding-bottom: 300px;
 }
+
+.pathNavigatorWrapper{
+  position: fixed;
+  top: 172px;
+  color: white;
+  font-size: 1.5rem;
+  /* This height is a guestimate */
+  height: 36px;
+}
+
+.panelAnimation-enter {
+  background: red;
+  transition: 1s;
+}
+
+.panelAnimation-action {
+  background: yellow;
+}
+
+.panelAnimation-exit {
+
+}
+
+
+
+
+
+ 
+
+
+

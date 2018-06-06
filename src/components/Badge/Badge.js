@@ -13,7 +13,7 @@ class Badge extends Component {
 
   render() {
     return (
-        <div className="badge pa-xs ml-s flexH aic jcfs">
+        <div className="badge pa-xs mt-s mb-s flexH aic jcfs">
           <div>
             {this.props.payload}
           </div>

@@ -5,10 +5,9 @@ import SearchField from '../SearchField/SearchField'
 import Nav from '../Nav/Nav'
 import { connect } from 'react-redux'
 import { action_updateUserContext } from '../../ducks/reducer'
-import { Link } from 'react-router-dom'
+import { action_updateLoggedIn } from '../../ducks/reducer'
 import { withRouter } from 'react-router'
 
-import '../../App.css'
 import './Search.css'
 import '../../spacers.css'
 //import '../../debug.css'
@@ -25,11 +24,16 @@ class Search extends Component {
     this.toggleContext = this.toggleContext.bind(this)
   }
 
+  componentDidMount(){
+    this.props.action_updateLoggedIn(false)
+  }
+
   toggleHover() {
     this.setState({isHovered : !this.state.isHovered})
   }
 
-  toggleContext() {
+  //FIXME: Right now the button toggles no matter which button you press. I would like to make it so if you press and already pressed button, nothing happens. Right now buttonContext does nothing.
+  toggleContext(buttonContext) {
     this.props.action_updateUserContext(this.props.userContext === 'apprentice' ? 'master' : 'apprentice')
   }
 
@@ -49,15 +53,17 @@ class Search extends Component {
         {this.state.isHovered || this.props.isLoggedIn ?
           <div className="ml-l">
             <ButtonGroup 
-              payload = {this.props.isLoggedIn ? 'Apprentice' : 'I want to master...'}
+              payload = 'I want to master...'
               callback = {this.toggleContext}
               bgColor = {this.props.bgColor}
+              context = {this.props.userContext}
               textColor = '#ffffff'
               type = 'apprentice'
             /> 
             <ButtonGroup 
-              payload = {this.props.isLoggedIn ? '\u00a0\u00a0\u00a0Master\u00a0\u00a0\u00a0' : 'I am a master of...'}
+              payload = 'I am a master of...'
               callback = {this.toggleContext}
+              context = {this.props.userContext}
               bgColor = {this.props.bgColor}
               textColor = '#ffffff'
               type = 'master'
@@ -94,7 +100,8 @@ function mapStateToProps(state) {
 }
 
 let actions = {
-  action_updateUserContext
+  action_updateUserContext,
+  action_updateLoggedIn
 }
 
 export default connect(mapStateToProps, actions)(withRouter(Search))
