@@ -10,6 +10,7 @@ const express = require('express')
   , uc = require('./controllers/user_controller')
   , rc = require('./controllers/resource_controller')
   , og = require('open-graph')
+  , path= require('path') //for Browser Router only
 
 const {
   SERVER_PORT,
@@ -22,6 +23,8 @@ const {
 } = process.env
 
 const app = express();
+
+app.use( express.static( `${__dirname}/../build` ) )
 
 app.use(bodyParser.json())
 
@@ -98,6 +101,7 @@ massive(CONNECTION_STRING).then((dbInstance) => {
 //   successRedirect: 'http://localhost:3000/#/private' //don't forget to add proxy to package.json
 //   //put failure redirect here
 // }))
+//NOTE: Be sure to remove local host reference in product build and put http://localhost:3000/#/private in .env file
 
 //This endpoint is here just to see if req.user is in 
 //the session store
@@ -119,6 +123,11 @@ app.post('/api/paths/:pid', pc.uploadPath)
 app.post('/api/auth', uc.authorizeUser)
 app.get('/api/masterpaths/:uid', pc.getMasterPaths)
 app.get('/api/apprenticepaths/:uid', pc.getApprenticePaths)
+
+
+app.get('*', (req, res)=>{
+  res.sendFile(path.join(__dirname, '../build/index.html'));
+}); //only using this with BrowserRouter
 
 app.listen(SERVER_PORT, () => {
   console.log(`Listening on port: ${SERVER_PORT}`)
