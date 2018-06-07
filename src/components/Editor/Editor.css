@@ -1,0 +1,23 @@
+#output h1, h2, h3, h4, h5 {
+  color: green;
+}
+
+#output p {
+  color: red;
+}
+
+#output ol {
+  list-style: circle;
+}
+
+#ouput li {
+  color: purple;
+}
+
+#title {
+  font-size: 2em;
+  
+}
+
+
+

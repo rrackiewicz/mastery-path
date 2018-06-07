@@ -56,15 +56,17 @@ class Search extends Component {
               payload = 'I want to master...'
               callback = {this.toggleContext}
               bgColor = {this.props.bgColor}
-              context = {this.props.userContext}
+              //context = {this.props.userContext}
+              isSelected = {this.props.userContext === 'apprentice' ? true : false}
               textColor = '#ffffff'
               type = 'apprentice'
             /> 
-            <ButtonGroup 
+            <ButtonGroup
               payload = 'I am a master of...'
               callback = {this.toggleContext}
-              context = {this.props.userContext}
+              //context = {this.props.userContext}
               bgColor = {this.props.bgColor}
+              isSelected = {this.props.userContext === 'master' ? true : false}
               textColor = '#ffffff'
               type = 'master'
             /> 

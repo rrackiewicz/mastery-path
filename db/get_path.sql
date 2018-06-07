@@ -1,4 +1,4 @@
-SELECT username, img, hrs, rating, path_name, abstract, paths.pid, skill_name, is_tld, node_name, ord, depth
+SELECT img, hrs, rating, path_name, abstract, paths.pid, skill_name, is_tld, ord, node_name, depth
 FROM users
     JOIN masters
         ON users.uid = masters.uid
@@ -13,4 +13,5 @@ FROM users
     JOIN nodes
         ON paths.pid = nodes.pid
 
-WHERE paths.pid = $1;
+WHERE paths.pid = $1
+ORDER BY ord ASC;

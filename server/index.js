@@ -8,6 +8,8 @@ const express = require('express')
   , sc = require('./controllers/search_controller')
   , pc = require('./controllers/path_controller')
   , uc = require('./controllers/user_controller')
+  , rc = require('./controllers/resource_controller')
+  , og = require('open-graph')
 
 const {
   SERVER_PORT,
@@ -108,11 +110,12 @@ massive(CONNECTION_STRING).then((dbInstance) => {
 //   }
 // })
 
+app.get('/api/resource/:url', rc.getUrlData)
 app.get('/api/search/:searchid', sc.getResults)
 app.get('/api/paths/:pid', pc.getPath)
 app.post('/api/paths', pc.createPath)
 app.post('/api/paths/:pid/:mid', pc.assignPath)
-app.post('/api/paths/:pid', pc.uploadDescription)
+app.post('/api/paths/:pid', pc.uploadPath)
 app.post('/api/auth', uc.authorizeUser)
 app.get('/api/masterpaths/:uid', pc.getMasterPaths)
 app.get('/api/apprenticepaths/:uid', pc.getApprenticePaths)

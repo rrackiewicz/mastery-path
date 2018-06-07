@@ -10,46 +10,16 @@ class SNav extends Component {
 	constructor() {
     super()
     this.state = {
-			payload: [],
-			selected: ''
 		}
 		this.updateContext = this.updateContext.bind(this)
 	}
 	
-	componentDidMount() {
-		let payload = []
-		
-		if (this.props.userContext === 'master' & this.props.pathContext === 'path') {
-			payload = ['Details', 'Sockets', 'Sharing', 'Oversight']
-			this.setState({selected: payload[0]})
-		} 
-
-		if (this.props.userContext === 'master' & this.props.pathContext === 'node') {
-			payload = ['Details', 'Resources', 'Prereqs', 'Domains']
-			this.setState({selected: payload[0]})
-		}
-
-		if (this.props.userContext === 'apprentice' & this.props.pathContext === 'path') {
-			payload = ['Contract', 'Support', 'Lexicon']
-			this.setState({selected: payload[0]})
-		} 
-
-		if (this.props.userContext === 'apprentice' & this.props.pathContext === 'node') {
-			payload = ['Details', 'Resources', 'Prereqs', 'Domains']
-			this.setState({selected: payload[0]})
-		}
-	
-		this.setState({ payload })				
-	}
-
-	//This isn't going to work because the callback doesn't pass a value
 	updateContext(val) {
-		this.setState({selected: val})
-		this.props.activePanel(val)
+		this.props.callback(val)
 	}
 
 	render(){
-		const renderButtons = this.state.payload.map((e,i) => {
+		const renderButtons = this.props.payload.map((e,i) => {
 			return (
 				<div key = {e} className="buttonWrapper">
 					<Button 
@@ -57,7 +27,7 @@ class SNav extends Component {
 						callback = {this.updateContext}
 						bgColor = {this.props.bgColor}
 						textColor = '#ffffff'
-						selected = {this.state.selected.toLowerCase() === e.toLowerCase() ? true : false}
+						selected = {this.props.selected.toLowerCase() === e.toLowerCase() ? true : false}
 					/>
 				</div>
 			)

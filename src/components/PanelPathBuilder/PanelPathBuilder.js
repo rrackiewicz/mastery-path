@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import Node from '../Node/Node'
-import { action_updatePathNodes } from '../../ducks/reducer'
-
+import { action_updateNodeOrder, action_updateNodeDepth } from '../../ducks/reducer'
 import { connect } from 'react-redux'
+import IconToggle from '../IconToggle/IconToggle'
 
 import '../../spacers.css'
 import './PanelPathBuilder.css'
@@ -18,13 +18,15 @@ class PanelBuilder extends Component {
 				left: false,
 				right: false
 			},
-				selectedNode: 0
+				selectedNode: 0,
+			stickNodes: []
 		}
 		this.handleKeys = this.handleKeys.bind(this)
-		this.updateNode = this.updateNode.bind(this)
 		this.deleteNode = this.deleteNode.bind(this)
-		this.calculateButtons = this.calculateButtons.bind(this)
 		this.updateSelectedNode = this.updateSelectedNode.bind(this)
+		this.indentNode = this.indentNode.bind(this)
+		this.swapNodes = this.swapNodes.bind(this)
+		this.jumpTo = this.jumpTo.bind(this)
 	}
 
 	componentDidMount() {
@@ -41,45 +43,63 @@ class PanelBuilder extends Component {
 
 	componentWillUnmount() {
 		window.removeEventListener('keyup', this.handleResize);
+		window.removeEventListener('keyup', this.handleKeys);
 	}
 
+	//eventually will incorporate full 9-key support and scroll will shift to PgUp/PgDown
 	handleKeys(e) {
+		let { selectedNode } = this.state
 		switch (e.keyCode) {
 			case 37: //left
+				this.indentNode(-1)
 				break;
 			case 38: //up
-				this.setState({selectedNode: this.state.selectedNode > 0 ? --this.state.selectedNode : this.state.selectedNode})
+				this.setState({selectedNode: selectedNode > 0 ? --selectedNode : selectedNode})
 				break;
 			case 39: //right
+				this.indentNode(1)
 				break;
 			case 40: //down
-				this.setState({selectedNode: this.state.selectedNode < this.props.nodes.length-1 ? ++this.state.selectedNode : this.state.selectedNode})
+				this.setState({selectedNode: selectedNode < this.props.nodes.length-1 ? ++selectedNode : selectedNode})
 				break;
 			default: 	
 		}
-	}
-
-	updateNode(id, name) {
-
 	}
 
 	deleteNode(id) {
 
 	}
 
-	calculateButtons(id) {
-
-	}
-
 	updateSelectedNode(id) {
-		// console.log("id: ", id)
 		this.setState({selectedNode: id})
 	}
 
-	render(){
+	swapNodes(direction){
+		let { selectedNode } = this.state
+		if (direction === 'up') {
+			this.props.action_updateNodeOrder(selectedNode, selectedNode - 1)
+			this.setState({selectedNode: this.state.selectedNode - 1})
+		} else {
+			this.props.action_updateNodeOrder(selectedNode, selectedNode + 1)
+			this.setState({selectedNode: this.state.selectedNode + 1})
+		}
+	}
 
+	indentNode(indent){
+		let { selectedNode } = this.state
+		if ((this.props.nodes[selectedNode].depth > 0 && indent < 0) || indent > 0 ) {
+			this.props.action_updateNodeDepth(this.state.selectedNode, indent)
+		}
+	}
+
+	jumpTo(location){
+		let messages = document.querySelector(".mainWrapper");
+		location === "bottom" ? messages.scrollTop = messages.scrollHeight : messages.scrollTop = 0
+	}
+
+	render(){
 		const mainWidth = {
-			width : this.props.windowWidth,
+			width : this.props.mainWidth,
 		}
 
 		const renderNodes = this.props.nodes.map((e,i) => {
@@ -87,9 +107,8 @@ class PanelBuilder extends Component {
 				<Node 
 					key = {e+i}
 					index = {i}
-					value = {e.node_name}
-					depth = {e.depth}
 					callback = {this.updateSelectedNode}
+					addNodeCallback = {this.jumpTo}
 					isSelected = {this.state.selectedNode === i ? true : false}
 					// isParent 
 				/>
@@ -99,45 +118,90 @@ class PanelBuilder extends Component {
 		return (
 			<div className="">
 				<div style={mainWidth} className="pathBuilderToolbar flexH aic toolIcon">
-					<div className="ml-m pa-xs">
-						<span className="fas fa-arrow-left"></span>
-					</div>
-					<div className="ml-m pa-xs">
-						<span className="fas fa-arrow-right"></span>
-					</div>
-					<div className="ml-m pa-xs">
-						<span className="fas fa-arrow-up"></span>
-					</div>
-					<div className="ml-m pa-xs">
-						<span className="fas fa-arrow-down"></span>
-					</div>
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-arrow-left"
+						callback = {this.indentNode}
+						context = {-1}
+						bgColor = {this.props.bgColor}
+					/>
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-arrow-right"
+						callback = {this.indentNode}
+						context = {1}
+						bgColor = {this.props.bgColor}
+					/>
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-arrow-up"
+						callback={this.swapNodes}
+						context="up"
+						bgColor={this.props.bgColor}
+					/>
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-arrow-down"
+						callback={this.swapNodes}
+						context="down"
+						bgColor={this.props.bgColor}
+					/>
 
-					<div className="ml-m pa-xs toolDivider">
+					<div style={{color: this.props.bgColor}} className="ml-s pa-xs toolDivider">
 						<span>|</span>
 					</div>
 
-					<div className="ml-m pa-xs">
-						<span className="fas fa-sort-amount-down"></span>
-					</div>
-					<div className="ml-m pa-xs">
-						<span className="fas fa-sort-amount-up"></span>
-					</div>
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-arrow-to-top"
+						callback={this.jumpTo}
+						context="top"
+						bgColor={this.props.bgColor}
+					/>
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-arrow-to-bottom"
+						callback={this.jumpTo}
+						context="bottom"
+						bgColor={this.props.bgColor}
+					/>
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-bullseye"
+						// callback={this.jumpTo}
+						context="target"
+						bgColor={this.props.bgColor}
+					/>
 
-					<div className="ml-m pa-xs toolDivider">
+					<div style={{color: this.props.bgColor}} className="ml-s pa-xs toolDivider">
 						<span>|</span>
 					</div>
 
-					<div className="ml-m pa-xs">
-						<span className="fas fa-arrow-to-top"></span>
-					</div>
-					<div className="ml-m pa-xs">
-						<span className="fas fa-arrow-to-bottom"></span>
-					</div>
-					<div className="ml-m pa-xs">
-						<span className="fas fa-bullseye"></span>
-					</div>
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-expand"
+						// callback={this.expandNodes}
+						context=""
+						bgColor={this.props.bgColor}
+						// isToggled
+					/>
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-compress"
+						// callback={this.contractNodes}
+						context=""
+						bgColor={this.props.bgColor}
+					/>
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-star"
+						// callback={this.contractFavorites}
+						context=""
+						bgColor={this.props.bgColor}
+					/>
+					
 				</div>
-				<div className="panelMain">
+				<div style={mainWidth} className="panelMain">
 					{ renderNodes }
 				</div>
 			</div>
@@ -146,19 +210,21 @@ class PanelBuilder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor, userContext, path } = state
+  const { bgColor, userContext, path, mainWidth } = state
 	const { pid, nodes } = path
 
   return {
       bgColor,
 			userContext,
 			pid,
-			nodes
+			nodes,
+			mainWidth
   }
 }
 
-let actions = {
-	action_updatePathNodes
+const actions = {
+	action_updateNodeOrder,
+	action_updateNodeDepth
 }
 
 export default connect(mapStateToProps, actions)(PanelBuilder)

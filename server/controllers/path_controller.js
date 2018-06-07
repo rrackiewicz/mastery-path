@@ -26,32 +26,40 @@ module.exports = {
     .catch(() => res.status(500).send())
   },
 
-  uploadDescription: (req, res) => {
+  uploadPath: (req, res) => {
     const dbInstance = req.app.get('db')
     const { pid } = req.params
     const { path_name, abstract, img, learningDomain, learningSubdomains, hrs, rating, nodes } = req.body
-    console.log(pid)
-    dbInstance.upload_description([pid, path_name, abstract, img, hrs, rating])
+    dbInstance.upload_path([pid, path_name, abstract, img, hrs, rating])
     .then(() => {
       res.status(200).send()
     })
     .catch(() => res.status(500).send())
 
-    //NOTE: Not currently checking for existing skill and this should be eventually nested to avoid
-    //race conditions
+    //TODO: Add in check for existing skill in entry
     dbInstance.new_skill([pid, learningDomain, true])
     .then(() => {
       res.status(200).send()
     })
     .catch(() => res.status(500).send())
 
-    learningSubdomains.forEach((e,i)=> {
+    learningSubdomains.forEach(e => {
       dbInstance.new_skill([pid, e, false])
       .then(() => {
         res.status(200).send()
       })
       .catch(() => res.status(500).send())
     })
+
+    nodes.forEach((e,i) => {
+      //I think I need another .sql file here to empty out table before inserting then nest 2nd query inside of it. Verify with Tommy.
+      dbInstance.new_node([pid, e.node_name, e.content, i, e.depth]) //using i for order because we don't store the order on the client side. The index of the array determines its order
+      .then(() => {
+        res.status(200).send()
+      })
+      .catch(() => res.status(500).send())
+    })
+
   },
 
   //TODO: GET with uid on params

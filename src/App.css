@@ -214,7 +214,7 @@ textArea {
 
 .headerWrapper {
   position: fixed;
-  top: 20px;
+  top: 0px;
   left: 0;
   /* border-style: solid;
   border-width: 2px;
@@ -248,13 +248,28 @@ textArea {
 }
 
 .toolIcon {
-  font-size: 1.25rem;
   color: white;
+}
+
+.toolIcon:hover {
+  cursor: pointer;
 }
 
 .toolDivider {
   font-size: 1.5rem;
   font-weight: lighter;
+  /* color:rgba(0, 0, 0, .4); */
+}
+
+.icon {
+  width: 26px;
+  height: 26px;
+  font-size: 1.2rem;
+}
+
+.icon:hover {
+  background:rgba(0, 0, 0, .4);
+  border-radius: 3px;
 }
 
 

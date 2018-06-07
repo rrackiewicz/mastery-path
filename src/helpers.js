@@ -73,6 +73,7 @@ export function extractDepth(a){
 
 export function nextSibling(a, targetNode){
   const depthAtIndex = a[targetNode]
+  //NOTE: We are slicing off the node whoes depth we are checking against
   const newArr = a.slice(targetNode+1)
   for (let i=0; i<newArr.length; i++) {
     if (newArr[i] <= depthAtIndex) {
@@ -83,10 +84,16 @@ export function nextSibling(a, targetNode){
 }
 
 export function nearestParent(a, i){
-
 }
 
 //Generate a full dot notation path from root to selected node e.g. 1.3.4.1
 export function dotNotationToSelected(a,i){
+}
 
+export function allChildren(a,i){
+//slice @ index
+//iterate until a node with the same depth is reached and return the index of the node before that one (with index added back on)
+//keep a "collaped" array to store ranges {starting: 4, ending: 10} of all collapsed nodes
+//before mapping over "collapsed" array, filter out these ranges first. When a node is exanded, remove it from the "collapsed" array
+//This sounds like a fun problem
 }

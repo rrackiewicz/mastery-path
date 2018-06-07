@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 import Header from '../Header/Header'
 import TitleSimple from '../TitleSimple/TitleSimple'
-import PanelPath from '../PanelPath/PanelPath'
+import PanelPathDetails from '../PanelPathDetails/PanelPathDetails'
+import PanelNodeDetails from '../PanelNodeDetails/PanelNodeDetails'
 import PanelPathBuilder from '../PanelPathBuilder/PanelPathBuilder'
+import PanelMarkdownEditor from '../PanelMarkdownEditor/PanelMarkdownEditor'
 import ButtonGroup from '../ButtonGroup/ButtonGroup'
 import SNav from '../SNav/SNav'
 import { connect } from 'react-redux'
-import { action_updateLoggedIn } from '../../ducks/reducer'
-import { action_updatePathContext } from '../../ducks/reducer'
+import { action_updateLoggedIn, action_updatePathContext, action_updateMainWidth } from '../../ducks/reducer'
+import { Motion, spring } from 'react-motion'
 
 import './Path.css'
 import '../../spacers.css'
@@ -17,10 +19,14 @@ class Path extends Component {
   constructor() {
     super()
     this.state = {
-      // mainWidth: 0, //doubt this is necessary
-      activeLeftPanel: 'Details',
-      activeMainPanel: 'PathBuilder',
-      isCollapsed: false
+      temp: '',
+      activeLeftPanelPath: 'Details',
+      activeMainPanelPath: 'PanelPathBuilder',
+
+      activeLeftPanelNode: 'Details',
+      activeMainPanelNode: 'PanelMarkdownEditor',
+      isCollapsed: false,
+      leftMenu: ['Details', 'Sockets', 'Sharing', 'Oversight'],
     }
     this.handleResize = this.handleResize.bind(this)
     this.updatePanel = this.updatePanel.bind(this)
@@ -30,9 +36,8 @@ class Path extends Component {
 
   handleResize(e) {
     //NOTE: 543 is calculated by taking the margin-left of .main (373px) and adding the margin-right of 80px
-    this.setState({ windowWidth: e.target.innerWidth - 543});
+    this.props.action_updateMainWidth(e.target.innerWidth - 543)
   }
-
   
   componentDidMount(){
     //FIXME: Remove this after adding in Auth
@@ -40,8 +45,7 @@ class Path extends Component {
 
     //Uses this to calculate the width of the main wrapper because I couldn't put a right margin on it (due to there being no wrapper around it and its width being 100%)
     window.addEventListener('resize', this.handleResize);
-    this.setState({ windowWidth: window.innerWidth - 543});
-
+    this.props.action_updateMainWidth(window.innerWidth - 543);
   }
 
   //Note sure what happens if this is not removed. Do non-React event listeners persist?
@@ -49,8 +53,8 @@ class Path extends Component {
     window.removeEventListener('resize', this.handleResize)
   }
 
-  updatePanel(val) {
-    this.setState({activeLeftPanel : val})
+  updatePanel(panelName) {
+    this.props.pathContext === 'path' ? this.setState({activeLeftPanelPath: panelName}) : this.setState({activeLeftPanelNode: panelName})
   }
 
   collapseLeft() {
@@ -58,59 +62,90 @@ class Path extends Component {
   }
 
   renderLeftPanel() {
-    switch (this.state.activeLeftPanel) {
-      case 'Details':
-      return (
-        <PanelPath
-          callback = {this.updatePathName}
-          isCollapsed = {this.state.isCollapsed}
-        />
-      )
-
-      // case 'Details' && this.props.pathContext === 'node':
-      // return (
-      //   <PanelPath
-      //     callback = {this.updatePathName}
-      //     isCollapsed = {this.state.isCollapsed}
-      //   />
-      // )
-      default:
-      //FIXME: Add other cases when they come online
+    if (this.props.pathContext === 'path') {
+      switch (this.state.activeLeftPanelPath) {
+        case 'Details':
+          return (
+            <PanelPathDetails
+              isCollapsed = {this.state.isCollapsed}
+            />
+          )
+      }
+    } else {
+      switch (this.state.activeLeftPanelNode) {
+        case 'Details':
+          return (
+            <PanelNodeDetails
+              isCollapsed = {this.state.isCollapsed}
+            />
+          )
+      }
     }
   }
 
   renderMainPanel() {
-    switch (this.state.activeMainPanel) {
-      case 'PathBuilder':
-      return (
-        <PanelPathBuilder
-          // isCollapsed = {this.state.isCollapsed} Think this happens naturally
-          windowWidth = {this.state.windowWidth}
-        />
-      )
-
-      case 'DetailsBuilder':
-      return (
-        <PanelPathBuilder
-          // isCollapsed = {this.state.isCollapsed} Think this happens naturally
-          windowWidth = {this.state.windowWidth}
-        />
-      )
-
-      
-      default:
-      //FIXME: Add other cases when they come online
+    if (this.props.pathContext === 'path') {
+      switch (this.state.activeMainPanelPath) {
+        case 'PanelPathBuilder':
+        return (
+          <PanelPathBuilder
+          />
+        )
+        default:
+      } 
+    } else {
+      //console.log(this.props.pathContext)
+      switch(this.state.activeMainPanelNode) {
+        case 'PanelMarkdownEditor':
+        return (
+          <PanelMarkdownEditor
+            // isCollapsed = {this.state.isCollapsed} Think this happens naturally
+          />
+        )
+        default:
+      }
     }
   }
 
   //TODO: Right now, buttonContext is doing nothing. You can pres either button to toggle.
   toggleContext(buttonContext) {
-    this.props.action_updatePathContext(this.props.pathContext === 'path' ? 'node' : 'path')
-  }
+    console.log(buttonContext)
+    const { pathContext, userContext } = this.props
+    let newContext = buttonContext === 'path' ? 'node' : 'path'
+    this.props.action_updatePathContext(newContext)
 
+    // if (userContext === 'master' && newContext === 'path') {
+    //   let leftMenu = [...this.state.leftMenu]
+    //   leftMenu = ['Details', 'Sockets', 'Sharing', 'Oversight']
+    //   this.setState({ leftMenu })
+    //   this.setState({ activeMainPanelPath : 'PanelPathBuilder'})
+		// } 
+
+		// if (userContext === 'master' && newContext === 'node') {
+    //   let leftMenu = [...this.state.leftMenu]
+    //   leftMenu = ['Details', 'Resources', 'Prereqs', 'Domains']
+    //   this.setState({ leftMenu }) 
+    //   this.setState({ activeMainPanelNode: 'PanelMarkdownEditor'})
+		// }
+
+		// if (userContext === 'apprentice' && newContext === 'path') {
+    //   let leftMenu = [...this.state.leftMenu]
+    //   leftMenu = ['Contract', 'Support', 'Lexicon']
+    //   this.setState({ leftMenu }) 
+    //   // this.setState({ activeMainPanelPath : 'PanelPathOutline'})
+		// } 
+
+		// if (userContext === 'apprentice' && newContext === 'node') {
+    //   let leftMenu = [...this.state.leftMenu]
+    //   leftMenu = ['Details', 'Resources', 'Prereqs', 'Domains']
+    //   this.setState({ leftMenu }) 
+    //   // this.setState({ activeMainPanelNode : 'PanelPathNodeDetails'})
+		// }
+  }
 
   render() {
 
+    //console.log(this.props.mainWidth)
     const mainWidth = {
       width: this.state.windowWidth
     }
@@ -124,27 +159,33 @@ class Path extends Component {
   
         <div className="titleWrapper">
           <TitleSimple 
-            title = 'Paths'
+            title = 'Path Builder'
             subtitle = { this.props.path_name }
           />
         </div>
 
         {/* FIXME: Need to put margin on bottom of button group instead of top of left container to top of scroll bar is at top of left container */}
-        {this.state.isCollapsed ?
-          null
-          :
-          <div>
-            <div className="buttonNavWrapper ml-xl">
-              <SNav 
-                updatePanel = {this.updatePanel}
-                pid = {this.props.pid}
-              />
-            </div>
-            <div className="leftWrapper ml-xl">
-              {this.renderLeftPanel()}
-            </div>
-          </div>
-        }
+
+          <Motion defaultStyle={ this.state.isCollapsed ? { width: 373 } : { width: 0}} style={ this.state.isCollapsed ? { width: spring(0) } : { width: spring(373)}}>
+            {(style) => {
+              return (
+                <div style={{ width: style.width, background: 'blue' }}>
+                  <div className="buttonNavWrapper ml-xl">
+                    <SNav 
+                      payload = {this.state.leftMenu}
+                      callback = {this.updatePanel}
+                      selected = {this.props.pathContext === 'node' ? this.state.activeLeftPanelNode : this.state.activeLeftPanelPath}
+                    />
+                  </div>
+                  <div className="leftWrapper ml-xl">
+                    {this.renderLeftPanel()}
+                  </div>
+                </div>
+              )
+            }
+            }
+          </Motion>
+
         
         {/* Don't like hard-coding 64px in here. */}
         <div style={this.state.isCollapsed ? {marginLeft: '64px'} : {}} className="pathNavigatorWrapper flexH aic">
@@ -156,18 +197,19 @@ class Path extends Component {
             <ButtonGroup 
               payload = 'Path'
               callback = {this.toggleContext}
-              context = {this.props.pathContext}
               bgColor = {this.props.bgColor}
               textColor = '#ffffff'
-              type = 'path'
+              isSelected = {this.props.pathContext === 'path' ? true : false}
+              type ='path'
             /> 
             <ButtonGroup 
               payload = 'Node'
               callback = {this.toggleContext}
-              context = {this.props.pathContext}
+              //context = {this.props.pathContext} //on Redux
               bgColor = {this.props.bgColor}
               textColor = '#ffffff'
-              type = 'node'
+              isSelected = {this.props.pathContext === 'node' ? true : false}
+              type ='node'
             /> 
           </div>
         </div>
@@ -184,22 +226,25 @@ class Path extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor, path, pathContext } = state
+  const { bgColor, path, userContext, pathContext, mainWidth } = state
   const { pid, path_name } = path
 
   return {
       bgColor,
       pid,
       path,
+      userContext,
       pathContext,
       path_name,
+      mainWidth
   }
 }
 
 let actions = {
   //FIXME: Remove this after adding in Auth
   action_updateLoggedIn,
-  action_updatePathContext
+  action_updatePathContext,
+  action_updateMainWidth
 }
 
 export default connect(mapStateToProps, actions)(Path)

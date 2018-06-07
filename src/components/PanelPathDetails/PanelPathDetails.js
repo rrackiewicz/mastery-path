@@ -12,10 +12,10 @@ import { action_updatePathLearningDomain } from '../../ducks/reducer'
 import { action_updatePathLearningSubdomains } from '../../ducks/reducer'
 
 import '../../spacers.css'
-import './PanelPath.css'
+import './PanelPathDetails.css'
 //import '../../debug.css'
 
-class PanelPath extends Component {
+class PanelPathDetails extends Component {
 	constructor() {
     super()
     this.state = {
@@ -95,7 +95,7 @@ class PanelPath extends Component {
 		return(
 
 			<div className="panel mt-s">
-				<h3 style={titleOverlay} className="panelTitle">Details</h3>
+				<h3 style={titleOverlay} className="panelTitle">Path Details</h3>
 				<div>
 					<label>Path Name</label>
 					<div className="flexH mt-xs">
@@ -261,4 +261,4 @@ let actions = {
 	action_updatePathLearningSubdomains
 }
 
-export default connect(mapStateToProps, actions)(PanelPath)
+export default connect(mapStateToProps, actions)(PanelPathDetails)

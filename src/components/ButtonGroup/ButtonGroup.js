@@ -25,16 +25,19 @@ class ButtonGroup extends Component {
       "color" : this.props.bgColor,
       "outline" : "none"
     }
+
+    console.log(this.props)
     
     return (
-      <button onClick={() => this.props.callback(this.props.type)} style={ this.props.context === this.props.type ? buttonPressed : button } className="buttong pt-s pb-s pr-m pl-m" >{this.props.payload}</button>
-    );
+
+      <button onClick={() => this.props.callback(this.props.type)} style={ this.props.isSelected ? buttonPressed : button } className="buttong pt-s pb-s pr-m pl-m" >{this.props.payload}</button>
+    )
   }
 }
 
 // NOTE: We do not use userContext because buttonG receives different types of contexts
 function mapStateToProps(state) {
-  const { bgColor } = state 
+  const { bgColor} = state 
   return {
       bgColor
   }

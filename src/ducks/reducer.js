@@ -16,49 +16,51 @@ const initialState = {
     learningSubdomains: [],
     hrs: 100,
     rating: 5.0,
+    content: '',
     nodes: [
       {
         node_name: 'Root Node',
         depth: 0,
         content: ''
       },
-      {
-        node_name: 'Tom',
-        depth: 1,
-        content: ''
-      },
-      {
-        node_name: 'Dick',
-        depth: 1,
-        content: ''
-      },
-      {
-        node_name: 'Harry',
-        depth: 2,
-        content: ''
-      },
-      {
-        node_name: 'Samson',
-        depth: 0,
-        content: ''
-      },
-      {
-        node_name: 'Goose',
-        depth: 1,
-        content: ''
-      },
-      {
-        node_name: 'Turkey',
-        depth: 2,
-        content: ''
-      },
+      // {
+      //   node_name: 'Tom',
+      //   depth: 1,
+      //   content: ''
+      // },
+      // {
+      //   node_name: 'Dick',
+      //   depth: 1,
+      //   content: ''
+      // },
+      // {
+      //   node_name: 'Harry',
+      //   depth: 2,
+      //   content: ''
+      // },
+      // {
+      //   node_name: 'Samson',
+      //   depth: 0,
+      //   content: ''
+      // },
+      // {
+      //   node_name: 'Goose',
+      //   depth: 1,
+      //   content: ''
+      // },
+      // {
+      //   node_name: 'Turkey',
+      //   depth: 2,
+      //   content: ''
+      // }
     ]
   },
   
   bgColor: '',
   userContext: 'master',
   pathContext: 'path',
-  isLoggedIn: false
+  isLoggedIn: false,
+  mainWidth: 0,
 }
 
 //USER CONSTANTS
@@ -72,11 +74,12 @@ const UPDATE_PATHIMG = "UPDATE_PATHIMG"
 const UPDATE_PATHLEARNINGDOMAIN = "UPDATE_PATHLEARNINGDOMAIN"
 const UPDATE_PATHLEARNINGSUBDOMAINS = "UPDATE_PATHLEARNINGSUBDOMAINS"
 //PATH NODES
-const UPDATE_PATHNODES = "UPDATE_PATHNODES" //wholesale swap in of entire nodes array
 const UPDATE_NODENAME = "UPDATE_NODENAME"
 const UPDATE_NODEDEPTH = "UPDATE_NODEDEPTH"
+const UPDATE_NODEORDER = "UPDATE_NODEORDER"
 const UPDATE_NODECONTENT = "UPDATE_NODECONTENT"
 const ADD_NODE = "ADD_NODE"
+const DELETE_NODE = "DELETE_NODE"
 const UPDATE_PATH = "UPDATE_PATH" //wholesale swap in of entire path object
 // const UPDATE_PATHESTIMATEDHOURS = "UPDATE_PATHESTIMATEDHOURS"
 
@@ -85,6 +88,7 @@ const UPDATE_BGCOLOR = "UPDATE_BGCOLOR"
 const UPDATE_USERCONTEXT = "UPDATE_USERCONTEXT"
 const UPDATE_PATHCONTEXT = "UPDATE_PATHCONTEXT"
 const UPDATE_LOGGEDIN = "UPDATE_LOGGEDIN"
+const UPDATE_MAINWIDTH = "UPDATE_MAINWIDTH"
 
 
 function reducer( state = initialState, action ){ 
@@ -130,40 +134,70 @@ function reducer( state = initialState, action ){
         path: Object.assign({}, state.path, { learningSubdomains: action.payload })
       });
 
-    // case UPDATE_PATHNODES:
-    //   return Object.assign({}, state, {
-    //     path: Object.assign({}, state.path, { nodes: action.payload })
-    //   });
-    
-    //
-    // case UPDATE_NODEDEPTH:
-    //   const { index, depth } = action.payload
-    //   const { path } = state
-    //   const newNode = {
-    //     node_name: '',
-    //     depth: depth,
-    //     content: ''
-    //   }
-    //   return Object.assign({}, state, {
-    //     path: Object.assign({}, state.path, { nodes: action.payload })
-    //   });
-    // //
-
-   
-    case ADD_NODE:
-      const { index, depth } = action.payload
-      const { path } = state
-      const newNode = {
-        node_name: '',
-        depth: depth,
-        content: ''
+    case UPDATE_NODENAME:
+      {
+        const { index, node_name } = action.payload
+        const { path } = state
+        let newNode = [...path.nodes]
+        newNode[index].node_name = node_name;
+        return Object.assign({}, state, {
+          path: Object.assign({}, state.path, { nodes: newNode })
+        });
       }
-      let nodesCopy = [...path.nodes]
-      nodesCopy.splice(index+1, 0, newNode)
 
-      return Object.assign({}, state, {
-        path: Object.assign({}, state.path, { nodes: nodesCopy })
-      });
+      case UPDATE_NODEORDER:
+      {
+        const { index1, index2 } = action.payload
+        const { path } = state
+        let newNode = [...path.nodes]
+        //temp variable holds variable for swap. This is more performant than slicing.
+        let temp = newNode[index1]
+        newNode[index1] = newNode[index2]
+        newNode[index2] = temp
+
+        return Object.assign({}, state, {
+          path: Object.assign({}, state.path, { nodes: newNode })
+        });
+      }
+
+    case UPDATE_NODEDEPTH: 
+      {
+        const { index, val } = action.payload
+        const { path } = state
+        let newNode = [...path.nodes]
+        newNode[index].depth += val
+        return Object.assign({}, state, {
+          path: Object.assign({}, state.path, { nodes: newNode })
+        });
+      }
+
+    case ADD_NODE:
+      {
+        const { index, depth } = action.payload
+        const { path } = state
+        const newNode = {
+          node_name: '',
+          depth: depth,
+          content: ''
+        }
+        let nodesCopy = [...path.nodes]
+        nodesCopy.splice(index+1, 0, newNode)
+
+        return Object.assign({}, state, {
+          path: Object.assign({}, state.path, { nodes: nodesCopy })
+        });
+      }
+    
+    case DELETE_NODE:
+      {
+        const { path } = state
+        let nodesCopy = [...path.nodes]
+        nodesCopy.splice(action.payload, 1)
+
+        return Object.assign({}, state, {
+          path: Object.assign({}, state.path, { nodes: nodesCopy })
+        });
+      }
 
     case UPDATE_PATH: 
       return Object.assign({}, state, { path : action.payload });
@@ -179,6 +213,9 @@ function reducer( state = initialState, action ){
 
     case UPDATE_LOGGEDIN:
       return Object.assign({}, state, { isLoggedIn : action.payload });
+
+    case UPDATE_MAINWIDTH:
+    return Object.assign({}, state, { mainWidth : action.payload });
 
     default: 
       return state;
@@ -241,13 +278,6 @@ export function action_updatePathLearningSubdomains(learningSubdomains){
   }
 }
 
-export function action_updatePathNodes(nodes){
-  return {
-    type: UPDATE_PATHNODES,
-    payload: nodes
-  }
-}
-
 export function action_updateNodeName(index, node_name){
   return {
     type: UPDATE_NODENAME,
@@ -258,15 +288,25 @@ export function action_updateNodeName(index, node_name){
   }
 }
 
-// export function action_updateNodeDepth(index, depth){
-//   return {
-//     type: UPDATE_NODEDEPTH,
-//     payload: {
-//       index,
-//       node_name
-//     }
-//   }
-// }
+export function action_updateNodeOrder(index1, index2){
+  return {
+    type: UPDATE_NODEORDER,
+    payload: {
+      index1,
+      index2
+    }
+  }
+}
+
+export function action_updateNodeDepth(index, val){
+  return {
+    type: UPDATE_NODEDEPTH,
+    payload: {
+      index,
+      val
+    }
+  }
+}
 
 // export function action_updateNodeContent(index, content){
 //   return {
@@ -285,6 +325,13 @@ export function action_add_node(index, depth){
       index,
       depth
     }
+  }
+}
+
+export function action_delete_node(index){
+  return {
+    type: DELETE_NODE,
+    payload: index
   }
 }
 
@@ -322,5 +369,12 @@ export function action_updateLoggedIn(bool){
    payload: bool
  }
 }
+
+export function action_updateMainWidth(width){
+  return {
+    type: UPDATE_MAINWIDTH,
+    payload: width
+  }
+ }
 
 export default reducer 
