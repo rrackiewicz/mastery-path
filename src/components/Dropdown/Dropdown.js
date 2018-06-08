@@ -1,5 +1,5 @@
 // Find a way to close list if someone clicks outside of it
-// Changes open direction based on page position
+// Changes open direction based on page position or some flag, e.g. openUp
 // Child container cannot exceed size of parent causing listItems to wrap
 // Scrolling for long lists
 // Payload is an array of objects with a discretionary icon
@@ -72,7 +72,7 @@ class Dropdown extends Component {
 
     return (
       <div className="dropdown">
-        <button onClick={this.toggleList} style={button} className="button pa-s ml-s">{this.state.currentOption}&nbsp;&nbsp;<span className="fas fa-caret-down"></span></button>
+        <button onClick={this.toggleList} style={button} className="button pa-s">{this.state.currentOption}&nbsp;&nbsp;<span className="fas fa-caret-down"></span></button>
         {this.state.isOpen ?
           <div className="optionWrapper" style={dropDown}>
             {generateList}

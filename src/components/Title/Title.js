@@ -65,13 +65,15 @@ class Title extends Component {
             bgColor = {this.props.bgColor}
             textColor = '#ffffff'
           />
-          <Dropdown 
-            payload = {['By Oldest', 'By Newest', 'By Popularity', 'Alphabetical']}
-            defaultOption = 'By Oldest'
-            //callback = {this.sortPaths}
-            bgColor = {this.props.bgColor}
-            textColor = '#ffffff'
-          />
+          <span className="ml-s">
+            <Dropdown 
+              payload = {['By Oldest', 'By Newest', 'By Popularity', 'Alphabetical']}
+              defaultOption = 'By Oldest'
+              //callback = {this.sortPaths}
+              bgColor = {this.props.bgColor}
+              textColor = '#ffffff'
+            />
+          </span>
         </div>
       </div>
     )

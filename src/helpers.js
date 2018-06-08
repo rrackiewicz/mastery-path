@@ -4,9 +4,9 @@ Return a random color
 const colors = [
   'hsl(0, 0%, 21%)',
   // 'hsl(171, 100%, 41%)',
-  'hsl(204, 86%, 53%)',
+  'hsl(204, 86%, 53%)', //lblue
   'hsl(217, 71%, 53%)',
-  'hsl(141, 71%, 48%)',
+  'hsl(141, 71%, 48%)', //green
   // 'hsl(356.2, 50.2%, 49.6%)', //red
   'hsl(348, 100%, 61%)', //pink
   // 'hsl(282, 44%, 47%)', //purple
@@ -83,11 +83,28 @@ export function nextSibling(a, targetNode){
   return newArr.length + targetNode;
 }
 
-export function nearestParent(a, i){
+export function nearestParent(a, targetNode){
+  const depthAtIndex = a[targetNode]
+  for (let i=targetNode; i>=0; i--) {
+    if (a[i] <= depthAtIndex && i !== targetNode) {
+      return i
+    }
+  }
+  return targetNode
+}
+
+export function rootParent(a, targetNode){
+  const depthAtIndex = a[targetNode]
+  for (let i=targetNode; i>=0; i--) {
+    if (a[i] === 0 && i !== targetNode) {
+      return i
+    }
+  }
+  return targetNode
 }
 
 //Generate a full dot notation path from root to selected node e.g. 1.3.4.1
-export function dotNotationToSelected(a,i){
+export function generateDotNotationToSelected(a,i){
 }
 
 export function allChildren(a,i){

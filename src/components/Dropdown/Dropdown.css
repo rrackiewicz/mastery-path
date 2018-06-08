@@ -6,6 +6,7 @@
 .optionWrapper { 
   border-radius: 0 0 3px 3px;
   position: absolute;
+  font-weight: lighter;
   top: 38px;
   right: 0;
 }

@@ -30,6 +30,7 @@ module.exports = {
     const dbInstance = req.app.get('db')
     const { pid } = req.params
     const { path_name, abstract, img, learningDomain, learningSubdomains, hrs, rating, nodes } = req.body
+    
     dbInstance.upload_path([pid, path_name, abstract, img, hrs, rating])
     .then(() => {
       res.status(200).send()
@@ -53,7 +54,7 @@ module.exports = {
 
     nodes.forEach((e,i) => {
       //I think I need another .sql file here to empty out table before inserting then nest 2nd query inside of it. Verify with Tommy.
-      dbInstance.new_node([pid, e.node_name, e.content, i, e.depth]) //using i for order because we don't store the order on the client side. The index of the array determines its order
+      dbInstance.new_node([pid, e.node_name, i, e.depth]) //using i for order because we don't store the order on the client side. The index of the array determines its order. Because we are using for each, all nodes won't arrive at same time and, as a result, won't be in order
       .then(() => {
         res.status(200).send()
       })
@@ -93,6 +94,8 @@ module.exports = {
     .then((results) => {
       res.status(200).send(results)
     })
-    .catch(() => res.status(500).send())
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send()})
   }
 }

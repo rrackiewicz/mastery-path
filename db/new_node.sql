@@ -1,4 +1,4 @@
 INSERT INTO nodes 
-(pid, node_name, content, ord, depth)
+(pid, node_name, ord, depth)
 VALUES 
-($1, $2, $3, $4, $5);
+($1, $2, $3, $4);

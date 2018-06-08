@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux'
 import Field from '../Field/Field'
 import Button from '../Button/Button'
-import { action_add_node, action_updateNodeName, action_delete_node } from '../../ducks/reducer'
+import { action_add_node, action_updateNodeName, action_delete_node, action_updateSelectedNode } from '../../ducks/reducer'
 import { depthToDewey, extractDepth, nextSibling } from '../../helpers'
 
 import '../../spacers.css'
@@ -19,7 +19,7 @@ class Node extends Component {
     this.insertNode = this.insertNode.bind(this)
     this.stickyPath = this.stickyPath.bind(this)
     this.deleteNode = this.deleteNode.bind(this)
-    this.editNode = this.editNode.bind(this)
+    this.updateSelectedNode = this.updateSelectedNode.bind(this)
   }
 
   updateNodeName(e) {
@@ -55,12 +55,13 @@ class Node extends Component {
     this.props.action_delete_node(this.props.index)
   }
 
-  editNode(){
-
+	updateSelectedNode() {
+		this.props.action_updateSelectedNode(this.props.index)
   }
 
-  render() {
 
+  render() {
+    console.log(this.props)
     const indent = {
       marginLeft: `calc(38px * ${this.props.nodes[this.props.index].depth})`,
       borderStyle: this.props.isSelected ? 'solid' : '',
@@ -69,14 +70,14 @@ class Node extends Component {
     }
 
     return (
-      <div onClick={() => this.props.callback(this.props.index)} style={indent} className="nodeContainer flexH aic pa-xs nowrap">
+      <div onClick={this.updateSelectedNode} style={indent} className="nodeContainer flexH aic pa-xs nowrap">
         <div style={{color: this.props.bgColor}} className="nodeContainerHeader mr-xs flexH aic jcc">
           {depthToDewey(extractDepth(this.props.nodes))[this.props.index]}
         </div>
           <div>
             <Field 
               value={this.props.nodes[this.props.index].node_name}
-              placeholder = 'Name'
+              placeholder = 'Type Node Name'
               callback = {this.updateNodeName}
               //noBorder = {this.props.isSelected ? false : true}
             />
@@ -86,7 +87,7 @@ class Node extends Component {
             <Button 
               payload = "Edit"
               icon = "fas fa-edit"
-              callback = {this.editNode}
+              callback = {this.props.callback}
               bgColor = {this.props.bgColor}
               textColor = 'white'
             />
@@ -104,7 +105,7 @@ class Node extends Component {
               bgColor = {this.props.bgColor}
               textColor = 'white'
             />
-              <Button 
+            <Button 
               payload = ""
               icon = "fas fa-star"
               callback = {this.stickyPath}
@@ -132,7 +133,8 @@ function mapStateToProps(state) {
 let actions = {
   action_add_node,
   action_updateNodeName,
-  action_delete_node
+  action_delete_node,
+  action_updateSelectedNode
 }
 
 export default connect(mapStateToProps, actions)(Node)

@@ -96,6 +96,10 @@ body {
   color: white;
 }
 
+:disabled {
+  opacity: .5
+}
+
 @keyframes pulse {
   0% {
     opacity: 0;
@@ -170,7 +174,8 @@ textarea::placeholder {
 
 label {
   font-size: .85rem;
-  color:rgba(255, 255, 255, .8);
+  font-weight: lighter;
+  color:rgba(255, 255, 255, .7);
 }
 
 textArea {
@@ -262,8 +267,8 @@ textArea {
 }
 
 .icon {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   font-size: 1.2rem;
 }
 
@@ -271,6 +276,13 @@ textArea {
   background:rgba(0, 0, 0, .4);
   border-radius: 3px;
 }
+
+.nodeContainerHeader {
+  background: white;
+  width: 34px;
+  height: 34px;
+}
+
 
 
 

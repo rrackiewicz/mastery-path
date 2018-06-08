@@ -16,51 +16,68 @@ const initialState = {
     learningSubdomains: [],
     hrs: 100,
     rating: 5.0,
-    content: '',
     nodes: [
       {
+        nid: 0,
         node_name: 'Root Node',
         depth: 0,
-        content: ''
+        content: [
+          {
+            type: 'h1',
+            content: 'Hellow World'
+          },
+          {
+            type: 'p',
+            content: 'Curabitur at justo sem. Aliquam eget neque interdum lectus ullamcorper fermentum. Ut quis nisi augue. Quisque nec fringilla ante, vel aliquet lacus. In pulvinar enim dui, sit amet scelerisque augue vehicula at. Nunc bibendum, nunc et euismod venenatis, neque felis euismod est, tempus luctus tortor augue vel magna. Sed posuere ligula a tortor tincidunt, non tempus libero fermentum.'
+          }
+        ]
       },
-      // {
-      //   node_name: 'Tom',
-      //   depth: 1,
-      //   content: ''
-      // },
-      // {
-      //   node_name: 'Dick',
-      //   depth: 1,
-      //   content: ''
-      // },
-      // {
-      //   node_name: 'Harry',
-      //   depth: 2,
-      //   content: ''
-      // },
-      // {
-      //   node_name: 'Samson',
-      //   depth: 0,
-      //   content: ''
-      // },
-      // {
-      //   node_name: 'Goose',
-      //   depth: 1,
-      //   content: ''
-      // },
-      // {
-      //   node_name: 'Turkey',
-      //   depth: 2,
-      //   content: ''
-      // }
+      {
+        nid: 1,
+        node_name: 'Tom',
+        depth: 1,
+        content: []
+      },
+      {
+        nid: 2,
+        node_name: 'Dick',
+        depth: 1,
+        content: []
+      },
+      {
+        nid: 3,
+        node_name: 'Harry',
+        depth: 2,
+        content: []
+      },
+      {
+        nid: 4,
+        node_name: 'Samson',
+        depth: 0,
+        content: []
+      },
+      {
+        nid: 5,
+        node_name: 'Goose',
+        depth: 1,
+        content: []
+      },
+      {
+        nid: 6,
+        node_name: 'Turkey',
+        depth: 2,
+        content: []
+      }
     ]
   },
   
   bgColor: '',
   userContext: 'master',
-  pathContext: 'path',
+  pathContext: 'node',
   isLoggedIn: false,
   mainWidth: 0,
+  selectedNode: 0,
+  selectedContent: 0
 }
 
 //USER CONSTANTS
@@ -77,10 +94,11 @@ const UPDATE_PATHLEARNINGSUBDOMAINS = "UPDATE_PATHLEARNINGSUBDOMAINS"
 const UPDATE_NODENAME = "UPDATE_NODENAME"
 const UPDATE_NODEDEPTH = "UPDATE_NODEDEPTH"
 const UPDATE_NODEORDER = "UPDATE_NODEORDER"
-const UPDATE_NODECONTENT = "UPDATE_NODECONTENT"
+const UPDATE_NODECONTENT = "UPDATE_NODECONTENT" //not implemented
 const ADD_NODE = "ADD_NODE"
 const DELETE_NODE = "DELETE_NODE"
 const UPDATE_PATH = "UPDATE_PATH" //wholesale swap in of entire path object
+const ADD_NODE_CONTENT = "ADD_NODE_CONTENT" //not implemented
 // const UPDATE_PATHESTIMATEDHOURS = "UPDATE_PATHESTIMATEDHOURS"
 
 //GENERAL CONSTANTS
@@ -89,6 +107,8 @@ const UPDATE_USERCONTEXT = "UPDATE_USERCONTEXT"
 const UPDATE_PATHCONTEXT = "UPDATE_PATHCONTEXT"
 const UPDATE_LOGGEDIN = "UPDATE_LOGGEDIN"
 const UPDATE_MAINWIDTH = "UPDATE_MAINWIDTH"
+const UPDATE_SELECTEDNODE = "UPDATE_SELECTEDNODE"
+const UPDATE_SELECTEDCONTENT = "UPDATE_SELECTEDCONTENT"
 
 
 function reducer( state = initialState, action ){ 
@@ -97,32 +117,32 @@ function reducer( state = initialState, action ){
     case UPDATE_USEREMAIL:
       return Object.assign({}, state, {
         user: Object.assign({}, state.user, { email: action.payload })
-      });
+      })
 
     case UPDATE_USERUID:
       return Object.assign({}, state, {
         user: Object.assign({}, state.user, { uid: action.payload })
-      });
+      })
 
     case UPDATE_PATHID:
       return Object.assign({}, state, {
         path: Object.assign({}, state.path, { pid: action.payload })
-      });
+      })
 
     case UPDATE_PATHNAME:
       return Object.assign({}, state, {
         path: Object.assign({}, state.path, { path_name: action.payload })
-      });
+      })
 
     case UPDATE_PATHABSTRACT:
       return Object.assign({}, state, {
         path: Object.assign({}, state.path, { abstract: action.payload })
-      });
+      })
 
     case UPDATE_PATHIMG:
       return Object.assign({}, state, {
         path: Object.assign({}, state.path, { img: action.payload })
-      });
+      })
 
     case UPDATE_PATHLEARNINGDOMAIN:
       return Object.assign({}, state, {
@@ -132,7 +152,7 @@ function reducer( state = initialState, action ){
     case UPDATE_PATHLEARNINGSUBDOMAINS:
       return Object.assign({}, state, {
         path: Object.assign({}, state.path, { learningSubdomains: action.payload })
-      });
+      })
 
     case UPDATE_NODENAME:
       {
@@ -142,7 +162,7 @@ function reducer( state = initialState, action ){
         newNode[index].node_name = node_name;
         return Object.assign({}, state, {
           path: Object.assign({}, state.path, { nodes: newNode })
-        });
+        })
       }
 
       case UPDATE_NODEORDER:
@@ -157,7 +177,7 @@ function reducer( state = initialState, action ){
 
         return Object.assign({}, state, {
           path: Object.assign({}, state.path, { nodes: newNode })
-        });
+        })
       }
 
     case UPDATE_NODEDEPTH: 
@@ -168,7 +188,7 @@ function reducer( state = initialState, action ){
         newNode[index].depth += val
         return Object.assign({}, state, {
           path: Object.assign({}, state.path, { nodes: newNode })
-        });
+        })
       }
 
     case ADD_NODE:
@@ -185,7 +205,7 @@ function reducer( state = initialState, action ){
 
         return Object.assign({}, state, {
           path: Object.assign({}, state.path, { nodes: nodesCopy })
-        });
+        })
       }
     
     case DELETE_NODE:
@@ -196,26 +216,32 @@ function reducer( state = initialState, action ){
 
         return Object.assign({}, state, {
           path: Object.assign({}, state.path, { nodes: nodesCopy })
-        });
+        })
       }
 
     case UPDATE_PATH: 
-      return Object.assign({}, state, { path : action.payload });
+      return Object.assign({}, state, { path : action.payload })
 
     case UPDATE_BGCOLOR:
-      return Object.assign({}, state, { bgColor : action.payload });
+      return Object.assign({}, state, { bgColor : action.payload })
 
     case UPDATE_USERCONTEXT:
-      return Object.assign({}, state, { userContext : action.payload });
+      return Object.assign({}, state, { userContext : action.payload })
 
     case UPDATE_PATHCONTEXT:
-      return Object.assign({}, state, { pathContext : action.payload });
+      return Object.assign({}, state, { pathContext : action.payload })
 
     case UPDATE_LOGGEDIN:
-      return Object.assign({}, state, { isLoggedIn : action.payload });
+      return Object.assign({}, state, { isLoggedIn : action.payload })
 
     case UPDATE_MAINWIDTH:
-    return Object.assign({}, state, { mainWidth : action.payload });
+    return Object.assign({}, state, { mainWidth : action.payload })
+
+    case UPDATE_SELECTEDNODE:
+    return Object.assign({}, state, { selectedNode : action.payload })
+
+    case UPDATE_SELECTEDCONTENT:
+    return Object.assign({}, state, { selectedContent : action.payload })
 
     default: 
       return state;
@@ -375,6 +401,20 @@ export function action_updateMainWidth(width){
     type: UPDATE_MAINWIDTH,
     payload: width
   }
- }
+}
+
+export function action_updateSelectedNode(node){
+  return {
+    type: UPDATE_SELECTEDNODE,
+    payload: node
+  }
+}
+
+export function action_updateSelectedContent(content){
+  return {
+    type: UPDATE_SELECTEDCONTENT,
+    payload: content
+  }
+}
 
 export default reducer 

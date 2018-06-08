@@ -21,14 +21,16 @@ class IconToggle extends Component {
   render() {
 
     const unToggledButton = {
-      color : 'white'
+      color : this.props.textColor,
+      fontSize : this.props.isLarge ? '1.9rem' : '1em'
     } 
 
     const toggledButton = {
-      background : 'white',
-      color : this.props.bgColor,
+      background : 'rgba(0, 0, 0, .4)',
+      color : this.props.textColor,
       borderRadius: '3px',
-      boxShadow: 'inset -1px -1px 3px 0px #999999',
+      boxShadow: 'inset -1px -1px 1px 0px #566573',
+      fontSize : this.props.isLarge ? '1.9rem' : '1em'
     }
     
     return (

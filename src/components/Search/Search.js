@@ -34,6 +34,8 @@ class Search extends Component {
 
   //FIXME: Right now the button toggles no matter which button you press. I would like to make it so if you press and already pressed button, nothing happens. Right now buttonContext does nothing.
   toggleContext(buttonContext) {
+
+    console.log("Pressed on a non-selected link")
     this.props.action_updateUserContext(this.props.userContext === 'apprentice' ? 'master' : 'apprentice')
   }
 
@@ -56,7 +58,6 @@ class Search extends Component {
               payload = 'I want to master...'
               callback = {this.toggleContext}
               bgColor = {this.props.bgColor}
-              //context = {this.props.userContext}
               isSelected = {this.props.userContext === 'apprentice' ? true : false}
               textColor = '#ffffff'
               type = 'apprentice'
@@ -64,7 +65,6 @@ class Search extends Component {
             <ButtonGroup
               payload = 'I am a master of...'
               callback = {this.toggleContext}
-              //context = {this.props.userContext}
               bgColor = {this.props.bgColor}
               isSelected = {this.props.userContext === 'master' ? true : false}
               textColor = '#ffffff'

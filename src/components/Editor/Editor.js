@@ -1,5 +1,5 @@
 import React from "react";
-import ReactMde from "react-mde";
+import ReactMde from "react-mde";//link to full path instead 
 import Showdown from "showdown";
 //import "react-mde/lib/styles/css/react-mde-all.css";
 

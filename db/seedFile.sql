@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS resource_completion;
 DROP TABLE IF EXISTS resources;
+DROP TABLE IF EXISTS content;
 DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS paths_skills;
 DROP TABLE IF EXISTS apprentices_paths;
@@ -67,9 +68,16 @@ CREATE TABLE nodes (
     nid SERIAL PRIMARY KEY,
     pid INTEGER REFERENCES paths(pid),
     node_name VARCHAR(40),
-    content VARCHAR(100000),
     ord INTEGER,
     depth INTEGER
+);
+
+CREATE TABLE content (
+    cid SERIAL PRIMARY KEY,
+    nid INTEGER REFERENCES nodes(nid),
+    content_type VARCHAR(40),
+    content VARCHAR(100000),
+    ord INTEGER
 );
 
 CREATE TABLE resources (
@@ -170,31 +178,41 @@ VALUES
     (4, 3, false);   
 
 INSERT INTO nodes
-    (pid, node_name, content, ord, depth)
+    (pid, node_name, ord, depth)
 VALUES
-    (1, 'Introduction', 'Now is the time for all goode men to come to the aid of their country', 1, 0),
-    (1, 'Resources', 'Now is the time for all goode men to come to the aid of their country', 2, 0),
-    (1, 'Coding Environment', 'Now is the time for all goode men to come to the aid of their country', 3, 0),
-    (1, 'Code', 'Now is the time for all goode men to come to the aid of their country', 4, 0),
-    (1, 'Types', 'Now is the time for all goode men to come to the aid of their country', 5, 0),
-    (1, 'Numbers', 'Now is the time for all goode men to come to the aid of their country', 6, 1),
-    (1, 'Strings', 'Now is the time for all goode men to come to the aid of their country', 7, 1),
-    (1, 'Booleans', 'Now is the time for all goode men to come to the aid of their country', 8, 1),
-    (1, 'Objects', 'Now is the time for all goode men to come to the aid of their country', 9, 1),
-    (1, 'Functions', 'Now is the time for all goode men to come to the aid of their country', 10, 1),
-    (1, 'Undefined', 'Now is the time for all goode men to come to the aid of their country', 11, 1),
-    (1, 'Type Coercion', 'Now is the time for all goode men to come to the aid of their country', 12, 1),
-    (1, 'Program Structure', 'Now is the time for all goode men to come to the aid of their country', 13, 0),
-    (1, 'Key Words', 'Now is the time for all goode men to come to the aid of their country', 14, 1),
-    (1, 'Variables', 'Now is the time for all goode men to come to the aid of their country', 15, 1),
-    (1, 'Naming', 'Now is the time for all goode men to come to the aid of their country', 16, 2),
-    (1, 'Updatin', 'Now is the time for all goode men to come to the aid of their country', 17, 2),
-    (1, 'Assignment', 'Now is the time for all goode men to come to the aid of their country', 18, 2),
-    (2, 'Introduction', 'Now is the time for all goode men to come to the aid of their country', 1, 0),
-    (3, 'Introduction', 'Now is the time for all goode men to come to the aid of their country', 1, 0),
-    (4, 'Introduction', 'Now is the time for all goode men to come to the aid of their country', 1, 0),
-    (5, 'Introduction', 'Now is the time for all goode men to come to the aid of their country', 1, 0),
-    (6, 'Introduction', 'Now is the time for all goode men to come to the aid of their country', 1, 0),
-    (7, 'Introduction', 'Now is the time for all goode men to come to the aid of their country', 1, 0)
+    (1, 'Introduction', 1, 0),
+    (1, 'Resources', 2, 0),
+    (1, 'Coding Environment', 3, 0),
+    (1, 'Code', 4, 0),
+    (1, 'Types', 5, 0),
+    (1, 'Numbers', 6, 1),
+    (1, 'Strings', 7, 1),
+    (1, 'Booleans', 8, 1),
+    (1, 'Objects', 9, 1),
+    (1, 'Functions', 10, 1),
+    (1, 'Undefined', 11, 1),
+    (1, 'Type Coercion', 12, 1),
+    (1, 'Program Structure', 13, 0),
+    (1, 'Key Words', 14, 1),
+    (1, 'Variables', 15, 1),
+    (1, 'Naming', 16, 2),
+    (1, 'Updating', 17, 2),
+    (1, 'Assignment', 18, 2),
+    (2, 'Introduction', 1, 0),
+    (3, 'Introduction', 1, 0),
+    (4, 'Introduction', 1, 0),
+    (5, 'Introduction', 1, 0),
+    (6, 'Introduction', 1, 0),
+    (7, 'Introduction', 1, 0);
 
--- NOTE TO FUTURE SELF. DON'T FORGET TO DROP NEW TABLES YOU ADD!
+INSERT INTO content
+    (nid, content_type, content, ord)
+VALUES
+    (1, 'h1', 'Intro To Javascript', 1),
+    (1, 'p', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus placerat nunc vel blandit tempus. Morbi sollicitudin venenatis efficitur. Vivamus lobortis ornare justo at rhoncus. Sed a laoreet leo. Maecenas quis sodales arcu. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin at sem a turpis vulputate fringilla et ac ex. Praesent semper diam neque, rutrum luctus dui consectetur at. Nulla imperdiet tortor id elementum volutpat. In accumsan interdum urna eu pretium.', 2),
+    (2, 'h1', 'Resources', 1),
+    (2, 'p', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus placerat nunc vel blandit tempus. Morbi sollicitudin venenatis efficitur. Vivamus lobortis ornare justo at rhoncus. Sed a laoreet leo. Maecenas quis sodales arcu. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin at sem a turpis vulputate fringilla et ac ex. Praesent semper diam neque, rutrum luctus dui consectetur at. Nulla imperdiet tortor id elementum volutpat. In accumsan interdum urna eu pretium.', 2);
+
+-- NOTE TO FUTURE SELF. DON'T FORGET TO DROP NEW TABLES YOU ADD! IN REVERSE ORDER!
+-- Don't forget trailing ;
+-- Check for missing commas;

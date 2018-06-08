@@ -26,6 +26,7 @@ class Path extends Component {
       activeLeftPanelNode: 'Details',
       activeMainPanelNode: 'PanelMarkdownEditor',
       isCollapsed: false,
+      //leftMenu should default intelligently
       leftMenu: ['Details', 'Sockets', 'Sharing', 'Oversight'],
     }
     this.handleResize = this.handleResize.bind(this)
@@ -89,6 +90,7 @@ class Path extends Component {
         case 'PanelPathBuilder':
         return (
           <PanelPathBuilder
+            callback = {this.toggleContext}
           />
         )
         default:
@@ -108,43 +110,46 @@ class Path extends Component {
   }
 
   //TODO: Right now, buttonContext is doing nothing. You can pres either button to toggle.
+
   toggleContext(buttonContext) {
-    console.log(buttonContext)
+    this.props.action_updateUserContext(this.props.userContext === 'apprentice' ? 'master' : 'apprentice')
+  }
+  toggleContext(buttonContext) {
     const { pathContext, userContext } = this.props
-    let newContext = buttonContext === 'path' ? 'node' : 'path'
-    this.props.action_updatePathContext(newContext)
+    let newContext = pathContext === 'path' ? 'node' : 'path'
+    this.props.action_updatePathContext(this.props.pathContext === 'node' ? 'path' : 'node')
 
-    // if (userContext === 'master' && newContext === 'path') {
-    //   let leftMenu = [...this.state.leftMenu]
-    //   leftMenu = ['Details', 'Sockets', 'Sharing', 'Oversight']
-    //   this.setState({ leftMenu })
-    //   this.setState({ activeMainPanelPath : 'PanelPathBuilder'})
-		// } 
+    if (userContext === 'master' && newContext === 'path') {
+      let leftMenu = [...this.state.leftMenu]
+      leftMenu = ['Details', 'Sockets', 'Sharing', 'Oversight']
+      this.setState({ leftMenu })
+      this.setState({ activeMainPanelPath : 'PanelPathBuilder'})
+		} 
 
-		// if (userContext === 'master' && newContext === 'node') {
-    //   let leftMenu = [...this.state.leftMenu]
-    //   leftMenu = ['Details', 'Resources', 'Prereqs', 'Domains']
-    //   this.setState({ leftMenu }) 
-    //   this.setState({ activeMainPanelNode: 'PanelMarkdownEditor'})
-		// }
+		if (userContext === 'master' && newContext === 'node') {
+      let leftMenu = [...this.state.leftMenu]
+      leftMenu = ['Details', 'Resources', 'Prereqs', 'Domains']
+      this.setState({ leftMenu }) 
+      this.setState({ activeMainPanelNode: 'PanelMarkdownEditor'})
+		}
 
-		// if (userContext === 'apprentice' && newContext === 'path') {
-    //   let leftMenu = [...this.state.leftMenu]
-    //   leftMenu = ['Contract', 'Support', 'Lexicon']
-    //   this.setState({ leftMenu }) 
-    //   // this.setState({ activeMainPanelPath : 'PanelPathOutline'})
-		// } 
+		if (userContext === 'apprentice' && newContext === 'path') {
+      let leftMenu = [...this.state.leftMenu]
+      leftMenu = ['Contract', 'Support', 'Lexicon']
+      this.setState({ leftMenu }) 
+      // this.setState({ activeMainPanelPath : 'PanelPathOutline'})
+		} 
 
-		// if (userContext === 'apprentice' && newContext === 'node') {
-    //   let leftMenu = [...this.state.leftMenu]
-    //   leftMenu = ['Details', 'Resources', 'Prereqs', 'Domains']
-    //   this.setState({ leftMenu }) 
-    //   // this.setState({ activeMainPanelNode : 'PanelPathNodeDetails'})
-		// }
+		if (userContext === 'apprentice' && newContext === 'node') {
+      let leftMenu = [...this.state.leftMenu]
+      leftMenu = ['Details', 'Resources', 'Prereqs', 'Domains']
+      this.setState({ leftMenu }) 
+      // this.setState({ activeMainPanelNode : 'PanelPathNodeDetails'})
+		}
   }
 
   render() {
-
+    //console.log("In render: ", this.props.pathContext)
     //console.log(this.props.mainWidth)
     const mainWidth = {
       width: this.state.windowWidth
@@ -205,7 +210,6 @@ class Path extends Component {
             <ButtonGroup 
               payload = 'Node'
               callback = {this.toggleContext}
-              //context = {this.props.pathContext} //on Redux
               bgColor = {this.props.bgColor}
               textColor = '#ffffff'
               isSelected = {this.props.pathContext === 'node' ? true : false}

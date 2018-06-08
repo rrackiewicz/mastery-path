@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Node from '../Node/Node'
-import { action_updateNodeOrder, action_updateNodeDepth } from '../../ducks/reducer'
+import { action_updateNodeOrder, action_updateNodeDepth, action_updatePathContext,action_updateSelectedNode } from '../../ducks/reducer'
 import { connect } from 'react-redux'
 import IconToggle from '../IconToggle/IconToggle'
 
@@ -12,18 +12,9 @@ class PanelBuilder extends Component {
 	constructor() {
     super()
     this.state = {
-			selectedNodeRestrictions: {
-				up: false,
-				down: false,
-				left: false,
-				right: false
-			},
-				selectedNode: 0,
 			stickNodes: []
 		}
 		this.handleKeys = this.handleKeys.bind(this)
-		this.deleteNode = this.deleteNode.bind(this)
-		this.updateSelectedNode = this.updateSelectedNode.bind(this)
 		this.indentNode = this.indentNode.bind(this)
 		this.swapNodes = this.swapNodes.bind(this)
 		this.jumpTo = this.jumpTo.bind(this)
@@ -37,8 +28,7 @@ class PanelBuilder extends Component {
 			if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
 					e.preventDefault();
 			}
-		}, false);
-		
+		}, false);	
 	}
 
 	componentWillUnmount() {
@@ -48,47 +38,39 @@ class PanelBuilder extends Component {
 
 	//eventually will incorporate full 9-key support and scroll will shift to PgUp/PgDown
 	handleKeys(e) {
-		let { selectedNode } = this.state
+		let { selectedNode } = this.props
 		switch (e.keyCode) {
 			case 37: //left
 				this.indentNode(-1)
 				break;
 			case 38: //up
-				this.setState({selectedNode: selectedNode > 0 ? --selectedNode : selectedNode})
+				this.props.action_updateSelectedNode(selectedNode > 0 ? --selectedNode : selectedNode)
 				break;
 			case 39: //right
 				this.indentNode(1)
 				break;
 			case 40: //down
-				this.setState({selectedNode: selectedNode < this.props.nodes.length-1 ? ++selectedNode : selectedNode})
+				this.props.action_updateSelectedNode(selectedNode < this.props.nodes.length-1 ? ++selectedNode : selectedNode)
 				break;
 			default: 	
 		}
 	}
 
-	deleteNode(id) {
-
-	}
-
-	updateSelectedNode(id) {
-		this.setState({selectedNode: id})
-	}
-
 	swapNodes(direction){
-		let { selectedNode } = this.state
+		let { selectedNode } = this.props
 		if (direction === 'up') {
 			this.props.action_updateNodeOrder(selectedNode, selectedNode - 1)
-			this.setState({selectedNode: this.state.selectedNode - 1})
+			this.props.action_updateSelectedNode(this.props.selectedNode - 1)
 		} else {
 			this.props.action_updateNodeOrder(selectedNode, selectedNode + 1)
-			this.setState({selectedNode: this.state.selectedNode + 1})
+			this.props.action_updateSelectedNode(this.props.selectedNode + 1)
 		}
 	}
 
 	indentNode(indent){
-		let { selectedNode } = this.state
+		let { selectedNode } = this.props
 		if ((this.props.nodes[selectedNode].depth > 0 && indent < 0) || indent > 0 ) {
-			this.props.action_updateNodeDepth(this.state.selectedNode, indent)
+			this.props.action_updateNodeDepth(selectedNode, indent)
 		}
 	}
 
@@ -96,6 +78,7 @@ class PanelBuilder extends Component {
 		let messages = document.querySelector(".mainWrapper");
 		location === "bottom" ? messages.scrollTop = messages.scrollHeight : messages.scrollTop = 0
 	}
+
 
 	render(){
 		const mainWidth = {
@@ -107,9 +90,9 @@ class PanelBuilder extends Component {
 				<Node 
 					key = {e+i}
 					index = {i}
-					callback = {this.updateSelectedNode}
+					callback = {this.props.callback} 
 					addNodeCallback = {this.jumpTo}
-					isSelected = {this.state.selectedNode === i ? true : false}
+					isSelected = {this.props.selectedNode === i ? true : false}
 					// isParent 
 				/>
 			)
@@ -124,6 +107,7 @@ class PanelBuilder extends Component {
 						callback = {this.indentNode}
 						context = {-1}
 						bgColor = {this.props.bgColor}
+						textColor = '#ffffff'
 					/>
 					<IconToggle 
 						payload = ""
@@ -131,6 +115,7 @@ class PanelBuilder extends Component {
 						callback = {this.indentNode}
 						context = {1}
 						bgColor = {this.props.bgColor}
+						textColor = '#ffffff'
 					/>
 					<IconToggle 
 						payload = ""
@@ -138,6 +123,7 @@ class PanelBuilder extends Component {
 						callback={this.swapNodes}
 						context="up"
 						bgColor={this.props.bgColor}
+						textColor = '#ffffff'
 					/>
 					<IconToggle 
 						payload = ""
@@ -145,6 +131,7 @@ class PanelBuilder extends Component {
 						callback={this.swapNodes}
 						context="down"
 						bgColor={this.props.bgColor}
+						textColor = '#ffffff'
 					/>
 
 					<div style={{color: this.props.bgColor}} className="ml-s pa-xs toolDivider">
@@ -157,6 +144,7 @@ class PanelBuilder extends Component {
 						callback={this.jumpTo}
 						context="top"
 						bgColor={this.props.bgColor}
+						textColor = '#ffffff'
 					/>
 					<IconToggle 
 						payload = ""
@@ -164,6 +152,7 @@ class PanelBuilder extends Component {
 						callback={this.jumpTo}
 						context="bottom"
 						bgColor={this.props.bgColor}
+						textColor = '#ffffff'
 					/>
 					<IconToggle 
 						payload = ""
@@ -171,6 +160,7 @@ class PanelBuilder extends Component {
 						// callback={this.jumpTo}
 						context="target"
 						bgColor={this.props.bgColor}
+						textColor = '#ffffff'
 					/>
 
 					<div style={{color: this.props.bgColor}} className="ml-s pa-xs toolDivider">
@@ -183,7 +173,7 @@ class PanelBuilder extends Component {
 						// callback={this.expandNodes}
 						context=""
 						bgColor={this.props.bgColor}
-						// isToggled
+						textColor = '#ffffff'
 					/>
 					<IconToggle 
 						payload = ""
@@ -191,6 +181,7 @@ class PanelBuilder extends Component {
 						// callback={this.contractNodes}
 						context=""
 						bgColor={this.props.bgColor}
+						textColor = '#ffffff'
 					/>
 					<IconToggle 
 						payload = ""
@@ -198,6 +189,7 @@ class PanelBuilder extends Component {
 						// callback={this.contractFavorites}
 						context=""
 						bgColor={this.props.bgColor}
+						textColor = '#ffffff'
 					/>
 					
 				</div>
@@ -210,7 +202,7 @@ class PanelBuilder extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor, userContext, path, mainWidth } = state
+  const { bgColor, userContext, path, mainWidth, selectedNode } = state
 	const { pid, nodes } = path
 
   return {
@@ -218,13 +210,16 @@ function mapStateToProps(state) {
 			userContext,
 			pid,
 			nodes,
-			mainWidth
+			mainWidth,
+			selectedNode,
   }
 }
 
 const actions = {
 	action_updateNodeOrder,
-	action_updateNodeDepth
+	action_updateNodeDepth,
+	action_updatePathContext,
+	action_updateSelectedNode
 }
 
 export default connect(mapStateToProps, actions)(PanelBuilder)
