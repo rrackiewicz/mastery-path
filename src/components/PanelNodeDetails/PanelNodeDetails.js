@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import Button from '../Button/Button'
 import Field from '../Field/Field'
-import Error from '../Error/Error'
 import Dropdown from '../Dropdown/Dropdown'
 import { connect } from 'react-redux'
-import { depthToDewey, extractDepth, nextSibling, nearestParent, rootParent } from '../../helpers'
+import { depthToDewey, extractDepth, nearestParent, rootParent } from '../../helpers'
 import { action_updateNodeName } from '../../ducks/reducer'
-
 
 import '../../spacers.css'
 import './PanelNodeDetails.css'
@@ -33,16 +30,16 @@ class PanelNodeDetails extends Component {
 	getNearestParent(){
 		const parentReturned = nearestParent(extractDepth(this.props.nodes), this.props.selectedNode)
 		const dotNotationReturned = this.generateDotNotation(parentReturned)
-		if (this.state.dotNotationToNearestParent != dotNotationReturned) {this.setState({dotNotationToNearestParent: dotNotationReturned})}
-		if (this.state.nearestParent != parentReturned) {this.setState({ nearestParent: parentReturned })}
+		if (this.state.dotNotationToNearestParent !== dotNotationReturned) {this.setState({dotNotationToNearestParent: dotNotationReturned})}
+		if (this.state.nearestParent !== parentReturned) {this.setState({ nearestParent: parentReturned })}
 		return parentReturned
 	}
 
 	getRootParent(){
 		const parentReturned = rootParent(extractDepth(this.props.nodes), this.props.selectedNode)
 		const dotNotationReturned = this.generateDotNotation(this.props.selectedNode)
-		if (this.state.dotNotationToRootParent != dotNotationReturned) {this.setState({dotNotationToRootParent: dotNotationReturned})}
-		if (this.state.rootParent != parentReturned) {this.setState({ rootParent: parentReturned })}
+		if (this.state.dotNotationToRootParent !== dotNotationReturned) {this.setState({dotNotationToRootParent: dotNotationReturned})}
+		if (this.state.rootParent !== parentReturned) {this.setState({ rootParent: parentReturned })}
 		return parentReturned
 	}
 

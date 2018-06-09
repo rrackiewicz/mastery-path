@@ -27,7 +27,7 @@ class Node extends Component {
   }
 
   insertNode(){
-    const { nodes, index, action_add_node, callback } = this.props
+    const { nodes, index, action_add_node } = this.props
     let newIndex = index + 1;
     const depth = nodes[index].depth
     
@@ -41,7 +41,7 @@ class Node extends Component {
       action_add_node(index, depth)
     }
     //this needs to vary depending on index returned
-    callback(newIndex)
+    this.props.action_updateSelectedNode(newIndex)
     //FIXME: Not a perfect implementation of jumping to bottom but good enough
     if (nodes.length === newIndex ) { this.props.addNodeCallback("bottom") }
   }
@@ -61,7 +61,7 @@ class Node extends Component {
 
 
   render() {
-    console.log(this.props)
+    //console.log(this.props)
     const indent = {
       marginLeft: `calc(38px * ${this.props.nodes[this.props.index].depth})`,
       borderStyle: this.props.isSelected ? 'solid' : '',

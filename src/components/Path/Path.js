@@ -4,7 +4,7 @@ import TitleSimple from '../TitleSimple/TitleSimple'
 import PanelPathDetails from '../PanelPathDetails/PanelPathDetails'
 import PanelNodeDetails from '../PanelNodeDetails/PanelNodeDetails'
 import PanelPathBuilder from '../PanelPathBuilder/PanelPathBuilder'
-import PanelMarkdownEditor from '../PanelMarkdownEditor/PanelMarkdownEditor'
+import PanelNodeEditor from '../PanelNodeEditor/PanelNodeEditor'
 import ButtonGroup from '../ButtonGroup/ButtonGroup'
 import SNav from '../SNav/SNav'
 import { connect } from 'react-redux'
@@ -24,7 +24,7 @@ class Path extends Component {
       activeMainPanelPath: 'PanelPathBuilder',
 
       activeLeftPanelNode: 'Details',
-      activeMainPanelNode: 'PanelMarkdownEditor',
+      activeMainPanelNode: 'PanelNodeEditor',
       isCollapsed: false,
       //leftMenu should default intelligently
       leftMenu: ['Details', 'Sockets', 'Sharing', 'Oversight'],
@@ -71,6 +71,7 @@ class Path extends Component {
               isCollapsed = {this.state.isCollapsed}
             />
           )
+          default:
       }
     } else {
       switch (this.state.activeLeftPanelNode) {
@@ -80,6 +81,7 @@ class Path extends Component {
               isCollapsed = {this.state.isCollapsed}
             />
           )
+        default:
       }
     }
   }
@@ -98,9 +100,9 @@ class Path extends Component {
     } else {
       //console.log(this.props.pathContext)
       switch(this.state.activeMainPanelNode) {
-        case 'PanelMarkdownEditor':
+        case 'PanelNodeEditor':
         return (
-          <PanelMarkdownEditor
+          <PanelNodeEditor
             // isCollapsed = {this.state.isCollapsed} Think this happens naturally
           />
         )
@@ -111,9 +113,6 @@ class Path extends Component {
 
   //TODO: Right now, buttonContext is doing nothing. You can pres either button to toggle.
 
-  toggleContext(buttonContext) {
-    this.props.action_updateUserContext(this.props.userContext === 'apprentice' ? 'master' : 'apprentice')
-  }
   toggleContext(buttonContext) {
     const { pathContext, userContext } = this.props
     let newContext = pathContext === 'path' ? 'node' : 'path'
@@ -130,7 +129,7 @@ class Path extends Component {
       let leftMenu = [...this.state.leftMenu]
       leftMenu = ['Details', 'Resources', 'Prereqs', 'Domains']
       this.setState({ leftMenu }) 
-      this.setState({ activeMainPanelNode: 'PanelMarkdownEditor'})
+      this.setState({ activeMainPanelNode: 'PanelNodeEditor'})
 		}
 
 		if (userContext === 'apprentice' && newContext === 'path') {

@@ -23,11 +23,11 @@ const initialState = {
         depth: 0,
         content: [
           {
-            type: 'h1',
-            content: 'Hellow World'
+            content_type: 'h1',
+            content: 'Node 1'
           },
           {
-            type: 'p',
+            content_type: 'p',
             content: 'Curabitur at justo sem. Aliquam eget neque interdum lectus ullamcorper fermentum. Ut quis nisi augue. Quisque nec fringilla ante, vel aliquet lacus. In pulvinar enim dui, sit amet scelerisque augue vehicula at. Nunc bibendum, nunc et euismod venenatis, neque felis euismod est, tempus luctus tortor augue vel magna. Sed posuere ligula a tortor tincidunt, non tempus libero fermentum.'
           }
         ]
@@ -36,7 +36,16 @@ const initialState = {
         nid: 1,
         node_name: 'Tom',
         depth: 1,
-        content: []
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Node 2'
+          },
+          {
+            content_type: 'p',
+            content: 'Curabitur at justo sem. Aliquam eget neque interdum lectus ullamcorper fermentum. Ut quis nisi augue. Quisque nec fringilla ante, vel aliquet lacus. In pulvinar enim dui, sit amet scelerisque augue vehicula at. Nunc bibendum, nunc et euismod venenatis, neque felis euismod est, tempus luctus tortor augue vel magna. Sed posuere ligula a tortor tincidunt, non tempus libero fermentum.'
+          }
+        ]
       },
       {
         nid: 2,
@@ -94,11 +103,12 @@ const UPDATE_PATHLEARNINGSUBDOMAINS = "UPDATE_PATHLEARNINGSUBDOMAINS"
 const UPDATE_NODENAME = "UPDATE_NODENAME"
 const UPDATE_NODEDEPTH = "UPDATE_NODEDEPTH"
 const UPDATE_NODEORDER = "UPDATE_NODEORDER"
-const UPDATE_NODECONTENT = "UPDATE_NODECONTENT" //not implemented
+//const UPDATE_NODECONTENT = "UPDATE_NODECONTENT" //not implemented
 const ADD_NODE = "ADD_NODE"
 const DELETE_NODE = "DELETE_NODE"
 const UPDATE_PATH = "UPDATE_PATH" //wholesale swap in of entire path object
-const ADD_NODE_CONTENT = "ADD_NODE_CONTENT" //not implemented
+const ADD_CONTENT = "ADD_CONTENT" //not implemented
+const UPDATE_CONTENTORDER = 'UPDATE_CONTENTORDER'
 // const UPDATE_PATHESTIMATEDHOURS = "UPDATE_PATHESTIMATEDHOURS"
 
 //GENERAL CONSTANTS
@@ -171,6 +181,7 @@ function reducer( state = initialState, action ){
         const { path } = state
         let newNode = [...path.nodes]
         //temp variable holds variable for swap. This is more performant than slicing.
+        //try this with es6 array destructuring array matching
         let temp = newNode[index1]
         newNode[index1] = newNode[index2]
         newNode[index2] = temp
@@ -219,6 +230,58 @@ function reducer( state = initialState, action ){
         })
       }
 
+      case ADD_CONTENT:
+      {
+        const content_type = action.payload
+        const { path, selectedNode, selectedContent } = state
+        const { nodes } = path
+
+        let newContent = {
+          content_type,
+          content: ''
+        }
+
+        return Object.assign({}, state, {
+          path: Object.assign({}, path, {
+            nodes: nodes.map(node => {
+              if (node.nid === selectedNode) {
+                let newContentArray = [...node.content]
+                newContentArray.splice(selectedContent+1, 0 , newContent)
+                return Object.assign({}, node, {
+                  content: newContentArray
+                });
+              } else {
+                console.log("Returning node")
+                return node
+              }
+            })
+          })
+        })
+      }
+    
+      // case UPDATE_CONTENTORDER:
+      // {
+      //   const { indexToSwapWithSelectedContent } = action.payload
+      //   const { path, selectedNode, selectedContent } = state
+      //   const { nodes } = path
+
+      //   return Object.assign({}, state, {
+      //     path: Object.assign({}, path, {
+      //       nodes: nodes.map((node, i) => {
+      //         if (node.nid === selectedNode) {
+      //           let newContent = [...node.content]
+      //           let temp = newContent[selectedContent]
+      //           newContent[selectedContent] = newContent[indexToSwapWithSelectedContent]
+      //           newContent[indexToSwapWithSelectedContent] = temp
+      //           return Object.assign({}, node, {
+      //             content: newContent
+      //           });
+      //         } else return node;
+      //       })
+      //     })
+      //   })
+      // }
+
     case UPDATE_PATH: 
       return Object.assign({}, state, { path : action.payload })
 
@@ -244,7 +307,7 @@ function reducer( state = initialState, action ){
     return Object.assign({}, state, { selectedContent : action.payload })
 
     default: 
-      return state;
+      return state
    }
 }
 
@@ -314,6 +377,7 @@ export function action_updateNodeName(index, node_name){
   }
 }
 
+//rewritten without
 export function action_updateNodeOrder(index1, index2){
   return {
     type: UPDATE_NODEORDER,
@@ -358,6 +422,22 @@ export function action_delete_node(index){
   return {
     type: DELETE_NODE,
     payload: index
+  }
+}
+
+
+export function action_add_content(content_type){
+  return {
+    type: ADD_CONTENT,
+    payload: content_type
+  }
+}
+
+//Rewritten without index
+export function action_updateContentOrder(indexToSwapWithSelectedContent){
+  return {
+    type: UPDATE_CONTENTORDER,
+    payload: indexToSwapWithSelectedContent
   }
 }
 
@@ -410,10 +490,10 @@ export function action_updateSelectedNode(node){
   }
 }
 
-export function action_updateSelectedContent(content){
+export function action_updateSelectedContent(index){
   return {
     type: UPDATE_SELECTEDCONTENT,
-    payload: content
+    payload: index
   }
 }
 

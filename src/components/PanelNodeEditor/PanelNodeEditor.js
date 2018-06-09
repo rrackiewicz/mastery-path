@@ -1,35 +1,70 @@
 import React, { Component } from 'react'
-import Node from '../Node/Node'
-import { action_updateNodeOrder, action_updateNodeDepth } from '../../ducks/reducer'
 import { connect } from 'react-redux'
 import IconToggle from '../IconToggle/IconToggle'
+import Content from '../Content/Content'
+import { action_updateSelectedContent, action_add_content } from '../../ducks/reducer'
 
 import '../../spacers.css'
-import './PanelMarkdownEditor.css'
+import './PanelNodeEditor.css'
 //import '../../debug.css'
 
-class PanelMarkdownEditor extends Component {
+class PanelNodeEditor extends Component {
 	constructor() {
     super()
     this.state = {
 			iconArray: ['h1', 'h3', 'p', 'img', 'a', 'blockquote', 'ul', 'ol'],
-			selectedIcon: 'h1'
+			selectedIcon: 'a',
+			isPreview: false
 		}
+		this.addContent = this.addContent.bind(this)
+		this.updateSelectedIcon = this.updateSelectedIcon.bind(this)
+		this.swapContent = this.swapContent.bind(this)
+	}
+
+	//button will try to pass context back as val even though unused
+	addContent(val){
+		this.props.action_add_content(this.state.selectedIcon)
+		this.props.action_updateSelectedContent(this.props.selectedContent + 1)
+	}
+
+	updateSelectedIcon(context){
+		this.setState({selectedIcon: context})
+	}
+
+	swapContent(){
+
+	}
+
+	jumpTo(location){
+		let messages = document.querySelector(".mainWrapper");
+		location === "bottom" ? messages.scrollTop = messages.scrollHeight : messages.scrollTop = 0
 	}
 
 	render(){
+		console.log("Returned content: ", this.props.nodes[this.props.selectedNode])
 		const mainWidth = {
 			width : this.props.mainWidth,
-    }
+		}
+		
+		const renderNodeContent = this.props.nodes[this.props.selectedNode].content.map((e,i) => {
+			return (
+				<Content 
+					key = {e+i}
+					index = {i}
+					callback = {this.addContent}
+					context = {e.content_type}
+					isSelected = {this.props.selectedContent === i ? true : false}
+				/>
+			)
+		})
 
 		return (
 			<div className="">
 				<div style={mainWidth} className="pathBuilderToolbar flexH aic toolIcon">
-					
 					<IconToggle 
 						payload = ""
 						icon = "fas fa-arrow-up"
-						callback = {this.indentNode}
+						callback = {this.swapContent}
 						context = {-1}
 						bgColor = {this.props.bgColor}
 						textColor = '#ffffff'
@@ -37,7 +72,7 @@ class PanelMarkdownEditor extends Component {
 					<IconToggle 
 						payload = ""
 						icon = "fas fa-arrow-down"
-						//callback = {this.indentNode}
+						callback = {this.swapContent}
 						context = {1}
 						bgColor = {this.props.bgColor}
 						textColor = '#ffffff'
@@ -49,8 +84,8 @@ class PanelMarkdownEditor extends Component {
 
 					<IconToggle 
 						payload = ""
-						icon = "fas fa-plus-square"
-						//callback = {this.addContent}
+						icon = "fas fa-plus"
+						callback = {this.addContent}
 						bgColor = {this.props.bgColor}
 						textColor = '#ffffff'
 						isLarge
@@ -58,7 +93,7 @@ class PanelMarkdownEditor extends Component {
 					<IconToggle 
 						payload = ""
 						icon = "fas fa-h1"
-						//callback = {this.dispatchContent}
+						callback = {this.updateSelectedIcon}
 						bgColor = {this.props.bgColor}
 						context = 'h1'
 						textColor = '#ffffff'
@@ -67,17 +102,16 @@ class PanelMarkdownEditor extends Component {
 					<IconToggle 
 						payload = ""
 						icon = "fas fa-h3"
-						//callback = {this.dispatchContent}
+						callback = {this.updateSelectedIcon}
 						context = 'h3'
 						bgColor = {this.props.bgColor}
 						textColor = '#ffffff'
 						isToggled = {this.state.selectedIcon === 'h3' ? true : false }
-
 					/>
 					<IconToggle 
 						payload = ""
-						icon = "fas fa-paragraph"
-						//callback = {this.dispatchContent}
+						icon = "far fa-paragraph"
+						callback = {this.updateSelectedIcon}
 						context="p"
 						bgColor={this.props.bgColor}
 						textColor = '#ffffff'
@@ -86,7 +120,7 @@ class PanelMarkdownEditor extends Component {
 					<IconToggle 
 						payload = ""
 						icon = "far fa-image"
-						//callback = {this.dispatchContent}
+						callback = {this.updateSelectedIcon}
 						context = 'img'
 						bgColor={this.props.bgColor}
 						textColor = '#ffffff'
@@ -95,16 +129,16 @@ class PanelMarkdownEditor extends Component {
 					<IconToggle 
 						payload = ""
 						icon = "fas fa-link"
-						//callback = {this.dispatchContent}
+						callback = {this.updateSelectedIcon}
+						context = 'a'
 						bgColor={this.props.bgColor}
 						textColor = '#ffffff'
 						isToggled = {this.state.selectedIcon === 'a' ? true : false }
-						context = 'a'
 					/>
 					<IconToggle 
 						payload = ""
 						icon = "fas fa-quote-left"
-						//callback = {this.dispatchContent}
+						callback = {this.updateSelectedIcon}
 						context = 'blockquote'
 						bgColor={this.props.bgColor}
 						textColor = '#ffffff'
@@ -113,7 +147,7 @@ class PanelMarkdownEditor extends Component {
 					<IconToggle 
 						payload = ""
 						icon = "fas fa-list-ul"
-						//callback = {this.dispatchContent}
+						callback = {this.updateSelectedIcon}
 						context = 'ul'
 						bgColor={this.props.bgColor}
 						textColor = '#ffffff'
@@ -123,7 +157,7 @@ class PanelMarkdownEditor extends Component {
 					<IconToggle 
 						payload = ""
 						icon = "fas fa-list-ol"
-						//callback = {this.dispatchContent}
+						callback = {this.updateSelectedIcon}
 						context = 'ol'
 						bgColor={this.props.bgColor}
 						textColor = '#ffffff'
@@ -155,26 +189,21 @@ class PanelMarkdownEditor extends Component {
 						<span>|</span>
 					</div>
 
-					<IconToggle 
-						payload = ""
-						icon = "fas fa-compress"
-						// callback={this.contractNodes}
-						context="collapse"
-						bgColor={this.props.bgColor}
-						textColor = '#ffffff'
-					/>
-					<IconToggle 
-						payload = ""
-						icon = "fas fa-expand"
-						// callback={this.contractFavorites}
-						context="expand"
-						bgColor={this.props.bgColor}
-						textColor = '#ffffff'
-					/>
-					
+					<span className="mla">
+						<IconToggle 
+							payload = ""
+							icon = "fas fa-eye"
+							//callback = {this.togglePreview}
+							bgColor = {this.props.bgColor}
+							context = 'h1'
+							textColor = '#ffffff'
+							isToggled = {this.state.isPreview ? true : false }
+						/>
+					</span>
+			
 				</div>
 				<div style={mainWidth} className="panelMain">
-					{/* { renderNodeContent } */}
+					{ renderNodeContent }
 				</div>
 			</div>
 		)
@@ -182,19 +211,22 @@ class PanelMarkdownEditor extends Component {
 }
 
 function mapStateToProps(state) {
-	const { bgColor, mainWidth, path, selectedContent} = state
+	const { bgColor, mainWidth, path, selectedContent, selectedNode} = state
 	const { nodes } = path
-	const { content } = nodes
 
   return {
 			bgColor,
 			mainWidth,
-			content,
-			selectedContent
+			path,
+			selectedContent,
+			selectedNode,
+			nodes
   }
 }
 
 const actions = {
+	action_updateSelectedContent,
+	action_add_content
 }
 
-export default connect(mapStateToProps, actions)(PanelMarkdownEditor)
+export default connect(mapStateToProps, actions)(PanelNodeEditor)

@@ -9,4 +9,5 @@
   font-weight: lighter;
   top: 38px;
   right: 0;
+  z-index: 10001;
 }

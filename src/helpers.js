@@ -94,7 +94,6 @@ export function nearestParent(a, targetNode){
 }
 
 export function rootParent(a, targetNode){
-  const depthAtIndex = a[targetNode]
   for (let i=targetNode; i>=0; i--) {
     if (a[i] === 0 && i !== targetNode) {
       return i
