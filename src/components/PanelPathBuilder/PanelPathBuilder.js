@@ -21,14 +21,14 @@ class PanelBuilder extends Component {
 	}
 
 	componentDidMount() {
-		window.addEventListener('keyup', this.handleKeys);
+		//window.addEventListener('keyup', this.handleKeys);
 
-		window.addEventListener("keydown", function(e) {
-			// space and arrow keys
-			if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-					e.preventDefault();
-			}
-		}, false);	
+		// window.addEventListener("keydown", function(e) {
+		// 	// space and arrow keys
+		// 	if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+		// 			e.preventDefault();
+		// 	}
+		// }, false);	
 	}
 
 	componentWillUnmount() {
@@ -58,12 +58,12 @@ class PanelBuilder extends Component {
 
 	swapNodes(direction){
 		let { selectedNode } = this.props
-		if (direction === 'up') {
+		if (direction === 'up' && selectedNode >0) {
 			this.props.action_updateNodeOrder(selectedNode, selectedNode - 1)
-			this.props.action_updateSelectedNode(this.props.selectedNode - 1)
-		} else {
+			this.props.action_updateSelectedNode(selectedNode - 1)
+		} else if (selectedNode < this.props.nodes.length - 1) {
 			this.props.action_updateNodeOrder(selectedNode, selectedNode + 1)
-			this.props.action_updateSelectedNode(this.props.selectedNode + 1)
+			this.props.action_updateSelectedNode(selectedNode + 1)
 		}
 	}
 

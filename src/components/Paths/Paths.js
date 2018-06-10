@@ -60,7 +60,6 @@ class Paths extends Component {
   }
 
   render() {
-    
     const renderCards = this.state.results.map((e,i) => {
       return (
         <Card 
@@ -69,7 +68,7 @@ class Paths extends Component {
           img = {e.img}
           author = {e.username}
           pathName = {e.path_name}
-          abstract = {e.abstract.slice(0, 160)}
+          abstract = {e.abstract ? e.abstract.slice(0, 160) : ''}
           tld = {e.skill_name}
           pid = {e.pid}
           hours = {e.hrs}

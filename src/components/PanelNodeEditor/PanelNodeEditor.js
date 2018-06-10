@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import IconToggle from '../IconToggle/IconToggle'
 import Content from '../Content/Content'
-import { action_updateSelectedContent, action_add_content } from '../../ducks/reducer'
+import { action_updateSelectedContent, action_add_content, action_updateContentOrder } from '../../ducks/reducer'
 
 import '../../spacers.css'
 import './PanelNodeEditor.css'
@@ -13,7 +13,7 @@ class PanelNodeEditor extends Component {
     super()
     this.state = {
 			iconArray: ['h1', 'h3', 'p', 'img', 'a', 'blockquote', 'ul', 'ol'],
-			selectedIcon: 'a',
+			selectedIcon: 'h1',
 			isPreview: false
 		}
 		this.addContent = this.addContent.bind(this)
@@ -23,16 +23,27 @@ class PanelNodeEditor extends Component {
 
 	//button will try to pass context back as val even though unused
 	addContent(val){
+		//FIXME: Insert 0 into the appropriate position in selectedContent
 		this.props.action_add_content(this.state.selectedIcon)
-		this.props.action_updateSelectedContent(this.props.selectedContent + 1)
+		//need to splice the selectedContent array in the same place
+		this.props.action_updateSelectedContent(this.props.selectedContentAtSelectedNode + 1)
+		this.jumpTo("bottom")
 	}
 
 	updateSelectedIcon(context){
 		this.setState({selectedIcon: context})
 	}
 
-	swapContent(){
-
+	swapContent(direction){
+		let { selectedContentAtSelectedNode } = this.props
+		if (direction === 'up' && selectedContentAtSelectedNode > 0) {
+			this.props.action_updateContentOrder(selectedContentAtSelectedNode - 1)
+			this.props.action_updateSelectedContent(selectedContentAtSelectedNode - 1)
+		}
+		else if (selectedContentAtSelectedNode < this.props.nodes[this.props.selectedNode].content.length-1) {
+			this.props.action_updateContentOrder(selectedContentAtSelectedNode + 1)
+			this.props.action_updateSelectedContent(selectedContentAtSelectedNode + 1)
+		}
 	}
 
 	jumpTo(location){
@@ -41,7 +52,8 @@ class PanelNodeEditor extends Component {
 	}
 
 	render(){
-		console.log("Returned content: ", this.props.nodes[this.props.selectedNode])
+
+		console.log(`Selected Node tree for node ${this.props.selectedNode}: ${this.props.selectedContent}`)
 		const mainWidth = {
 			width : this.props.mainWidth,
 		}
@@ -53,7 +65,7 @@ class PanelNodeEditor extends Component {
 					index = {i}
 					callback = {this.addContent}
 					context = {e.content_type}
-					isSelected = {this.props.selectedContent === i ? true : false}
+					isSelected = {this.props.selectedContentAtSelectedNode === i ? true : false}
 				/>
 			)
 		})
@@ -65,7 +77,8 @@ class PanelNodeEditor extends Component {
 						payload = ""
 						icon = "fas fa-arrow-up"
 						callback = {this.swapContent}
-						context = {-1}
+						addNodeCallback = {this.jumpTo}
+						context = "up"
 						bgColor = {this.props.bgColor}
 						textColor = '#ffffff'
 					/>
@@ -73,7 +86,7 @@ class PanelNodeEditor extends Component {
 						payload = ""
 						icon = "fas fa-arrow-down"
 						callback = {this.swapContent}
-						context = {1}
+						context = "down"
 						bgColor = {this.props.bgColor}
 						textColor = '#ffffff'
 					/>
@@ -214,19 +227,23 @@ function mapStateToProps(state) {
 	const { bgColor, mainWidth, path, selectedContent, selectedNode} = state
 	const { nodes } = path
 
+	//FIXME: Now that selectedContent is an array, the actual selectedContent is the selectedContent at the currently selected node. This has been updated in one location in this file.
+	const selectedContentAtSelectedNode = selectedContent[selectedNode]
   return {
 			bgColor,
 			mainWidth,
 			path,
 			selectedContent,
 			selectedNode,
+			selectedContentAtSelectedNode,
 			nodes
   }
 }
 
 const actions = {
 	action_updateSelectedContent,
-	action_add_content
+	action_add_content,
+	action_updateContentOrder
 }
 
 export default connect(mapStateToProps, actions)(PanelNodeEditor)

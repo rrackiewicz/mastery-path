@@ -52,10 +52,12 @@ module.exports = {
       .catch(() => res.status(500).send())
     })
 
-    nodes.forEach((e,i) => {
+    nodes.forEach((ne,ni) => {
       //I think I need another .sql file here to empty out table before inserting then nest 2nd query inside of it. Verify with Tommy.
-      dbInstance.new_node([pid, e.node_name, i, e.depth]) //using i for order because we don't store the order on the client side. The index of the array determines its order. Because we are using for each, all nodes won't arrive at same time and, as a result, won't be in order
+      dbInstance.new_node([pid, ne.node_name, ni, ne.depth]) //using i for order because we don't store the order on the client side. The index of the array determines its order. Because we are using for each, all nodes won't arrive at same time and, as a result, won't be in order
+      // FIXME: adjust query to return nid
       .then(() => {
+        //I feel like we need an inner loop here to .forEach over the nid returned (which is not currently). We call the new_content database method passing in ne.nid,, ce.content_type, ce.content, ci (for ord). TODO: Verify this with Tommy.
         res.status(200).send()
       })
       .catch(() => res.status(500).send())

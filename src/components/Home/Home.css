@@ -1,0 +1,10 @@
+.animationBox {
+  position: absolute;
+  /* border: 1px white solid; */
+  font-weight: lighter;
+  display: none;
+}
+
+.animationWrapper{
+  position: relative
+}

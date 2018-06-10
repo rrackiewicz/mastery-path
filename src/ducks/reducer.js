@@ -82,11 +82,11 @@ const initialState = {
   
   bgColor: '',
   userContext: 'master',
-  pathContext: 'node',
+  pathContext: 'path',
   isLoggedIn: false,
   mainWidth: 0,
   selectedNode: 0,
-  selectedContent: 0
+  selectedContent: [0,0,0,0,0,0,0]
 }
 
 //USER CONSTANTS
@@ -103,12 +103,16 @@ const UPDATE_PATHLEARNINGSUBDOMAINS = "UPDATE_PATHLEARNINGSUBDOMAINS"
 const UPDATE_NODENAME = "UPDATE_NODENAME"
 const UPDATE_NODEDEPTH = "UPDATE_NODEDEPTH"
 const UPDATE_NODEORDER = "UPDATE_NODEORDER"
-//const UPDATE_NODECONTENT = "UPDATE_NODECONTENT" //not implemented
 const ADD_NODE = "ADD_NODE"
 const DELETE_NODE = "DELETE_NODE"
 const UPDATE_PATH = "UPDATE_PATH" //wholesale swap in of entire path object
-const ADD_CONTENT = "ADD_CONTENT" //not implemented
+//PATH CONTENT
+const ADD_CONTENT = "ADD_CONTENT" 
 const UPDATE_CONTENTORDER = 'UPDATE_CONTENTORDER'
+const UPDATE_SELECTEDCONTENT = "UPDATE_SELECTEDCONTENT"
+const UPDATE_CONTENTCONTENT = 'UPDATE_CONTENTCONTENT'
+const DELETE_CONTENT = "DELETE_CONTENT"
+
 // const UPDATE_PATHESTIMATEDHOURS = "UPDATE_PATHESTIMATEDHOURS"
 
 //GENERAL CONSTANTS
@@ -118,8 +122,6 @@ const UPDATE_PATHCONTEXT = "UPDATE_PATHCONTEXT"
 const UPDATE_LOGGEDIN = "UPDATE_LOGGEDIN"
 const UPDATE_MAINWIDTH = "UPDATE_MAINWIDTH"
 const UPDATE_SELECTEDNODE = "UPDATE_SELECTEDNODE"
-const UPDATE_SELECTEDCONTENT = "UPDATE_SELECTEDCONTENT"
-
 
 function reducer( state = initialState, action ){ 
   switch( action.type ){
@@ -207,12 +209,20 @@ function reducer( state = initialState, action ){
         const { index, depth } = action.payload
         const { path } = state
         const newNode = {
+          nid: 0,
           node_name: '',
           depth: depth,
-          content: ''
+          content: []
         }
         let nodesCopy = [...path.nodes]
         nodesCopy.splice(index+1, 0, newNode)
+        //Since I'm slicing a piece out, I have to renumber all the nid of the entire nodes array
+        nodesCopy.map((e,i) => {
+          return e.nid = i
+        })
+
+        //Tommy said that mutating state isn't a big deal if its done within Redux
+        state.selectedContent.splice(index+1,0,0)
 
         return Object.assign({}, state, {
           path: Object.assign({}, state.path, { nodes: nodesCopy })
@@ -225,6 +235,14 @@ function reducer( state = initialState, action ){
         let nodesCopy = [...path.nodes]
         nodesCopy.splice(action.payload, 1)
 
+        //Since I'm slicing a piece out, I have to renumber all the nid of the entire nodes array
+        nodesCopy.map((e,i) => {
+          return e.nid = i
+        })
+
+        //Tommy said that mutating state isn't a big deal if its done within Redux
+        state.selectedContent.splice(action.payload, 1)
+
         return Object.assign({}, state, {
           path: Object.assign({}, state.path, { nodes: nodesCopy })
         })
@@ -235,6 +253,7 @@ function reducer( state = initialState, action ){
         const content_type = action.payload
         const { path, selectedNode, selectedContent } = state
         const { nodes } = path
+        const selectedContentAtSelectedNode = selectedContent[selectedNode]
 
         let newContent = {
           content_type,
@@ -246,12 +265,11 @@ function reducer( state = initialState, action ){
             nodes: nodes.map(node => {
               if (node.nid === selectedNode) {
                 let newContentArray = [...node.content]
-                newContentArray.splice(selectedContent+1, 0 , newContent)
+                newContentArray.splice(selectedContentAtSelectedNode+1, 0 , newContent)
                 return Object.assign({}, node, {
                   content: newContentArray
-                });
+                })
               } else {
-                console.log("Returning node")
                 return node
               }
             })
@@ -259,29 +277,88 @@ function reducer( state = initialState, action ){
         })
       }
     
-      // case UPDATE_CONTENTORDER:
-      // {
-      //   const { indexToSwapWithSelectedContent } = action.payload
-      //   const { path, selectedNode, selectedContent } = state
-      //   const { nodes } = path
+      case UPDATE_CONTENTORDER:
+      {
+        const indexToSwapWithSelectedContent = action.payload
+        const { path, selectedNode, selectedContent } = state
+        const { nodes } = path
+        const selectedContentAtSelectedNode = selectedContent[selectedNode]
 
-      //   return Object.assign({}, state, {
-      //     path: Object.assign({}, path, {
-      //       nodes: nodes.map((node, i) => {
-      //         if (node.nid === selectedNode) {
-      //           let newContent = [...node.content]
-      //           let temp = newContent[selectedContent]
-      //           newContent[selectedContent] = newContent[indexToSwapWithSelectedContent]
-      //           newContent[indexToSwapWithSelectedContent] = temp
-      //           return Object.assign({}, node, {
-      //             content: newContent
-      //           });
-      //         } else return node;
-      //       })
-      //     })
-      //   })
-      // }
+        return Object.assign({}, state, {
+          path: Object.assign({}, path, {
+            nodes: nodes.map((node, i) => {
+              if (node.nid === selectedNode) {
+                let newContent = [...node.content]
+                let temp = newContent[selectedContentAtSelectedNode]
+                newContent[selectedContentAtSelectedNode] = newContent[indexToSwapWithSelectedContent]
+                newContent[indexToSwapWithSelectedContent] = temp
+                return Object.assign({}, node, {
+                  content: newContent
+                })
+              } else return node;
+            })
+          })
+        })
+      }
 
+    case UPDATE_SELECTEDCONTENT:
+    {
+      const index = action.payload
+      const { selectedNode, selectedContent } = state
+      let newSelectedContent = [...selectedContent]
+      newSelectedContent[selectedNode] = index
+      return Object.assign({}, state, { 
+        selectedContent : newSelectedContent
+      })
+    }
+
+    case UPDATE_CONTENTCONTENT:
+    {
+      const content = action.payload
+      const { path, selectedNode, selectedContent } = state
+      const { nodes } = path
+      const selectedContentAtSelectedNode = selectedContent[selectedNode]
+
+      return Object.assign({}, state, {
+        path: Object.assign({}, path, {
+          nodes: nodes.map(node => {
+            if (node.nid === selectedNode) {
+              let newContentArray = [...node.content]
+              newContentArray[selectedContentAtSelectedNode].content =content;
+              return Object.assign({}, node, {
+                content: newContentArray
+              })
+            } else {
+              return node
+            }
+          })
+        })
+      })
+    }
+
+    case DELETE_CONTENT:
+    {
+      const { path, selectedNode, selectedContent } = state
+      const { nodes } = path
+      const selectedContentAtSelectedNode = selectedContent[selectedNode]
+
+      return Object.assign({}, state, {
+        path: Object.assign({}, path, {
+          nodes: nodes.map(node => {
+            if (node.nid === selectedNode) {
+              let newContentArray = [...node.content]
+              newContentArray.splice(selectedContentAtSelectedNode, 1)
+              return Object.assign({}, node, {
+                content: newContentArray
+              })
+            } else {
+              return node
+            }
+          })
+        })
+      })
+    }
+ 
     case UPDATE_PATH: 
       return Object.assign({}, state, { path : action.payload })
 
@@ -303,12 +380,9 @@ function reducer( state = initialState, action ){
     case UPDATE_SELECTEDNODE:
     return Object.assign({}, state, { selectedNode : action.payload })
 
-    case UPDATE_SELECTEDCONTENT:
-    return Object.assign({}, state, { selectedContent : action.payload })
-
     default: 
-      return state
-   }
+    return state
+  }
 }
 
 export function action_updateUserEmail(id){
@@ -398,16 +472,6 @@ export function action_updateNodeDepth(index, val){
   }
 }
 
-// export function action_updateNodeContent(index, content){
-//   return {
-//     type: UPDATE_NODECONTENT,
-//     payload: {
-//       index,
-//       node_name
-//     }
-//   }
-// }
-
 export function action_add_node(index, depth){
   return {
     type: ADD_NODE,
@@ -433,11 +497,31 @@ export function action_add_content(content_type){
   }
 }
 
-//Rewritten without index
 export function action_updateContentOrder(indexToSwapWithSelectedContent){
   return {
     type: UPDATE_CONTENTORDER,
     payload: indexToSwapWithSelectedContent
+  }
+}
+
+export function action_updateSelectedContent(index){
+  return {
+    type: UPDATE_SELECTEDCONTENT,
+    payload: index
+  }
+}
+
+export function action_updateContentContent(content){
+  return {
+    type: UPDATE_CONTENTCONTENT,
+    payload: content
+  }
+}
+
+
+export function action_delete_content(){
+  return {
+    type: DELETE_CONTENT
   }
 }
 
@@ -487,13 +571,6 @@ export function action_updateSelectedNode(node){
   return {
     type: UPDATE_SELECTEDNODE,
     payload: node
-  }
-}
-
-export function action_updateSelectedContent(index){
-  return {
-    type: UPDATE_SELECTEDCONTENT,
-    payload: index
   }
 }
 

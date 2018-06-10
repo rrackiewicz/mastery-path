@@ -112,11 +112,10 @@ class Path extends Component {
   }
 
   //TODO: Right now, buttonContext is doing nothing. You can pres either button to toggle.
-
   toggleContext(buttonContext) {
     const { pathContext, userContext } = this.props
     let newContext = pathContext === 'path' ? 'node' : 'path'
-    this.props.action_updatePathContext(this.props.pathContext === 'node' ? 'path' : 'node')
+    this.props.action_updatePathContext(newContext)
 
     if (userContext === 'master' && newContext === 'path') {
       let leftMenu = [...this.state.leftMenu]
@@ -148,6 +147,7 @@ class Path extends Component {
   }
 
   render() {
+    //console.log(this.props.pathContext)
     //console.log("In render: ", this.props.pathContext)
     //console.log(this.props.mainWidth)
     const mainWidth = {
@@ -164,7 +164,7 @@ class Path extends Component {
         <div className="titleWrapper">
           <TitleSimple 
             title = 'Path Builder'
-            subtitle = { this.props.path_name }
+            subtitle = { this.props.path_name + " / " + this.props.nodes[this.props.selectedNode].node_name }
           />
         </div>
 
@@ -229,8 +229,8 @@ class Path extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor, path, userContext, pathContext, mainWidth } = state
-  const { pid, path_name } = path
+  const { bgColor, path, userContext, pathContext, mainWidth, selectedNode } = state
+  const { pid, path_name, nodes } = path
 
   return {
       bgColor,
@@ -238,8 +238,11 @@ function mapStateToProps(state) {
       path,
       userContext,
       pathContext,
+      mainWidth,
+      selectedNode,
       path_name,
-      mainWidth
+      nodes,
+      
   }
 }
 

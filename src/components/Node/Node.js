@@ -40,6 +40,7 @@ class Node extends Component {
     } else {
       action_add_node(index, depth)
     }
+    //TODO: Call action to insert row in selectedNode array with value of 0. NOTE: I have already done this in Redux. So if it doesn't work, try this.
     //this needs to vary depending on index returned
     this.props.action_updateSelectedNode(newIndex)
     //FIXME: Not a perfect implementation of jumping to bottom but good enough
@@ -51,7 +52,6 @@ class Node extends Component {
   }
 
   deleteNode(){
-    console.log(this.props.index)
     this.props.action_delete_node(this.props.index)
   }
 
@@ -61,12 +61,14 @@ class Node extends Component {
 
 
   render() {
-    //console.log(this.props)
+    //console.log(`Node props for id:${this.props.index} is: `,  this.props)
+    // console.log(this.props.selectedNode)
     const indent = {
       marginLeft: `calc(38px * ${this.props.nodes[this.props.index].depth})`,
-      borderStyle: this.props.isSelected ? 'solid' : '',
-      borderWidth: '1px',
-      borderColor: 'rgba(255, 255, 255, .6)'
+      //borderStyle: this.props.isSelected ? 'solid' : '',
+      borderWidth: '2px',
+      borderColor: 'rgba(255, 255, 255, .6)',
+      background:  this.props.isSelected ? 'rgba(255, 255, 255, .5)' : ''
     }
 
     return (
@@ -74,14 +76,14 @@ class Node extends Component {
         <div style={{color: this.props.bgColor}} className="nodeContainerHeader mr-xs flexH aic jcc">
           {depthToDewey(extractDepth(this.props.nodes))[this.props.index]}
         </div>
-          <div>
-            <Field 
-              value={this.props.nodes[this.props.index].node_name}
-              placeholder = 'Type Node Name'
-              callback = {this.updateNodeName}
-              //noBorder = {this.props.isSelected ? false : true}
-            />
-          </div>
+        <div className="fone">
+          <Field 
+            value={this.props.nodes[this.props.index].node_name}
+            placeholder = 'Type Node Name'
+            callback = {this.updateNodeName}
+            //noBorder = {this.props.isSelected ? false : true}
+          />
+        </div>
         {this.props.isSelected ?
           <div className="mla">
             <Button 
@@ -120,13 +122,13 @@ class Node extends Component {
   }
 }
 function mapStateToProps(state) {
-  const { bgColor, path } = state
-	const { pid, nodes } = path
+  const { bgColor, path, selectedNode } = state
+	const { nodes } = path
 
   return {
       bgColor,
-      pid, 
-      nodes
+      nodes,
+      selectedNode
   }
 }
 

@@ -61,7 +61,7 @@ class PanelPathDetails extends Component {
 	addLearningSubdomain(e) {
 		if (e.key === 'Enter') {
 			const learningSubdomains = [...this.props.learningSubdomains]
-			learningSubdomains.push(e.target.value.toLowerCase().split(' ').map(e => e[0].toUpperCase() + e.slice(1)).join(' '))
+			learningSubdomains.push(e.target.value.toLowerCase().trim().split(' ').map(e => e[0].toUpperCase() + e.slice(1)).join(' '))
 			this.props.action_updatePathLearningSubdomains(learningSubdomains)
 			this.setState({ learningSubdomain : '' })
     }

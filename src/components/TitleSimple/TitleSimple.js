@@ -47,6 +47,12 @@ class TitleSimple extends Component {
             bgColor = {this.props.bgColor}
             textColor = 'white'
           />
+           <Button 
+            payload = "Cancel Path"
+            //callback = {this.cancelPath}
+            bgColor = {this.props.bgColor}
+            textColor = 'white'
+          />
         </div>
       </div>
     )
