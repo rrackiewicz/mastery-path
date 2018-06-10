@@ -19,64 +19,107 @@ const initialState = {
     nodes: [
       {
         nid: 0,
-        node_name: 'Root Node',
+        node_name: 'Why Learn Computer Science?',
         depth: 0,
         content: [
           {
             content_type: 'h1',
-            content: 'Node 1'
+            content: 'Why Learn Computer Science?'
           },
           {
             content_type: 'p',
-            content: 'Curabitur at justo sem. Aliquam eget neque interdum lectus ullamcorper fermentum. Ut quis nisi augue. Quisque nec fringilla ante, vel aliquet lacus. In pulvinar enim dui, sit amet scelerisque augue vehicula at. Nunc bibendum, nunc et euismod venenatis, neque felis euismod est, tempus luctus tortor augue vel magna. Sed posuere ligula a tortor tincidunt, non tempus libero fermentum.'
+            content: ''
           }
         ]
       },
       {
         nid: 1,
-        node_name: 'Tom',
-        depth: 1,
-        content: [
-          {
-            content_type: 'h1',
-            content: 'Node 2'
-          },
-          {
-            content_type: 'p',
-            content: 'Curabitur at justo sem. Aliquam eget neque interdum lectus ullamcorper fermentum. Ut quis nisi augue. Quisque nec fringilla ante, vel aliquet lacus. In pulvinar enim dui, sit amet scelerisque augue vehicula at. Nunc bibendum, nunc et euismod venenatis, neque felis euismod est, tempus luctus tortor augue vel magna. Sed posuere ligula a tortor tincidunt, non tempus libero fermentum.'
-          }
-        ]
-      },
-      {
-        nid: 2,
-        node_name: 'Dick',
-        depth: 1,
-        content: []
-      },
-      {
-        nid: 3,
-        node_name: 'Harry',
-        depth: 2,
-        content: []
-      },
-      {
-        nid: 4,
-        node_name: 'Samson',
+        node_name: 'Subject Guides',
         depth: 0,
         content: []
       },
       {
+        nid: 2,
+        node_name: 'Programming',
+        depth: 1,
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Programming'
+          },
+          {
+            content_type: 'p',
+            content: ''
+          }
+        ]
+      },
+      {
+        nid: 3,
+        node_name: 'Computer Architecture',
+        depth: 1,
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Computer Architecture'
+          },
+          {
+            content_type: 'p',
+            content: 'Computer Architecture—sometimes called “computer systems” or “computer organization”—is an important first look at computing below the surface of software. In our experience, it\’s the most neglected area among self-taught software engineers.'
+          },
+          {
+            content_type: 'p',
+            content: 'The Elements of Computing Systems, also known as “Nand2Tetris” is an ambitious book attempting to give you a cohesive understanding of how everything in a computer works. Each chapter involves building a small piece of the overall system, from writing elementary logic gates in HDL, through a CPU and assembler, all the way to an application the size of a Tetris game.'
+          }
+        ]
+      },
+      {
+        nid: 4,
+        node_name: 'Algorithms and Datastructure',
+        depth: 1,
+        content: []
+      },
+      {
         nid: 5,
-        node_name: 'Goose',
+        node_name: 'Algorithms and Datastructure',
         depth: 1,
         content: []
       },
       {
         nid: 6,
-        node_name: 'Turkey',
-        depth: 2,
+        node_name: 'Math for CS',
+        depth: 1,
         content: []
-      }
+      },
+      {
+        nid: 7,
+        node_name: 'Operating Systems',
+        depth: 1,
+        content: []
+      },
+      {
+        nid: 8,
+        node_name: 'Computer Networking',
+        depth: 1,
+        content: []
+      },
+      {
+        nid: 9,
+        node_name: 'Databases',
+        depth: 1,
+        content: []
+      },
+      {
+        nid: 10,
+        node_name: 'Languages and Compilers',
+        depth: 1,
+        content: []
+      },
+      {
+        nid: 111,
+        node_name: 'Distributed Systems',
+        depth: 1,
+        content: []
+      },
     ]
   },
   
@@ -86,7 +129,7 @@ const initialState = {
   isLoggedIn: false,
   mainWidth: 0,
   selectedNode: 0,
-  selectedContent: [0,0,0,0,0,0,0]
+  selectedContent: [0,0,0,0,0,0,0,0,0,0,0]
 }
 
 //USER CONSTANTS

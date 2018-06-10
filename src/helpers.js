@@ -13,7 +13,7 @@ const colors = [
   // 'hsl(28, 80%, 52%)' //orange
 ]
 
-function rand(min, max) {
+export function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
 

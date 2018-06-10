@@ -32,7 +32,6 @@ class PanelBuilder extends Component {
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener('keyup', this.handleResize);
 		window.removeEventListener('keyup', this.handleKeys);
 	}
 
@@ -191,6 +190,17 @@ class PanelBuilder extends Component {
 						bgColor={this.props.bgColor}
 						textColor = '#ffffff'
 					/>
+					<span className="mla">
+					<IconToggle 
+						payload = ""
+						icon = "fas fa-expand-alt"
+						//callback = {this.expandEditor}
+						bgColor = {this.props.bgColor}
+						context = 'h1'
+						textColor = '#ffffff'
+						//isToggled = {this.state.isExpanded ? true : false }
+					/>
+					</span>
 					
 				</div>
 				<div style={mainWidth} className="panelMain">

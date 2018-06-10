@@ -10,17 +10,31 @@ class TextArea extends Component {
     super()
     this.state = {
     }
+    this.autoResize = this.autoResize.bind(this)
+  }
+
+  componentDidMount(){
+    let ta = document.querySelector(".textArea")
+    ta.addEventListener('input', this.autoResize, false);
+  }
+
+  autoResize(ta){
+    console.log('Resizing: ', ta)
+    // this.style.height = 'auto';
+    // this.style.height = this.scrollHeight+'px';
+    // this.scrollTop = this.scrollHeight;
+    // window.scrollTo(window.scrollLeft,(this.scrollTop + this.scrollHeight));
   }
 
   render() {
 
     const styleArea = {
       background: this.props.bgColor,
-      rows: this.props.rows
+      height: this.props.rows + 'em'
     }
     
     return (
-        <textarea onChange = {this.props.callback} style = {styleArea} className="textArea pa-s" value={this.props.value} placeholder={this.props.placeholder} rows='4' type="text"/>
+        <textarea onChange = {this.props.callback} style = {styleArea} className="textArea pa-s" value={this.props.value} placeholder={this.props.placeholder} type="text"/>
     )
   }
 }

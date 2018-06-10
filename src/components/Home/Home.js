@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Search from '../Search/Search'
 import { connect } from 'react-redux'
+import { rand } from '../../helpers'
 
 
 import '../../spacers.css'
@@ -13,29 +14,29 @@ class Home extends Component {
     this.state = {
       windowHeight: 0,
       boxHeight: 150,
-      blurbs: ['...connects experts with learners', '...provides master-currated paths of learning']
+      blurbs: ['...connects experts with learners', '...provides master-currated paths of learning', '...learning democratized', '...manages your practice on the path to mastery']
     }
-    this.handleResize = this.handleResize.bind(this)
+    // this.handleResize = this.handleResize.bind(this)
+    // this.animationListener = this.animationListener.bind(this)
   }
 
-  componentDidMount() {
-    // window.addEventListener('resize', this.handleResize);
-    // this.setState({windowHeight : window.innerHeight})
-    // setTimeout(function(){ 
-    //   let d = document.querySelector(".animationBox");
-    //   d.classList.add("blurb");
-    //   d.onCSSAnimationEnd( () => d.classList.remove("blurb"))
+  // componentDidMount() {
+  //   window.addEventListener('resize', this.handleResize);
+  //   this.setState({windowHeight : window.innerHeight})
+  //   setTimeout(function(){ 
+  //     let d = document.querySelector(".animationBox");
+  //     d.classList.add("blurb");
+  //     d.addEventListener("animationend", this.animationListener, false);
+  //    }, 1000);
+  // }
 
-    //  }, 10000);
-  }
+  // handleResize(e) {
+  //   this.setState({windowHeight : e.target.innerHeight})
+  // }
 
-  handleResize(e) {
-    this.setState({windowHeight : e.target.innerHeight})
-  }
-
-  beginAnimation(){
-
-  }
+  // animationListener(){
+  //   this.classList.remove("blurb");
+  // } //Also want to disable this animation when search is hovered
 
   render() {
 
@@ -54,10 +55,8 @@ class Home extends Component {
         </div>
 
          {/* <div style={boxCenter} class="animationBox">
-            {this.state.blurbs[0]}
+            {this.state.blurbs[rand(0, 5)]}
          </div> */}
-
-
       </div>
     )
   }

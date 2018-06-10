@@ -9,8 +9,7 @@ const express = require('express')
   , pc = require('./controllers/path_controller')
   , uc = require('./controllers/user_controller')
   , rc = require('./controllers/resource_controller')
-  , og = require('open-graph')
-  , path= require('path') //for Browser Router only
+  // , path= require('path') //for Browser Router only
 
 const {
   SERVER_PORT,
@@ -24,7 +23,7 @@ const {
 
 const app = express();
 
-app.use( express.static( `${__dirname}/../build` ) )
+// app.use( express.static( `${__dirname}/../build` ) )
 
 app.use(bodyParser.json())
 
@@ -114,7 +113,7 @@ massive(CONNECTION_STRING).then((dbInstance) => {
 //   }
 // })
 
-app.get('/api/resource/:url', rc.getUrlData)
+app.get('/api/resource/:url', pc.getUrlData)
 app.get('/api/search/:searchid', sc.getResults)
 app.get('/api/paths/:pid', pc.getPath)
 app.post('/api/paths', pc.createPath)
@@ -124,10 +123,9 @@ app.post('/api/auth', uc.authorizeUser)
 app.get('/api/masterpaths/:uid', pc.getMasterPaths)
 app.get('/api/apprenticepaths/:uid', pc.getApprenticePaths)
 
-
-app.get('*', (req, res)=>{
-  res.sendFile(path.join(__dirname, '../build/index.html'));
-}); //only using this with BrowserRouter
+// app.get('*', (req, res)=>{
+//   res.sendFile(path.join(__dirname, '../build/index.html'));
+// }); //only using this with BrowserRouter
 
 app.listen(SERVER_PORT, () => {
   console.log(`Listening on port: ${SERVER_PORT}`)

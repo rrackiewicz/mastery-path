@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Field from '../Field/Field'
 import TextArea from '../TextArea/TextArea'
 import Button from '../Button/Button'
+import Preview from '../Preview/Preview'
 import { action_updateSelectedContent, action_updateContentContent, action_delete_content } from '../../ducks/reducer'
 
 import '../../spacers.css'
@@ -13,7 +14,7 @@ class Content extends Component {
   constructor(){
     super()
     this.state = {
-
+      isPasted: false,
     }
     this.deleteContent = this.deleteContent.bind(this)
     this.updateContent = this.updateContent.bind(this)
@@ -36,8 +37,7 @@ class Content extends Component {
     switch (context) {
       case 'h1':
       case 'h3':
-      case 'a' :
-      case 'img':
+      case 'caption':
         return (   
           <Field 
             value={this.props.nodes[this.props.selectedNode].content[this.props.index].content}
@@ -52,8 +52,37 @@ class Content extends Component {
           value={this.props.nodes[this.props.selectedNode].content[this.props.index].content}
           placeholder = 'Paragraph text is the mortar that binds your content together. Dont plagarize.'
           callback = {this.updateContent}
-          rows = {4}
+          rows = {12}
         />
+        )
+      case 'img':
+        return ( 
+          <div> 
+            <Field 
+              value={this.props.nodes[this.props.selectedNode].content[this.props.index].content}
+              placeholder = 'Enter Content Here'
+              callback = {this.updateContent}
+              //noBorder = {this.props.isSelected ? false : true}
+            />
+            <div style={{backgroundImage: `url(${this.props.nodes[this.props.selectedNode].content[this.props.index].content})`}} className="aContainer mt-s mb-s"></div>
+          </div> 
+        )
+      case 'a':
+        return (  
+          <div>
+          <Field 
+            value={this.props.nodes[this.props.selectedNode].content[this.props.index].content}
+            placeholder = 'Enter Content Here'
+            //enterCallback = {this.isPasted}
+            callback = {this.updateContent}
+            //noBorder = {this.props.isSelected ? false : true}
+          />
+          {/*FIXME: This is a KLUDGE */}
+          {this.props.nodes[this.props.selectedNode].content[this.props.index].content.length > 0 ?
+          <Preview/>
+          : null
+          }
+          </div> 
         )
       case 'blockquote':
         return (
@@ -94,6 +123,10 @@ class Content extends Component {
       return (
         <span className="fas fa-link"></span>
       )
+      case 'caption':
+      return (
+        <span className="fas fa-closed-captioning"></span>
+      )
       case 'blockquote':
         return (
           <span className="fas fa-quote-left"></span>
@@ -116,7 +149,7 @@ class Content extends Component {
       //borderStyle: this.props.isSelected ? 'solid' : '',
       borderWidth: '1px',
       borderColor: 'rgba(255, 255, 255, .6)',
-      background:  this.props.isSelected ? 'rgba(255, 255, 255, .5)' : ''
+      background:  this.props.isSelected ? 'rgba(255, 255, 255, .4)' : ''
     }
 
     return (

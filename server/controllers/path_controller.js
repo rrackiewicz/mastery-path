@@ -1,4 +1,5 @@
 const { convertPath } = require('./utils')
+const og = require('open-graph')
 
 module.exports = {
 
@@ -99,5 +100,14 @@ module.exports = {
     .catch((err) => {
       console.log(err);
       res.status(500).send()})
+  },
+
+  getUrlData(req, res) {
+    const { url } = req.params
+    og(url, function(err, meta){
+      console.log(url, meta)
+      res.status(200).send(meta)
+    })
   }
 }
+

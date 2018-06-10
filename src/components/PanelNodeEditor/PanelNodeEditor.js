@@ -12,7 +12,7 @@ class PanelNodeEditor extends Component {
 	constructor() {
     super()
     this.state = {
-			iconArray: ['h1', 'h3', 'p', 'img', 'a', 'blockquote', 'ul', 'ol'],
+			iconArray: ['h1', 'h3', 'p', 'img', 'caption', 'a', 'blockquote', 'ul', 'ol'],
 			selectedIcon: 'h1',
 			isPreview: false
 		}
@@ -53,7 +53,7 @@ class PanelNodeEditor extends Component {
 
 	render(){
 
-		console.log(`Selected Node tree for node ${this.props.selectedNode}: ${this.props.selectedContent}`)
+		//console.log(`Selected Node tree for node ${this.props.selectedNode}: ${this.props.selectedContent}`)
 		const mainWidth = {
 			width : this.props.mainWidth,
 		}
@@ -141,6 +141,15 @@ class PanelNodeEditor extends Component {
 					/>
 					<IconToggle 
 						payload = ""
+						icon = "fas fa-closed-captioning"
+						callback = {this.updateSelectedIcon}
+						context = 'caption'
+						bgColor={this.props.bgColor}
+						textColor = '#ffffff'
+						isToggled = {this.state.selectedIcon === 'caption' ? true : false }
+					/>
+					<IconToggle 
+						payload = ""
 						icon = "fas fa-link"
 						callback = {this.updateSelectedIcon}
 						context = 'a'
@@ -198,11 +207,19 @@ class PanelNodeEditor extends Component {
 						textColor = '#ffffff'
 					/>
 
-					<div style={{color: this.props.bgColor}} className="ml-s pa-xs toolDivider">
-						<span>|</span>
-					</div>
+						<span className="mla">
+						<IconToggle 
+							payload = ""
+							icon = "fas fa-expand-alt"
+							//callback = {this.expandEditor}
+							bgColor = {this.props.bgColor}
+							context = 'h1'
+							textColor = '#ffffff'
+							//isToggled = {this.state.isExpanded ? true : false }
+						/>
+					</span>
 
-					<span className="mla">
+					<span className="">
 						<IconToggle 
 							payload = ""
 							icon = "fas fa-eye"
@@ -210,7 +227,7 @@ class PanelNodeEditor extends Component {
 							bgColor = {this.props.bgColor}
 							context = 'h1'
 							textColor = '#ffffff'
-							isToggled = {this.state.isPreview ? true : false }
+							//isToggled = {this.state.isPreview ? true : false }
 						/>
 					</span>
 			

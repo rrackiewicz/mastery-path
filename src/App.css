@@ -313,6 +313,9 @@ textArea {
   height: 34px;
 }
 
+a:visited, a:active, a:link {
+  color:rgba(0,0,238, .5)
+}
 
 
 
