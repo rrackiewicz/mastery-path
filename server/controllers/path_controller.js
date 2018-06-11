@@ -30,9 +30,9 @@ module.exports = {
   uploadPath: (req, res) => {
     const dbInstance = req.app.get('db')
     const { pid } = req.params
-    const { path_name, abstract, img, learningDomain, learningSubdomains, hrs, rating, nodes } = req.body
+    const { path_name, abstract, img, pub, learningDomain, learningSubdomains, hrs, rating, nodes } = req.body
     
-    dbInstance.upload_path([pid, path_name, abstract, img, hrs, rating])
+    dbInstance.upload_path([pid, path_name, abstract, img, hrs, rating, pub])
     .then(() => {
       res.status(200).send()
     })
@@ -88,7 +88,7 @@ module.exports = {
     .catch(() => res.status(500).send())
   },
 
-  //TODO: GET with searchid on params
+  //TODO: GET specific path
   getPath: (req, res) => {
     const dbInstance = req.app.get('db')
     const { pid } = req.params

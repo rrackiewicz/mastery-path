@@ -52,7 +52,7 @@ class Content extends Component {
           value={this.props.nodes[this.props.selectedNode].content[this.props.index].content}
           placeholder = 'Paragraph text is the mortar that binds your content together. Dont plagarize.'
           callback = {this.updateContent}
-          rows = {12}
+          rows = {6}
         />
         )
       case 'img':

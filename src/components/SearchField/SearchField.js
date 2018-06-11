@@ -10,7 +10,7 @@ class SearchField extends Component {
   constructor() {
     super()
     this.state = {
-      searchValue: 'Javascript',
+      searchValue: '',
     }
 
     this.updateInput = this.updateInput.bind(this)
@@ -29,7 +29,7 @@ class SearchField extends Component {
 
   render() {
     return (
-        <input onKeyDown={this.submitForm} onChange={this.updateInput} className= "ml-s mr-l" value={this.state.searchValue} style={{background: this.props.bgColor}} placeholder="Skill Name" type="text"/>
+        <input onKeyDown={this.state.searchValue.length > 0 ? this.submitForm : null} onChange={this.updateInput} className= "ml-s mr-l" value={this.state.searchValue} style={{background: this.props.bgColor}} placeholder="Skill Name" type="text"/>
     );
   }
 }

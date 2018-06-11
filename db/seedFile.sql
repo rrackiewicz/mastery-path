@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     uid serial PRIMARY KEY,
     username VARCHAR(40) NOT NULL,
-    email VARCHAR(40) NOT NULL UNIQUE,
+    email VARCHAR(40) NOT NULL,
     auth_id TEXT
 );
 
@@ -30,7 +30,7 @@ CREATE TABLE apprentices (
 
 CREATE TABLE paths (
     pid SERIAL PRIMARY KEY,
-    path_name VARCHAR(100) UNIQUE,
+    path_name VARCHAR(100),
     pub BOOLEAN,
     img VARCHAR(200),
     rating NUMERIC(2, 1),
@@ -40,7 +40,7 @@ CREATE TABLE paths (
 
 CREATE TABLE skills (
     skid SERIAL PRIMARY KEY,
-    skill_name VARCHAR(40) UNIQUE
+    skill_name VARCHAR(40)
 );
 
 
@@ -120,13 +120,13 @@ INSERT INTO paths
 VALUES
     ('Mastering Javascript from First Principles', false, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ut tincidunt magna. Nulla vel ultrices dolor, ut volutpat arcu. In suscipit nisl quis sodales semper. Donec commodo ultrices sapien, quis ullamcorper sem vulputate sed.', 'https://blog.alexdevero.com/wp-content/uploads/2015/07/3260095534_170b48ca3b_o.jpg', 4.3, 270),
     
-    ('ABCs of Javascript', true, 'Duis vestibulum felis non pellentesque pharetra. Prasen sed aliquet ipsum. Vivamus eleifend sit amet diam et imperdiet. Vivamus faucibus eu nulla sed consequat. Praesent vel malesuada libero. Vestibulum placerat, lorem ut lobortis consequat, sapien orci commodo odio, eu faucibus nisi ante ut ipsum.', 'https://images2.alphacoders.com/778/778628.png', 4.7, 650),
+    ('Computer Science for the Real World', true, 'Duis vestibulum felis non pellentesque pharetra. Prasen sed aliquet ipsum. Vivamus eleifend sit amet diam et imperdiet. Vivamus faucibus eu nulla sed consequat. Praesent vel malesuada libero. Vestibulum placerat, lorem ut lobortis consequat, sapien orci commodo odio, eu faucibus nisi ante ut ipsum.', 'https://cdn.techgyd.com/2015/02/programmer.jpg', 4.7, 650),
     
-    ('Javascript, The Penultimate Guide', true, 'Cras nibh ipsum, fermentum id ex sit amet, tempus rutrum augue. Quisque ullamcorper enim sapien, vitae cursus risus venenatis sit amet. Fusce volutpat, lacus sed feugiat vehicula, quam augue finibus justo, ac dapibus tortor eros sit amet lacus.', 'https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fblog.flatironschool.com%2Fwp-content%2Fuploads%2F2013%2F11%2FRuby-and-JavaScript.jpg&f=1', 4.2, 1019),
+    ('Computer Science Crash Course', true, 'Cras nibh ipsum, fermentum id ex sit amet, tempus rutrum augue. Quisque ullamcorper enim sapien, vitae cursus risus venenatis sit amet. Fusce volutpat, lacus sed feugiat vehicula, quam augue finibus justo, ac dapibus tortor eros sit amet lacus.', 'https://images.duckduckgo.com/iu/?u=http%3A%2F%2Frobohub.org%2Fwp-content%2Fuploads%2F2017%2F04%2Fcrash-course-computer-science.jpg&f=1', 4.2, 1019),
     
-    ('You Don''t Know Javascript', true, 'Quisque quis suscipit lectus. Mauris a orci sapien. Fusce aliquet gravida libero et rhoncus. Sed posuere libero eget quam volutpat fermentum. Vestibulum condimentum magna at tortor tristique convallis. In vestibulum dictum rhoncus. ', 'https://images.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn-images-1.medium.com%2Fmax%2F1200%2F1*bcZz-qb_DNpvrNNwQBhQmQ.jpeg&f=1', 4.8, 720),
+    ('Girls Rock Computer Science', true, 'Quisque quis suscipit lectus. Mauris a orci sapien. Fusce aliquet gravida libero et rhoncus. Sed posuere libero eget quam volutpat fermentum. Vestibulum condimentum magna at tortor tristique convallis. In vestibulum dictum rhoncus. ', 'https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fi.huffpost.com%2Fgen%2F1378599%2Fimages%2Fo-COMPUTER-SCIENCE-facebook.jpg&f=1', 4.8, 720),
     
-    ('Flexbox for Dummies', true, 'Fusce vulputate bibendum eros, vitae tempor nunc sodales et. Aenean iaculis, est ac iaculis egestas, magna ex tincidunt mi, ac molestie mi orci vitae nibh. Ut egestas eget purus ac condimentum', 'http://blogs.quovantis.com/wp-content/uploads/2017/06/Understanding-Flexbox_Cover-1.png', 4.1, 1131),
+    ('Flexbox for Mere Mortals', true, 'Fusce vulputate bibendum eros, vitae tempor nunc sodales et. Aenean iaculis, est ac iaculis egestas, magna ex tincidunt mi, ac molestie mi orci vitae nibh. Ut egestas eget purus ac condimentum', 'https://images.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.silocreativo.com%2Fen%2Fwp-content%2Fuploads%2F2017%2F04%2Fflexbox-cssgrid-practical-example.png&f=1', 4.1, 1131),
     
     ('CSS the Way Your Grandma Used to Make It', true, 'Aenean nec mi ipsum. Proin ac elit volutpat, finibus orci ut, condimentum magna. Quisque porta magna ut interdum pretium. Aliquam luctus, arcu at pellentesque tempor, arcu mauris cursus ante, id posuere quam erat vitae nunc.', 'https://www.intechnic.com/hubfs/Blog/Featured%20Images/30%20Creative%20Website%20Examples%20of%20CSS%20Animation.jpg?t=1513302636369', 4.8, 345),
     
@@ -135,7 +135,7 @@ VALUES
 INSERT INTO skills
     (skill_name)
 VALUES
-    ('Programming Languages'),
+    ('Computer Science'),
     ('Databases'),
     ('Web Development'),
     ('Web Design');

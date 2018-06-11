@@ -5,7 +5,7 @@ import Card from '../Card/Card'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { withRouter } from 'react-router'
-import { action_updatePath } from '../../ducks/reducer'
+import { action_updatePath, action_updateIsBuilding } from '../../ducks/reducer'
 
 import '../../spacers.css'
 import './Paths.css'
@@ -20,6 +20,7 @@ class Paths extends Component {
     }
     this.loadResults = this.loadResults.bind(this)
     this.loadPath = this.loadPath.bind(this)
+    this.publishPath = this.publishPath.bind(this)
   }
 
   componentDidMount(){
@@ -53,10 +54,14 @@ class Paths extends Component {
       const path = res.data;
       this.props.action_updatePath(path)
       this.props.history.push(`/path/${pid}`)
+      this.props.action_updateIsBuilding()
     }).catch( err => {
       alert("Problem loading search results.")
     })
+  }
 
+  publishPath(){
+    //This will have to be wired up differently
   }
 
   render() {
@@ -74,6 +79,8 @@ class Paths extends Component {
           hours = {e.hrs}
           rating = {e.rating}
           callback = {this.loadPath}
+          badge = {e.pub ? 'Unpublish' : 'Publish'}
+          badgeCallback = {this.publishPath}
         />       
       )
     })
@@ -111,7 +118,8 @@ function mapStateToProps(state) {
 }
 
 const actions = {
-  action_updatePath
+  action_updatePath,
+  action_updateIsBuilding
 }
 
 export default connect(mapStateToProps, actions)(withRouter(Paths))

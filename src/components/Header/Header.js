@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-// import ButtonGroup from '../ButtonGroup/ButtonGroup'
 import Logo from '../Logo/Logo'
-// import SearchField from '../SearchField/SearchField'
-// import Nav from '../Nav/Nav'
+import ButtonGroup from '../ButtonGroup/ButtonGroup'
+import SearchField from '../SearchField/SearchField'
+import Nav from '../Nav/Nav'
 import { connect } from 'react-redux'
 import { action_updateUserContext } from '../../ducks/reducer'
 import { withRouter } from 'react-router'
@@ -16,23 +16,29 @@ class Header extends Component {
     super()
     this.state = {
     }
+    this.toggleContext = this.toggleContext.bind(this)
+  }
 
+  toggleContext(){
+    
   }
 
   render() {
     return (
       <div className="headerContainer pl-xl pr-xl">
-        <div className="flexH aic wrap">
+        {!this.props.isBuilding ? 
+        <div className="flexH aic">
           <div>
             <Logo />
           </div>
-          {/* <div className="ml-l">
+          <div className="ml-s">
             <ButtonGroup 
               payload = 'Apprentice'
               callback = {this.toggleContext}
               context = {this.props.userContext}
               textColor = '#ffffff'
               bgColor = {this.props.bgColor}
+              isSelected = {this.props.userContext === 'apprentice' ? true : false}
               type = 'apprentice'
             /> 
             <ButtonGroup 
@@ -41,13 +47,19 @@ class Header extends Component {
               context = {this.props.userContext}
               textColor = '#ffffff'
               bgcolor = {this.props.bgColor}
+              isSelected = {this.props.userContext === 'master' ? true : false}
               type = 'master'
             /> 
           </div>
           <div className="mla">
             <Nav />
-          </div> */}
-        </div>        
+          </div>
+        </div>  
+        : 
+        <div>
+          <Logo />
+        </div>
+        }      
       </div>
     )
 
@@ -55,10 +67,11 @@ class Header extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor, userContext} = state 
+  const { bgColor, userContext, isBuilding} = state 
   return {
       bgColor,
-      userContext
+      userContext,
+      isBuilding
   }
 }
 

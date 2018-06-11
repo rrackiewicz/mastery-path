@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Button from '../Button/Button'
 import axios from 'axios'
+import { action_updateIsBuilding } from '../../ducks/reducer'
 import { withRouter } from 'react-router'
 
 import '../../spacers.css'
@@ -22,6 +23,7 @@ class TitleSimple extends Component {
     const path = this.props.path
 		axios.post(`/api/paths/${this.props.pid}`, path).then( res => {
       this.props.history.push(`/paths`)
+      this.props.action_updateIsBuilding()
     }).catch(err => {
       alert('Problem submitting path.')
     })
@@ -41,13 +43,13 @@ class TitleSimple extends Component {
             bgColor = '#FFD002'
             textColor = '#363636'
           />
-          <Button 
+          {/* <Button 
             payload = "Reset Path"
             callback = {this.resetPath}
             bgColor = {this.props.bgColor}
             textColor = 'white'
-          />
-           <Button 
+          /> */}
+          <Button 
             payload = "Cancel Path"
             //callback = {this.cancelPath}
             bgColor = {this.props.bgColor}
@@ -69,5 +71,9 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(withRouter(TitleSimple))
+const actions = {
+  action_updateIsBuilding
+}
+
+export default connect(mapStateToProps, actions)(withRouter(TitleSimple))
 

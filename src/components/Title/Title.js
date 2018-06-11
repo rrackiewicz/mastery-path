@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Button from '../Button/Button'
 import Dropdown from '../Dropdown/Dropdown'
 import axios from 'axios'
-import { action_updatePathId } from '../../ducks/reducer'
+import { action_updatePathId, action_updateIsBuilding } from '../../ducks/reducer'
 import { withRouter } from 'react-router'
 
 import '../../spacers.css'
@@ -27,6 +27,7 @@ class Title extends Component {
       const { pid } = res.data;
       this.props.action_updatePathId(pid)
       this.props.history.push('/auth')
+      this.props.action_updateIsBuilding()
     }).catch( err => {
       alert("Failed to create path")
     })
@@ -94,7 +95,8 @@ function mapStateToProps(state) {
 }
 
 let actions = {
-  action_updatePathId
+  action_updatePathId,
+  action_updateIsBuilding
 }
 
 export default connect(mapStateToProps, actions)(withRouter(Title))

@@ -2,8 +2,8 @@ module.exports = {
   convertPath: arr => {
     //console.log(arr)
     //return arr
-    const { img, hrs, rating, path_name, abstract, pid } = arr[0]
-    const path = { img, hrs, rating, path_name, abstract, pid, nodes: [], learningDomain: '', learningSubdomains:[] }
+    const { img, hrs, rating, path_name, abstract, pub, pid } = arr[0]
+    const path = { img, hrs, rating, path_name, abstract, pub, pid, nodes: [], learningDomain: '', learningSubdomains:[] }
     arr.forEach((cv) => {
       let node = path.nodes.find(node => node.nid === cv.nid)
       if (!node) {

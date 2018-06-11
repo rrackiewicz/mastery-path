@@ -51,7 +51,7 @@ class Card extends Component {
       <div onClick={this.packagePath} onMouseEnter={this.toggleFollow} onMouseLeave={this.toggleFollow} className="card flexV jcc" style={{'background' : this.props.bgColor}}>
         <div className="cardTitle" style={titleImage}>
           {this.state.isHovered ? 
-            <button className="followButton mt-xs ml-xs">Follow Path</button>
+            <button className="followButton mt-xs ml-xs">{this.props.badge}</button>
           :
             null
           }

@@ -44,10 +44,13 @@ class Results extends Component {
           author = {e.username}
           pathName = {e.path_name}
           abstract = {e.abstract.slice(0, 160)}
+          // callback = {this.displayPathDetails} //Not implemented
           tld = {e.skill_name}
           pid = {e.pid}
           hours = {e.hrs}
           rating = {e.rating}
+          badge = {'Follow Path'}
+          badgeCallback = {this.subscribe}
         />       
       )
     })

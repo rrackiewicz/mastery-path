@@ -27,7 +27,7 @@ class PanelNodeEditor extends Component {
 		this.props.action_add_content(this.state.selectedIcon)
 		//need to splice the selectedContent array in the same place
 		this.props.action_updateSelectedContent(this.props.selectedContentAtSelectedNode + 1)
-		this.jumpTo("bottom")
+		if (this.props.selectedContentAtSelectedNode >= this.props.nodes[this.props.selectedNode].content.length) { this.jumpTo("bottom") }
 	}
 
 	updateSelectedIcon(context){
@@ -207,7 +207,7 @@ class PanelNodeEditor extends Component {
 						textColor = '#ffffff'
 					/>
 
-						<span className="mla">
+					<span className="mla">
 						<IconToggle 
 							payload = ""
 							icon = "fas fa-expand-alt"

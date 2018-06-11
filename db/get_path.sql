@@ -1,4 +1,4 @@
-SELECT img, hrs, rating, path_name, abstract, paths.pid, skill_name, is_tld, nodes.nid, nodes.ord AS node_ord, node_name, depth, content_type, content, content.ord AS content_ord
+SELECT img, hrs, rating, path_name, abstract, paths.pid, pub, skill_name, is_tld, nodes.nid, nodes.ord AS node_ord, node_name, depth, content_type, content, content.ord AS content_ord
 FROM users
     JOIN masters
         ON users.uid = masters.uid

@@ -9,13 +9,14 @@ const initialState = {
 
   path: {
     pid: 0,
-    path_name: 'New Path',
+    pub: false,
+    path_name: '',
     abstract: '',
     img: 'https://images.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.apexcartage.com%2Fwp-content%2Fuploads%2Frevslider%2Frev_slider_example%2Fplaceholder-red.png&f=1', 
     learningDomain: '',
     learningSubdomains: [],
-    hrs: 100,
-    rating: 5.0,
+    hrs: 1800,
+    rating: 0.0,
     nodes: [
       {
         nid: 0,
@@ -36,7 +37,16 @@ const initialState = {
         nid: 1,
         node_name: 'Subject Guides',
         depth: 0,
-        content: []
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Subject Guides'
+          },
+          {
+            content_type: 'p',
+            content: ''
+          }
+        ]
       },
       {
         nid: 2,
@@ -64,66 +74,135 @@ const initialState = {
           },
           {
             content_type: 'p',
-            content: 'Computer Architecture—sometimes called “computer systems” or “computer organization”—is an important first look at computing below the surface of software. In our experience, it\’s the most neglected area among self-taught software engineers.'
-          },
-          {
-            content_type: 'p',
-            content: 'The Elements of Computing Systems, also known as “Nand2Tetris” is an ambitious book attempting to give you a cohesive understanding of how everything in a computer works. Each chapter involves building a small piece of the overall system, from writing elementary logic gates in HDL, through a CPU and assembler, all the way to an application the size of a Tetris game.'
+            content: ''
           }
         ]
       },
       {
         nid: 4,
-        node_name: 'Algorithms and Datastructure',
+        node_name: 'Algorithms and Data Structures',
         depth: 1,
-        content: []
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Algorithms and Data Structures'
+          },
+          {
+            content_type: 'p',
+            content: ''
+          }
+        ]
       },
       {
         nid: 5,
-        node_name: 'Algorithms and Datastructure',
+        node_name: 'Algorithms and Data Structures',
         depth: 1,
-        content: []
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Algorithms and Data Structures'
+          },
+          {
+            content_type: 'p',
+            content: ''
+          }
+        ]
       },
       {
         nid: 6,
         node_name: 'Math for CS',
         depth: 1,
-        content: []
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Math for CS'
+          },
+          {
+            content_type: 'p',
+            content: ''
+          }
+        ]
       },
       {
         nid: 7,
         node_name: 'Operating Systems',
         depth: 1,
-        content: []
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Operating Systems'
+          },
+          {
+            content_type: 'p',
+            content: ''
+          }
+        ]
       },
       {
         nid: 8,
         node_name: 'Computer Networking',
         depth: 1,
-        content: []
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Computer Networking'
+          },
+          {
+            content_type: 'p',
+            content: ''
+          }
+        ]
       },
       {
         nid: 9,
         node_name: 'Databases',
         depth: 1,
-        content: []
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Databases'
+          },
+          {
+            content_type: 'p',
+            content: ''
+          }
+        ]
       },
       {
         nid: 10,
         node_name: 'Languages and Compilers',
         depth: 1,
-        content: []
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Languages and Compilers'
+          },
+          {
+            content_type: 'p',
+            content: ''
+          }
+        ]
       },
       {
-        nid: 111,
+        nid: 11,
         node_name: 'Distributed Systems',
         depth: 1,
-        content: []
+        content: [
+          {
+            content_type: 'h1',
+            content: 'Distributed Systems'
+          },
+          {
+            content_type: 'p',
+            content: ''
+          }
+        ]
       },
     ]
   },
   
   bgColor: '',
+  isBuilding: false,
   userContext: 'master',
   pathContext: 'path',
   isLoggedIn: false,
@@ -165,6 +244,7 @@ const UPDATE_PATHCONTEXT = "UPDATE_PATHCONTEXT"
 const UPDATE_LOGGEDIN = "UPDATE_LOGGEDIN"
 const UPDATE_MAINWIDTH = "UPDATE_MAINWIDTH"
 const UPDATE_SELECTEDNODE = "UPDATE_SELECTEDNODE"
+const UPDATE_ISBUILDING = "UPDATE_ISBUILDING"
 
 function reducer( state = initialState, action ){ 
   switch( action.type ){
@@ -422,6 +502,9 @@ function reducer( state = initialState, action ){
 
     case UPDATE_SELECTEDNODE:
     return Object.assign({}, state, { selectedNode : action.payload })
+  
+    case UPDATE_ISBUILDING:
+    return Object.assign({}, state, { isBuilding : !state.isBuilding })
 
     default: 
     return state
@@ -614,6 +697,12 @@ export function action_updateSelectedNode(node){
   return {
     type: UPDATE_SELECTEDNODE,
     payload: node
+  }
+}
+
+export function action_updateIsBuilding(){
+  return {
+    type: UPDATE_ISBUILDING
   }
 }
 
