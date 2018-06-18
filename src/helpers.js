@@ -86,16 +86,16 @@ export function nextSibling(a, targetNode){
 export function nearestParent(a, targetNode){
   const depthAtIndex = a[targetNode]
   for (let i=targetNode; i>=0; i--) {
-    if (a[i] <= depthAtIndex && i !== targetNode) {
+    if (a[i] < depthAtIndex && i !== targetNode) {
       return i
     }
   }
-  return targetNode
+  return targetNode //return self
 }
 
 export function rootParent(a, targetNode){
   for (let i=targetNode; i>=0; i--) {
-    if (a[i] === 0 && i !== targetNode) {
+    if (a[i] === 0) {
       return i
     }
   }

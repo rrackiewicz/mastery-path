@@ -122,6 +122,8 @@ app.post('/api/paths/:pid', pc.uploadPath)
 app.post('/api/auth', uc.authorizeUser)
 app.get('/api/masterpaths/:uid', pc.getMasterPaths)
 app.get('/api/apprenticepaths/:uid', pc.getApprenticePaths)
+// app.delete('/api/paths/:uid', pc.deletePath)
+// app.put('/api/paths/:uid', pc.updatePath)
 
 // app.get('*', (req, res)=>{
 //   res.sendFile(path.join(__dirname, '../build/index.html'));

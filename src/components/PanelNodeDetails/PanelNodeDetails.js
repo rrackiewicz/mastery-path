@@ -30,24 +30,39 @@ class PanelNodeDetails extends Component {
 	getNearestParent(){
 		const parentReturned = nearestParent(extractDepth(this.props.nodes), this.props.selectedNode)
 		const dotNotationReturned = this.generateDotNotation(parentReturned)
-		if (this.state.dotNotationToNearestParent !== dotNotationReturned) {this.setState({dotNotationToNearestParent: dotNotationReturned})}
+		if (this.state.dotNotationToNearestParent !== dotNotationReturned) 			{this.setState({dotNotationToNearestParent: dotNotationReturned})}
 		if (this.state.nearestParent !== parentReturned) {this.setState({ nearestParent: parentReturned })}
 		return parentReturned
 	}
 
 	getRootParent(){
 		const parentReturned = rootParent(extractDepth(this.props.nodes), this.props.selectedNode)
-		const dotNotationReturned = this.generateDotNotation(this.props.selectedNode)
+		const dotNotationReturned = this.generateDotNotation(parentReturned)
 		if (this.state.dotNotationToRootParent !== dotNotationReturned) {this.setState({dotNotationToRootParent: dotNotationReturned})}
 		if (this.state.rootParent !== parentReturned) {this.setState({ rootParent: parentReturned })}
 		return parentReturned
 	}
 
+	//for nearest parent, i should be its index
+	//for root parent, i should be its index
+	//for the selected node, i should be its index (not implemented)
 	generateDotNotation(i){
+		console.log("Selected Node: ", i)
 		const rootIndex = rootParent(extractDepth(this.props.nodes), i)
+		console.log("root index: ", rootIndex)
 		const deweyGraph = depthToDewey(extractDepth(this.props.nodes))
+		console.log("dewey graph: ", deweyGraph)
 		const newGraph = deweyGraph.slice(rootIndex, i + 1)
-		const dotGraph = newGraph.reduce((a,e)=> a + '.' + e) 
+		console.log("sliced graph: ", newGraph)
+		const dotGraph = ''//remove
+		// const dotGraph = newGraph.reduce((a,e,i)=> {
+		// 	//this part need to be re-evaluated in order to jump over
+		// 	return a
+		// , ''}) 
+		//this is broken
+		//root parent is returning wrong value
+		//only add if the previous node value is differen
+		console.log("dot notation from root to index: ", dotGraph)
 		return dotGraph
 	}
 

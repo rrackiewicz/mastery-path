@@ -111,3 +111,28 @@ module.exports = {
   }
 }
 
+// //TODO: delete
+// deletePath: (req, res) => {
+//   const dbInstance = req.app.get('db')
+//   const { pid } = req.params
+//   dbInstance.delete_path([ pid ])
+//   .then((results) => {
+//     res.status(200).send(results)
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//     res.status(500).send()})
+// }
+
+// //TODO: delete
+// updatePath: (req, res) => {
+//   const dbInstance = req.app.get('db')
+//   const { pid } = req.params
+//   const { path_name, abstract, img, pub, hrs, rating} = req.body
+  
+//   dbInstance.update_path([pid, path_name, abstract, img, hrs, rating, pub])
+//   .then(() => {
+//     res.status(200).send()
+//   })
+//   .catch(() => res.status(500).send())
+// }

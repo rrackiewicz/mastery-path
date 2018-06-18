@@ -14,12 +14,13 @@ class Content extends Component {
   constructor(){
     super()
     this.state = {
-      isPasted: false,
+      isPasted: false
     }
     this.deleteContent = this.deleteContent.bind(this)
     this.updateContent = this.updateContent.bind(this)
     this.renderIcon = this.renderIcon.bind(this)
     this.renderContentType = this.renderContentType.bind(this)
+    this.pause = this.pause.bind(this)
   }
 
   deleteContent(){
@@ -29,6 +30,12 @@ class Content extends Component {
   updateContent(e) {
     //console.log("content: ", e.target.value)
     this.props.action_updateContentContent(e.target.value)
+  }
+
+  pause(e) {
+    if (e.key === 'Enter') {
+      setTimeout(() => this.setState({ isPasted: true }) , 1000);
+    }
   }
 
   renderContentType(){
@@ -64,7 +71,9 @@ class Content extends Component {
               callback = {this.updateContent}
               //noBorder = {this.props.isSelected ? false : true}
             />
+ 
             <div style={{backgroundImage: `url(${this.props.nodes[this.props.selectedNode].content[this.props.index].content})`}} className="aContainer mt-s mb-s"></div>
+  
           </div> 
         )
       case 'a':
@@ -73,12 +82,11 @@ class Content extends Component {
           <Field 
             value={this.props.nodes[this.props.selectedNode].content[this.props.index].content}
             placeholder = 'Enter Content Here'
-            //enterCallback = {this.isPasted}
+            enterCallback = {this.pause}
             callback = {this.updateContent}
             //noBorder = {this.props.isSelected ? false : true}
           />
-          {/*FIXME: This is a KLUDGE */}
-          {this.props.nodes[this.props.selectedNode].content[this.props.index].content.length > 0 ?
+          {this.state.isPasted ?
           <Preview/>
           : null
           }

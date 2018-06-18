@@ -23,11 +23,9 @@ class PanelNodeEditor extends Component {
 
 	//button will try to pass context back as val even though unused
 	addContent(val){
-		//FIXME: Insert 0 into the appropriate position in selectedContent
 		this.props.action_add_content(this.state.selectedIcon)
-		//need to splice the selectedContent array in the same place
 		this.props.action_updateSelectedContent(this.props.selectedContentAtSelectedNode + 1)
-		if (this.props.selectedContentAtSelectedNode >= this.props.nodes[this.props.selectedNode].content.length) { this.jumpTo("bottom") }
+		if (this.props.selectedContentAtSelectedNode === this.props.nodes[this.props.selectedNode].content.length - 1) { this.jumpTo("bottom") }
 	}
 
 	updateSelectedIcon(context){
