@@ -4,7 +4,8 @@ module.exports = {
     //return arr
     const { img, hrs, rating, path_name, abstract, pub, pid } = arr[0]
     const path = { img, hrs, rating, path_name, abstract, pub, pid, nodes: [], learningDomain: '', learningSubdomains:[] }
-    arr.forEach((cv) => {
+    
+    arr.forEach(cv => {
       let node = path.nodes.find(node => node.nid === cv.nid)
       if (!node) {
         node = { nid: cv.nid, node_name: cv.node_name, ord: cv.node_ord, depth: cv.depth, content: [] }

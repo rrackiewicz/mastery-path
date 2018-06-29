@@ -1,10 +1,11 @@
 const initialState = {
   //feel like it would be easier to keep my user info in an object
   user: {
+    first_name: '',
+    last_name: '',
     username: '',
-    uid: 0,
     email: '',
-    img: 'https://images.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.pixabay.com%2Fphoto%2F2016%2F08%2F08%2F09%2F17%2Favatar-1577909_640.png&f=1' 
+    admin: false
   },
 
   path: {
@@ -203,9 +204,14 @@ const initialState = {
   
   bgColor: '',
   isBuilding: false,
+  usernameIsAvailable: false,
+  emailIsAvailable: false,
+  emailIsValid: false,
+  passwordIsValid: false,
   userContext: 'master',
   pathContext: 'path',
   isLoggedIn: false,
+  isSignedUp: false,
   mainWidth: 0,
   selectedNode: 0,
   selectedContent: [0,0,0,0,0,0,0,0,0,0,0]
@@ -213,7 +219,12 @@ const initialState = {
 
 //USER CONSTANTS
 const UPDATE_USEREMAIL = "UPDATE_USEREMAIL"
-const UPDATE_USERUID = "UPDATE_USERUID"
+//const UPDATE_USERUID = "UPDATE_USERUID"
+const UPDATE_USERFIRSTNAME = "UPDATE_USERFIRSTNAME"
+const UPDATE_USERLASTNAME = "UPDATE_USERLASTNAME"
+const UPDATE_USERNAME = "UPDATE_USERNAME"
+const UPDATE_USER = "UPDATE_USER"
+
 //PATH CONSTANTS
 const UPDATE_PATHID = "UPDATE_PATHID"
 const UPDATE_PATHNAME = "UPDATE_PATHNAME"
@@ -221,6 +232,7 @@ const UPDATE_PATHABSTRACT = "UPDATE_PATHABSTRACT"
 const UPDATE_PATHIMG = "UPDATE_PATHIMG"
 const UPDATE_PATHLEARNINGDOMAIN = "UPDATE_PATHLEARNINGDOMAIN"
 const UPDATE_PATHLEARNINGSUBDOMAINS = "UPDATE_PATHLEARNINGSUBDOMAINS"
+
 //PATH NODES
 const UPDATE_NODENAME = "UPDATE_NODENAME"
 const UPDATE_NODEDEPTH = "UPDATE_NODEDEPTH"
@@ -228,6 +240,7 @@ const UPDATE_NODEORDER = "UPDATE_NODEORDER"
 const ADD_NODE = "ADD_NODE"
 const DELETE_NODE = "DELETE_NODE"
 const UPDATE_PATH = "UPDATE_PATH" //wholesale swap in of entire path object
+
 //PATH CONTENT
 const ADD_CONTENT = "ADD_CONTENT" 
 const UPDATE_CONTENTORDER = 'UPDATE_CONTENTORDER'
@@ -245,6 +258,11 @@ const UPDATE_LOGGEDIN = "UPDATE_LOGGEDIN"
 const UPDATE_MAINWIDTH = "UPDATE_MAINWIDTH"
 const UPDATE_SELECTEDNODE = "UPDATE_SELECTEDNODE"
 const UPDATE_ISBUILDING = "UPDATE_ISBUILDING"
+const UPDATE_USERNAMEISAVAILABLE = "UPDATE_USERNAMEISAVAILABLE"
+const UPDATE_EMAILISAVAILABLE = "UPDATE_EMAILISAVAILABLE"
+const UPDATE_EMAILISVALID = "UPDATE_EMAILISVALID"
+const UPDATE_PASSWORDISVALID = "UPDATE_PASSWORDISVALID"
+const UPDATE_ISSIGNEDUP = "UPDATE_ISSIGNEDUP"
 
 function reducer( state = initialState, action ){ 
   switch( action.type ){
@@ -254,10 +272,30 @@ function reducer( state = initialState, action ){
         user: Object.assign({}, state.user, { email: action.payload })
       })
 
-    case UPDATE_USERUID:
+    // case UPDATE_USERUID:
+    //   return Object.assign({}, state, {
+    //     user: Object.assign({}, state.user, { uid: action.payload })
+    //   })
+   
+    case UPDATE_USERFIRSTNAME:
       return Object.assign({}, state, {
-        user: Object.assign({}, state.user, { uid: action.payload })
+        user: Object.assign({}, state.user, { first_name: action.payload })
       })
+   
+    case UPDATE_USERLASTNAME:
+      return Object.assign({}, state, {
+        user: Object.assign({}, state.user, { last_name: action.payload })
+      })
+   
+    case UPDATE_USERNAME:
+      return Object.assign({}, state, {
+        user: Object.assign({}, state.user, { username: action.payload })
+      })
+
+    case UPDATE_USER:
+    return Object.assign({}, state, {
+      user: Object.assign({}, state, { user : action.payload })
+    })
 
     case UPDATE_PATHID:
       return Object.assign({}, state, {
@@ -498,13 +536,28 @@ function reducer( state = initialState, action ){
       return Object.assign({}, state, { isLoggedIn : action.payload })
 
     case UPDATE_MAINWIDTH:
-    return Object.assign({}, state, { mainWidth : action.payload })
+      return Object.assign({}, state, { mainWidth : action.payload })
 
     case UPDATE_SELECTEDNODE:
-    return Object.assign({}, state, { selectedNode : action.payload })
+      return Object.assign({}, state, { selectedNode : action.payload })
   
     case UPDATE_ISBUILDING:
-    return Object.assign({}, state, { isBuilding : !state.isBuilding })
+      return Object.assign({}, state, { isBuilding : action.payload })
+
+    case UPDATE_USERNAMEISAVAILABLE:
+      return Object.assign({}, state, { usernameIsAvailable : action.payload })
+    
+    case UPDATE_EMAILISAVAILABLE: 
+      return Object.assign({}, state, { emailIsAvailable : action.payload })
+
+    case UPDATE_EMAILISVALID: 
+      return Object.assign({}, state, { emailIsValid : action.payload })
+
+    case UPDATE_PASSWORDISVALID:
+      return Object.assign({}, state, { passwordIsValid : action.payload })
+
+    case UPDATE_ISSIGNEDUP:
+      return Object.assign({}, state, { isSignedUp : action.payload })
 
     default: 
     return state
@@ -512,24 +565,52 @@ function reducer( state = initialState, action ){
 }
 
 export function action_updateUserEmail(id){
-return {
-  type: UPDATE_USEREMAIL,
-  payload: id
-}
+  return {
+    type: UPDATE_USEREMAIL,
+    payload: id
+  }
 }
 
-export function action_updateUserUid(id){
-return {
-  type: UPDATE_USERUID,
-  payload: id
+// export function action_updateUserUid(id){
+//   return {
+//     type: UPDATE_USERUID,
+//     payload: id
+//   }
+// }
+
+export function action_updateUserFirstName(first_name){
+  return {
+    type: UPDATE_USERFIRSTNAME,
+    payload: first_name
+  }
 }
+
+export function action_updateUserLastName(last_name){
+  return {
+    type: UPDATE_USERLASTNAME,
+    payload: last_name
+  }
+}
+
+export function action_updateUsername(username){
+  return {
+    type: UPDATE_USERNAME,
+    payload: username
+  }
+}
+
+export function action_updateUser(user){
+  return {
+    type: UPDATE_USER,
+    payload: user
+  }
 }
 
 export function action_updatePathId(id){
-return {
-  type: UPDATE_PATHID,
-  payload: id
-}
+  return {
+    type: UPDATE_PATHID,
+    payload: id
+  }
 }
  
 export function action_updatePathName(name){
@@ -577,7 +658,6 @@ export function action_updateNodeName(index, node_name){
   }
 }
 
-//rewritten without
 export function action_updateNodeOrder(index1, index2){
   return {
     type: UPDATE_NODEORDER,
@@ -700,10 +780,45 @@ export function action_updateSelectedNode(node){
   }
 }
 
-export function action_updateIsBuilding(){
+export function action_updateIsBuilding(bool){
   return {
-    type: UPDATE_ISBUILDING
+    type: UPDATE_ISBUILDING,
+    payload: bool
   }
 }
 
+export function action_updateUsernameIsAvailable(bool){
+  return {
+    type: UPDATE_USERNAMEISAVAILABLE,
+    payload: bool
+  }
+}
+
+export function action_updateEmailIsAvailable(bool){
+  return {
+    type: UPDATE_EMAILISAVAILABLE,
+    payload: bool
+  }
+}
+
+export function action_updateEmailIsValid(bool){
+  return {
+    type: UPDATE_EMAILISVALID,
+    payload: bool
+  }
+}
+
+export function action_updatePasswordIsValid(bool){
+  return {
+    type: UPDATE_PASSWORDISVALID,
+    payload: bool
+  }
+}
+
+export function action_updateIsSignedUp(bool){
+  return {
+    type: UPDATE_ISSIGNEDUP,
+    payload: bool
+  }
+}
 export default reducer 

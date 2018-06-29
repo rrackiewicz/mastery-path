@@ -1,0 +1,29 @@
+.shroud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:rgba(0, 0, 0, .5);
+}
+
+.modal {
+  border-radius: 3px;
+  width: 33%;
+  height: 300px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3), inset 0 0px 0px rgba(0,0,0,0.1);
+}
+
+h1 {
+  font-size: 1.5rem;
+  color: white;
+  border-bottom: 1px white solid;
+}
+
+p {
+  color: white;
+  font-weight: lighter;
+  border-bottom: 1px white solid;
+  line-height: 1.25;
+}
+

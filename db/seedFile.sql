@@ -13,19 +13,22 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     uid serial PRIMARY KEY,
-    username VARCHAR(40) NOT NULL,
-    email VARCHAR(40) NOT NULL,
-    auth_id TEXT
+    first_name VARCHAR(40),
+    last_name VARCHAR(40),
+    username VARCHAR(40) UNIQUE,
+    email VARCHAR(40) UNIQUE,
+    hash VARCHAR(60),
+    admin BOOLEAN
 );
 
 CREATE TABLE masters (
     mid SERIAL PRIMARY KEY,
-    uid INTEGER REFERENCES users (uid)
+    uid INTEGER UNIQUE REFERENCES users (uid)
 );
 
 CREATE TABLE apprentices (
     aid SERIAL PRIMARY KEY,
-    uid INTEGER REFERENCES users (uid)
+    uid INTEGER UNIQUE REFERENCES users (uid)
 );
 
 CREATE TABLE paths (
@@ -40,7 +43,7 @@ CREATE TABLE paths (
 
 CREATE TABLE skills (
     skid SERIAL PRIMARY KEY,
-    skill_name VARCHAR(40)
+    skill_name VARCHAR(40) UNIQUE
 );
 
 
@@ -94,13 +97,13 @@ CREATE TABLE resource_completion (
 );
 
 INSERT INTO users
-    (username, email)
+    (first_name, last_name, username, email, admin)
 VALUES
-    ('Ray Rack', 'rayrack@gmail.com'), 
-    ('Sam Spade', 'masteroftheopera@gmail.com'),
-    ('Nathan Bundy', 'huxster1911@gmail.com'),
-    ('Portia Venice', 'portiaofvenice@gmail.com'),
-    ('Sebastian Riddle', 'puddinCakes@gmail.com');
+    ('Ray', 'Rack', 'a', 'rayrack@gmail.com', true), 
+    ('Sam', 'Spade', 'maltesefalcon2020', 'masteroftheopera@gmail.com', false),
+    ('Nathan', 'Bundy', 'greenpowerranger', 'huxster1911@gmail.com', false),
+    ('Portia', 'Venice', '0fleshpounder0', 'portiaofvenice@gmail.com', false),
+    ('Sebastian', 'Riddle', 'pistachiolover', 'deezgreennuts@gmail.com', false);
 
 INSERT INTO masters
     (uid)
@@ -216,3 +219,5 @@ VALUES
 -- NOTE TO FUTURE SELF. DON'T FORGET TO DROP NEW TABLES YOU ADD! IN REVERSE ORDER!
 -- Don't forget trailing ;
 -- Check for missing commas;
+
+SELECT * FROM users;

@@ -6,7 +6,7 @@ const colors = [
   //'hsl(171, 100%, 41%)', //teal
   'hsl(204, 86%, 53%)', //lblue
   'hsl(217, 71%, 53%)', //dblue
-  //'hsl(141, 71%, 48%)', //green
+  'hsl(141, 71%, 48%)', //green
   // 'hsl(356.2, 50.2%, 49.6%)', //red
   'hsl(348, 100%, 61%)', //pink
   // 'hsl(282, 44%, 47%)', //purple
@@ -33,19 +33,19 @@ export function depthToDewey(a){
   const buffer = []
   const newArr = []
   a.forEach((e,i)=> {
-    const newArrLen = newArr.length-1
+    const newArrLen = newArr.length - 1
     //If the difference = 0 just add 1 to the last value in newArr
-    if (e - (a[i-1] || 0) === 0) {newArr.push(newArr[newArrLen] + 1 || 1)}
+    if (e - (a[i - 1] || 0) === 0) {newArr.push(newArr[newArrLen] + 1 || 1)}
     //If the difference > 1 just add 1 to end of newArr and add the last value of newArr+1 to the buffer
-    if (e - (a[i-1]) > 0) {
+    if (e - (a[i - 1]) > 0) {
       newArr.push(1)
-      buffer.push(newArr[newArrLen]+1)
+      buffer.push(newArr[newArrLen] + 1)
       }
     else {
       //If the difference is <1 
-      const iter = a[i-1] - e //# of itererations
+      const iter = a[i - 1] - e //# of itererations
       //If the difference is exactly 1, take the value popped off the buffer and add it to the end of newArr
-      if (iter===1) {
+      if (iter === 1) {
         const popped = buffer.pop()
         newArr.push(popped)
       }
@@ -53,7 +53,7 @@ export function depthToDewey(a){
         //In cases where the difference is <1 but not -1 just pop values off the buffer until
         //you reach the last value. Treat the last value as if iterations = 1
         for (let j=0 ; j<iter; j++) {
-          if (j === iter-1) {
+          if (j === iter - 1) {
             const popped = buffer.pop()
             newArr.push(popped)
           } else {
@@ -112,4 +112,9 @@ export function allChildren(a,i){
 //keep a "collaped" array to store ranges {starting: 4, ending: 10} of all collapsed nodes
 //before mapping over "collapsed" array, filter out these ranges first. When a node is exanded, remove it from the "collapsed" array
 //This sounds like a fun problem
+}
+
+export function validateEmail(email){
+  var re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+  return re.test(String(email).toLowerCase())
 }

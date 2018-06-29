@@ -16,15 +16,17 @@ module.exports = {
 
   assignPath: (req, res) => {
     const dbInstance = req.app.get('db')
-    const { pid, mid } = req.params
-    // console.log("pid: ", pid)
-    // console.log("mid: ", mid)
-    dbInstance.assign_path([pid, mid])
+    const { mid, pid } = req.params
+    console.log(mid, pid)
+    dbInstance.assign_path([mid, pid])
     .then(() => {
-      // console.log(`Master ${mid} assigned to path ${pid}`);
+      console.log(`Master ${mid} assigned to path ${pid}`);
       res.status(200).send()
     })
-    .catch(() => res.status(500).send())
+    .catch((err) => {
+      console.log("Failure assigning path")
+      res.status(500).send()
+    })
   },
 
   uploadPath: (req, res) => {

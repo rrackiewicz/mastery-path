@@ -1,10 +1,9 @@
 require('dotenv').config()
 const express = require('express')
-  // , session = require('express-session')
-  // , passport = require('passport')
-  // , Auth0Strategy = require('passport-auth0')
+  , session = require('express-session')
   , massive = require('massive')
   , bodyParser = require('body-parser')
+  , axios = require('axios')
   , sc = require('./controllers/search_controller')
   , pc = require('./controllers/path_controller')
   , uc = require('./controllers/user_controller')
@@ -13,11 +12,7 @@ const express = require('express')
 
 const {
   SERVER_PORT,
-  // SESSION_SECRET,
-  // DOMAIN,
-  // CLIENT_ID,
-  // CLIENT_SECRET,
-  // CALLBACK_URL,
+  SESSION_SECRET,
   CONNECTION_STRING
 } = process.env
 
@@ -27,99 +22,93 @@ const app = express();
 
 app.use(bodyParser.json())
 
-massive(CONNECTION_STRING).then((dbInstance) => {
+massive(CONNECTION_STRING)
+  .then(dbInstance => {
+      //Comment out the next line to not seed the database
+      reset(dbInstance);
+      console.log("Connected To Database");
+      app.set('db', dbInstance);
+  })
+  .catch(err => {
+      console.error("Database Error");
+      console.error(err);
+  });
+
+function reset(dbInstance) {
   dbInstance.seedFile()
-  .then(res => console.log('We be SEEDED!'))
-  .catch(err => console.log(err))
+    .then(users => {
+      console.log("We be SEEDED!")
+      //console.log(users)
+      Promise.all([
+        ...users.map(({ username }) => {
+            return axios.put('http://localhost:4000/api/auth/reset', { username, newPassword: username });
+        })
+      ])
+        .then(responses => console.log(responses.map(({ data }) => data), "done refreshing db"))
+        .catch(console.error)
+    })
+    .catch(console.error)
+}
 
-  console.log('Database connected')
-  app.set('db', dbInstance)
-}) //can add a .catch here to display an error message
+app.use(session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true
+}))
 
-//Order is important
-// app.use(session({
-//   secret: SESSION_SECRET,
-//   resave: false,
-//   saveUninitialized: true
-// }))
+//DESERIALIZE 
+app.use((req, res, next) => {
+  const uid = req.session.user;
+  console.log("UID: ", uid)
+  if (uid) {
+    console.log("GETTING USER: " + uid);
+    const dbInstance = req.app.get('db')
+    dbInstance.read_user([ null, null, uid ])
+      .then(user => {
+        console.log("Success reading user")
+          req.user = user;
+          next();
+      })
+      .catch(err => {
+          console.log("Error reading user")
+          res.status(500).send(err);
+      });
+  } else next();
+});
 
-//Must come after session
-// app.use(passport.initialize())
+exports.awaitUser = function awaitUser(req, res, next) {
+  // if (!req.session.user) {
+  if (!req.user || !req.user.uid) {
+      res.status(401).json("unauthorized");
+  } else next();
+}
 
-//Must come after initialize
-// app.use(passport.session())
-
-//at this point create a new application in Auth0
-//be sure to paste callback in .evn and in Auth0 Allowed Callback URLs field
-// passport.use(new Auth0Strategy({
-//   domain: DOMAIN,
-//   clientID: CLIENT_ID,
-//   clientSecret: CLIENT_SECRET,
-//   callbackURL: CALLBACK_URL,
-//   scope: 'openid profile'
-// }, (accessToken, refreshToken, extraParams, profile, done) => {
-//   //done(null , profile); //Put this in here for testing before doing db calls
-//   let db = app.get('db') //Add this after you have set up database
-//   const {displayName, picture, id} = profile
-//   db.find_user([id])
-//     .then(foundUser => {
-//       //if there is a user it will return an array of length 1, otherwise empty array
-//       if (foundUser[0]) {
-//         done(null, foundUser[0].id)
-//       } else {
-//         db.create_user([displayName, picture, id])
-//         .then(user => {
-//           done(null, user[0].id) //response from massive always returns an array
-//         })
-//       }
-//     })
-// }))
-
-//stores profile in session store
-//before adding in the database all "id" were called "profile" because
-//now we are only storing the user_id in the session store
-// passport.serializeUser((id, done) => {
-//   done(null, id)
-// })
-
-//retrieves profile from session store when we hit an endpoint
-// passport.deserializeUser((id, done) => {
-//   //whatever we pass out, ends up on req.user
-//   app.get('db').find_session_user([id])
-//     .then(user => {
-//       done(null, user[0]) //db data is retrieved as an array
-//     })
-//   //done(null, id) //this was here before we did the db search
-// })
-
-
-//ENDPOINTS
-// app.get('/login', passport.authenticate('auth0'))
-
-// app.get('/auth/callback', passport.authenticate('auth0', {
-//   successRedirect: 'http://localhost:3000/#/private' //don't forget to add proxy to package.json
-//   //put failure redirect here
-// }))
-//NOTE: Be sure to remove local host reference in product build and put http://localhost:3000/#/private in .env file
-
-//This endpoint is here just to see if req.user is in 
-//the session store
-// app.get('/auth/me', (req, res) => {
-//   //deserialize makes req.user a truthy value
-//   if(req.user) {
-//     res.status(200).send(req.user)
-//   } else {
-//     res.status(401).send('nice try suckkkkka')
-//   }
-// })
+exports.requireAdmin = function requireAdmin(req, res, next) {
+  if (!req.session.user || !req.user || !req.user.admin) {
+      res.status(403).json("forbidden");
+  } else next();
+}
 
 app.get('/api/resource/:url', pc.getUrlData)
 app.get('/api/search/:searchid', sc.getResults)
 app.get('/api/paths/:pid', pc.getPath)
 app.post('/api/paths', pc.createPath)
 app.post('/api/paths/:pid/:mid', pc.assignPath)
-app.post('/api/paths/:pid', pc.uploadPath)
-app.post('/api/auth', uc.authorizeUser)
+app.post('/api/master', uc.addMaster)
+// app.post('/api/apprentice', uc.addApprentice)
+
+//FIXME: Right now, this functionality is for the first save which creates table entries in the database. For subsequent uploads, the tables have to be cleared of entries with the same pid so as not to create duplication of data. I should probably update this to a PUT even though it is technically a post.
+app.put('/api/paths/:pid', pc.uploadPath)
+app.post('/api/auth/login', uc.authorizeUser)
+app.put('/api/auth/reset', uc.resetPassword)
+app.post('/api/auth/verifyuser/:username', uc.verifyUser)
+app.post('/api/auth/verifyemail/:email', uc.verifyEmail)
+app.post('/api/auth/validatepassword', uc.validatePassword)
+app.post('/api/auth/signup', uc.signUpUser)
+//TODO: Implement these
+// app.post('/api/auth/logout', uc.logoutUser)
+
+// app.get('/api/auth/me', uc.getCurrentUser)
 app.get('/api/masterpaths/:uid', pc.getMasterPaths)
 app.get('/api/apprenticepaths/:uid', pc.getApprenticePaths)
 // app.delete('/api/paths/:uid', pc.deletePath)

@@ -19,6 +19,7 @@ class Title extends Component {
     this.newPath = this.newPath.bind(this)
     this.filterPaths = this.filterPaths.bind(this)
     this.sortPaths = this.sortPaths.bind(this)
+    this.assignPath = this.assignPath.bind
   }
 
   newPath(val) {
@@ -26,10 +27,28 @@ class Title extends Component {
     axios.post("/api/paths").then( res => {
       const { pid } = res.data;
       this.props.action_updatePathId(pid)
-      this.props.history.push('/auth')
-      this.props.action_updateIsBuilding()
+      //route depends on whether user is logged in or not
+      if (this.props.isLoggedIn) {
+        //TODO: Check to see if user is in Master table. If not, add them
+        this.props.history.push(`/path/${this.props.pid}`) 
+      } 
+      else {
+        //TODO: Defer adding user to Master table until after they are signed in.
+        this.props.history.push('/auth')
+      }
+      this.props.action_updateIsBuilding(true)
     }).catch( err => {
       alert("Failed to create path")
+    })
+  }
+
+  assignPath() {
+    const pid = this.props.pid
+    this.props.history.push(`/path/${pid}`)
+    axios.post(`/api/paths/${pid}`).then( res => {
+      console.log("Assign path: ", res.data)
+    }).catch( err => {
+      alert("Failed to assign path to user")
     })
   }
 
@@ -82,15 +101,15 @@ class Title extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor, userContext, pathContext, path, user } = state 
+  const { bgColor, userContext, pathContext, path, isLoggedIn, isBuilding } = state 
   const { pid } = path
-  const { uid } = user
   return {
       bgColor,
       userContext,
       pathContext,
       pid,
-      uid
+      isLoggedIn,
+      isBuilding
   }
 }
 

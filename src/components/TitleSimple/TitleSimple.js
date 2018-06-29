@@ -21,9 +21,9 @@ class TitleSimple extends Component {
   	//FIXME: Move this to Paths and disable the save button
 	savePath() {
     const path = this.props.path
-		axios.post(`/api/paths/${this.props.pid}`, path).then( res => {
+		axios.put(`/api/paths/${this.props.pid}`, path).then( res => {
       this.props.history.push(`/paths`)
-      this.props.action_updateIsBuilding()
+      this.props.action_updateIsBuilding(false)
     }).catch(err => {
       alert('Problem submitting path.')
     })

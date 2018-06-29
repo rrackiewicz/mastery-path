@@ -54,7 +54,7 @@ class Paths extends Component {
       const path = res.data;
       this.props.action_updatePath(path)
       this.props.history.push(`/path/${pid}`)
-      this.props.action_updateIsBuilding()
+      this.props.action_updateIsBuilding(true)
     }).catch( err => {
       alert("Problem loading search results.")
     })

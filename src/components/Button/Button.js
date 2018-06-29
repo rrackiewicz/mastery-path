@@ -35,7 +35,7 @@ class Button extends Component {
     }
     
     return (
-      <button onClick={this.stopPropagation} style={this.props.selected ? selectedButton : unSelectedButton} className="button pa-s ml-s">
+      <button onClick={this.stopPropagation} style={this.props.selected ? selectedButton : unSelectedButton} className="button pa-s ml-s" disabled={this.props.isDisabled ? true : false}>
       {this.props.icon ? 
         <span>
           {this.props.payload.length > 1 ?

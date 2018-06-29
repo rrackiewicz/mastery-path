@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Logo from '../Logo/Logo'
 import ButtonGroup from '../ButtonGroup/ButtonGroup'
-import SearchField from '../SearchField/SearchField'
 import Nav from '../Nav/Nav'
 import { connect } from 'react-redux'
 import { action_updateUserContext } from '../../ducks/reducer'

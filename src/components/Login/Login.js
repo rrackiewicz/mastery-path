@@ -4,7 +4,7 @@ import Field from '../Field/Field'
 import Button from '../Button/Button'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
-import { action_updateUserUid } from '../../ducks/reducer'
+import { action_updateUser, action_updateLoggedIn } from '../../ducks/reducer'
 import axios from 'axios'
 
 import './Login.css'
@@ -15,44 +15,67 @@ class Login extends Component {
   constructor() {
     super()
     this.state = {
-      email : 'rayrack@gmail.com',
-      password: '\u2022\u2022\u2022\u2022\u2022\u2022\u2022'
+      username : '',
+      password: ''
     }
-    this.updateEmail = this.updateEmail.bind(this)
+
+    this.updateUsername = this.updateUsername.bind(this)
     this.updatePassword = this.updatePassword.bind(this)
-    this.loginUser = this.loginUser.bind(this)
+    this.logInUser = this.logInUser.bind(this)
     this.assignPath = this.assignPath.bind(this)
+    this.signUp = this.signUp.bind(this)
   }
 
-  updateEmail(e){
-    this.setState({email: e.target.value})
+  updateUsername(e){
+    this.setState({username: e.target.value});
   }
 
   updatePassword(e){
-    this.setState({password: e.target.value});
+    this.setState({password: e.target.value})
   }
 
-  loginUser(){
-    const user = {email: this.state.email}
-    axios.post("/api/auth", user).then( res => {
-      const { uid } = res.data;
-      this.props.action_updateUserUid(uid)
-      this.assignPath();
+  logInUser(){
+    const user = {username: this.state.username, password: this.state.password}
+    axios.post("/api/auth/login", user).then( res => {
+      console.log(res.data)
+      this.props.action_updateUser(res.data)
+      this.props.action_updateLoggedIn(true)       
+      //TODO: If isBuilding is true, add user to Master table if they don't already exist, then call assign path. 
+      if (this.props.isBuilding) {
+        axios.post("/api/master").then( res => {
+          console.log("Master added to master table")
+          const { mid } = res.data.uid
+          this.assignPath(mid);
+        }).catch( err => {
+          alert("Failed to assign path to user")
+        })
+        //TODO: 
+      } else {
+        this.props.history.push("/feed")
+      }
+      //TODO:
+
     }).catch( err => {
       alert("Login Failed")
-      this.setState({email: ''})
+      this.setState({username: ''})
     })
   }
 
-  assignPath() {
+  //TODO:
+  assignPath(mid) {
     const pid = this.props.pid
-    const uid = this.props.uid
+    console.log(`Mid: ${mid}, Pid: ${pid}`)
     this.props.history.push(`/path/${pid}`)
-    axios.post(`/api/paths/${pid}/${uid}`).then( res => {
-      //Nothing is returned
+    axios.post(`/api/paths/${pid}/${mid}`).then( res => {
+      console.log("Assign path: ", res.data)
     }).catch( err => {
-      alert("Failed to assign path to user")
+      console.log("Failed to assign path to user")
     })
+  }
+  //TODO:
+
+  signUp() {
+    this.props.history.push(`/signup`)
   }
 
   render() {
@@ -61,9 +84,9 @@ class Login extends Component {
         <Logo />
         <div className="mr-m ml-l">
           <Field 
-            value={this.state.email}
-            placeholder = 'Enter email address'
-            callback = {this.updateEmail}
+            value={this.state.username}
+            placeholder = 'Enter username'
+            callback = {this.updateUsername}
           />
         </div>
         <div className="mr-s">
@@ -71,27 +94,35 @@ class Login extends Component {
             value={this.state.password}
             placeholder = 'Enter password'
             callback = {this.updatePassword}
+            isPassword
           />
         </div>
         <div className="">
           <Button 
-              payload = 'Login'
-              callback = {this.loginUser}
+              payload = 'Log in'
+              callback = {this.logInUser}
               bgColor = {this.props.bgColor}
               textColor = '#ffffff'
-            />
-        </div>
-        <div className="mla">
-          <span className="notAMember mr-s">
-           Not a Member?
-          </span>
-          <Button 
-            payload = 'Sign Up'
-            // callback = {this.registerUser}
-            bgColor = '#FFD002'
-            textColor = '#363636'
           />
+          <span className="links dottedHorizontalBorder ml-m">
+            Forgot Password?
+          </span>
         </div>
+        {this.props.isSignedUp ? 
+          null
+          :
+          <div className="mla">
+            <span className="links dottedHorizontalBorder mr-s">
+              Not a Member?
+            </span>
+            <Button 
+              payload = 'Sign Up'
+              callback = {this.signUp}
+              bgColor = '#FFD002'
+              textColor = '#363636'
+            />
+          </div>
+       }
       </div>
     )
 
@@ -99,18 +130,19 @@ class Login extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor, user, path } = state 
-  const { uid } = user
+  const { bgColor, path, isBuilding, isSignedUp } = state 
   const { pid } = path
   return {
       bgColor,
-      uid,
-      pid
+      pid,
+      isBuilding,
+      isSignedUp
   }
 }
 
 const actions = {
-  action_updateUserUid
+  action_updateUser,
+  action_updateLoggedIn
 }
 
 export default connect(mapStateToProps, actions)(withRouter(Login))
