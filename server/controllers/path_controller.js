@@ -15,9 +15,8 @@ module.exports = {
   },
 
   assignPath: (req, res) => {
-    const dbInstance = req.app.get('db')
     const { mid, pid } = req.params
-    console.log(mid, pid)
+    const dbInstance = req.app.get('db')
     dbInstance.assign_path([mid, pid])
     .then(() => {
       console.log(`Master ${mid} assigned to path ${pid}`);
@@ -30,17 +29,15 @@ module.exports = {
   },
 
   uploadPath: (req, res) => {
+    const { pid, pub, path_name, abstract, img, learningDomain, learningSubdomains, hrs, rating, nodes } = req.body
     const dbInstance = req.app.get('db')
-    const { pid } = req.params
-    const { path_name, abstract, img, pub, learningDomain, learningSubdomains, hrs, rating, nodes } = req.body
-    
-    dbInstance.upload_path([pid, path_name, abstract, img, hrs, rating, pub])
+    dbInstance.upload_path([pid, pub, path_name, abstract, img, hrs, rating])
     .then(() => {
+      console.log("Path successfully updated")
       res.status(200).send()
     })
     .catch(() => res.status(500).send())
 
-    //TODO: Add in check for existing skill in entry
     dbInstance.new_skill([pid, learningDomain, true])
     .then(() => {
       res.status(200).send()
@@ -54,24 +51,43 @@ module.exports = {
       })
       .catch(() => res.status(500).send())
     })
-
-    nodes.forEach((ne,ni) => {
-      //I think I need another .sql file here to empty out table before inserting then nest 2nd query inside of it. Verify with Tommy.
-      dbInstance.new_node([pid, ne.node_name, ni, ne.depth]) //using i for order because we don't store the order on the client side. The index of the array determines its order. Because we are using for each, all nodes won't arrive at same time and, as a result, won't be in order
-      // FIXME: adjust query to return nid
-      .then(() => {
-        //I feel like we need an inner loop here to .forEach over the nid returned (which is not currently). We call the new_content database method passing in ne.nid,, ce.content_type, ce.content, ci (for ord). TODO: Verify this with Tommy.
-        res.status(200).send()
+  
+    //Clear nodes deletes all copies of existing nodes at path pid before inserting the new copy of nodes
+    dbInstance.clear_nodes([pid])
+    .then(() => {
+      nodes.forEach((ne, ni) => {
+        dbInstance.new_node([pid, ne.node_name, ni, ne.depth])
+        .then((nodeId) => {
+          // console.log(`Node successfully inserted for path ${pid`)
+          const nid = nodeId[0].nid
+          ne.content.forEach((ce, ci) => {
+            dbInstance.new_content([nid, ce.content_type, ce.content, ci])
+            .then(() => {
+              // console.log(`Content successfully inserted at node ${nid`)
+            })
+            .catch(() => {
+              console.log("Problem inserting content") 
+              res.status(500).send()
+            })
+          })
+          res.status(200).send()
+        })
+        .catch(() => {
+          console.log("Problem inserting node")  
+          res.status(500).send()
+        })
       })
-      .catch(() => res.status(500).send())
     })
-
+    .catch(() => {
+      console.log("Problem clearing nodes")
+      res.status(500).send()
+    })
   },
 
   //TODO: GET with uid on params
   getMasterPaths: (req, res) => {
+    const uid = req.session.user
     const dbInstance = req.app.get('db')
-    const { uid } = req.params
     dbInstance.get_master_paths([ uid ])
     .then((results) => {
       res.status(200).send(results)
@@ -81,8 +97,8 @@ module.exports = {
 
   //TODO: GET with uid on params
   getApprenticePaths: (req, res) => {
+    const uid = req.session.user
     const dbInstance = req.app.get('db')
-    const { uid } = req.params
     dbInstance.get_apprentice_paths([ uid ])
     .then((results) => {
       res.status(200).send(results)
@@ -92,8 +108,8 @@ module.exports = {
 
   //TODO: GET specific path
   getPath: (req, res) => {
-    const dbInstance = req.app.get('db')
     const { pid } = req.params
+    const dbInstance = req.app.get('db')
     dbInstance.get_path([ pid ])
     .then(convertPath) //Promises automatically return result to next .then
     .then((results) => {

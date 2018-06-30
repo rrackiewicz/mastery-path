@@ -59,15 +59,15 @@ app.use(session({
 //DESERIALIZE 
 app.use((req, res, next) => {
   const uid = req.session.user;
-  console.log("UID: ", uid)
+  //console.log("UID: ", uid)
   if (uid) {
-    console.log("GETTING USER: " + uid);
+    //console.log("GETTING USER: " + uid);
     const dbInstance = req.app.get('db')
     dbInstance.read_user([ null, null, uid ])
       .then(user => {
-        console.log("Success reading user")
-          req.user = user;
-          next();
+        //console.log("Success reading user")
+        req.user = user;
+        next();
       })
       .catch(err => {
           console.log("Error reading user")
@@ -98,7 +98,7 @@ app.post('/api/master', uc.addMaster)
 // app.post('/api/apprentice', uc.addApprentice)
 
 //FIXME: Right now, this functionality is for the first save which creates table entries in the database. For subsequent uploads, the tables have to be cleared of entries with the same pid so as not to create duplication of data. I should probably update this to a PUT even though it is technically a post.
-app.put('/api/paths/:pid', pc.uploadPath)
+app.put('/api/paths', pc.uploadPath)
 app.post('/api/auth/login', uc.authorizeUser)
 app.put('/api/auth/reset', uc.resetPassword)
 app.post('/api/auth/verifyuser/:username', uc.verifyUser)
@@ -109,8 +109,8 @@ app.post('/api/auth/signup', uc.signUpUser)
 // app.post('/api/auth/logout', uc.logoutUser)
 
 // app.get('/api/auth/me', uc.getCurrentUser)
-app.get('/api/masterpaths/:uid', pc.getMasterPaths)
-app.get('/api/apprenticepaths/:uid', pc.getApprenticePaths)
+app.get('/api/masterpaths', pc.getMasterPaths)
+app.get('/api/apprenticepaths', pc.getApprenticePaths)
 // app.delete('/api/paths/:uid', pc.deletePath)
 // app.put('/api/paths/:uid', pc.updatePath)
 

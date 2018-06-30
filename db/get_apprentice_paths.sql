@@ -1,4 +1,4 @@
-SELECT username, img, hrs, rating, path_name, abstract, paths.pid, skill_name
+SELECT username, first_name, last_name, img, hrs, rating, path_name, abstract, paths.pid, skill_name
 FROM users
     JOIN apprentices
         ON users.uid = apprentices.uid

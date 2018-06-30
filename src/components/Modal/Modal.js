@@ -22,9 +22,13 @@ class Modal extends Component {
       <div className="shroud flexV aic jcc">
         <div className="modal pa-l" style={modal}>
           <div className="flexH">
-            <div onClick={() => {this.props.cancelCallback()}} className="mla">
-              <span className="fas fa-times-square" style={{color: 'white'}}></span>
-            </div>
+            {this.props.oneButton ?
+              null
+              :
+              <div onClick={() => {this.props.cancelCallback()}} className="mla">
+                <span className="fas fa-times-square" style={{color: 'white'}}></span>
+              </div>
+            }
           </div>
           <h1 className="mt-m pb-s">
             {this.props.title}
@@ -33,18 +37,22 @@ class Modal extends Component {
             {this.props.content}
           </p>
           <div className="flexH">
-            <div className = "mla">
-              <Button 
-                payload = {this.props.cancelText}
-                callback = {this.props.cancelCallback}
-                bgColor = {this.props.bgColor}
-                textColor = '#ffffff'
-              />
-            </div>
-            <div className="">
+            {this.props.oneButton ?
+              null
+              :
+              <div className = "mla">
+                <Button 
+                  payload = {this.props.cancelText}
+                  callback = {this.props.cancelCallback}
+                  bgColor = {this.props.bgColor}
+                  textColor = '#ffffff'
+                />
+              </div>
+            }
+            <div className="mla">
               <Button 
                 payload = {this.props.okText}
-                callback = {this.props.callback}
+                callback = {this.props.okCallback}
                 bgColor = {this.props.bgColor}
                 textColor = '#ffffff'
               />

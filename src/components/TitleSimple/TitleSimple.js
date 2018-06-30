@@ -21,8 +21,9 @@ class TitleSimple extends Component {
   	//FIXME: Move this to Paths and disable the save button
 	savePath() {
     const path = this.props.path
-		axios.put(`/api/paths/${this.props.pid}`, path).then( res => {
-      this.props.history.push(`/paths`)
+		axios.put("/api/paths", path).then( res => {
+      console.log("Path saved")
+      this.props.history.push("/paths")
       this.props.action_updateIsBuilding(false)
     }).catch(err => {
       alert('Problem submitting path.')
@@ -38,7 +39,7 @@ class TitleSimple extends Component {
         </div>
         <div className="mla">
           <Button 
-            payload = "Save Path"
+            payload = "Save and Exit"
             callback = {this.savePath}
             bgColor = '#FFD002'
             textColor = '#363636'
@@ -63,11 +64,9 @@ class TitleSimple extends Component {
 
 function mapStateToProps(state) {
   const { bgColor, path } = state
-  const { pid } = path
   return {
       bgColor,
-      path,
-      pid
+      path
   }
 }
 

@@ -39,21 +39,21 @@ class Login extends Component {
     axios.post("/api/auth/login", user).then( res => {
       console.log(res.data)
       this.props.action_updateUser(res.data)
-      this.props.action_updateLoggedIn(true)       
-      //TODO: If isBuilding is true, add user to Master table if they don't already exist, then call assign path. 
+      this.props.action_updateLoggedIn(true)  
+
+      //If isBuilding is true, add user to Master table if they don't already exist, then call assign path. 
+      //NOTE: This code is duplicated in Title.js. Always check for updates until this is modularized.
       if (this.props.isBuilding) {
         axios.post("/api/master").then( res => {
-          console.log("Master added to master table")
-          const { mid } = res.data.uid
+          const { mid } = res.data
+          console.log(`Master: ${mid} added to master table`)
           this.assignPath(mid);
         }).catch( err => {
-          alert("Failed to assign path to user")
+          console.log(`Failed to assign master to master table`)
         })
-        //TODO: 
       } else {
         this.props.history.push("/feed")
       }
-      //TODO:
 
     }).catch( err => {
       alert("Login Failed")
@@ -61,18 +61,17 @@ class Login extends Component {
     })
   }
 
-  //TODO:
+  //NOTE: This code is duplicated in Title.js. Always check for updates until this is modularized.
   assignPath(mid) {
     const pid = this.props.pid
-    console.log(`Mid: ${mid}, Pid: ${pid}`)
     this.props.history.push(`/path/${pid}`)
     axios.post(`/api/paths/${pid}/${mid}`).then( res => {
-      console.log("Assign path: ", res.data)
+      console.log(`Added Master: ${mid} to path: ${pid}`)
     }).catch( err => {
       console.log("Failed to assign path to user")
     })
   }
-  //TODO:
+
 
   signUp() {
     this.props.history.push(`/signup`)
@@ -87,6 +86,7 @@ class Login extends Component {
             value={this.state.username}
             placeholder = 'Enter username'
             callback = {this.updateUsername}
+            autoFocus
           />
         </div>
         <div className="mr-s">

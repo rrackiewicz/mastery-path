@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Header from '../Header/Header'
 import Title from '../Title/Title'
 import Card from '../Card/Card'
+import CardBlank from '../CardBlank/CardBlank'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { withRouter } from 'react-router'
@@ -16,7 +17,8 @@ class Paths extends Component {
     super()
     this.state = {
       results: [],
-      pathQty: 0
+      pathQty: 0,
+      isLoaded: false
     }
     this.loadResults = this.loadResults.bind(this)
     this.loadPath = this.loadPath.bind(this)
@@ -29,19 +31,21 @@ class Paths extends Component {
 
   loadResults(){
     if (this.props.userContext === 'master') {
-    axios.get(`/api/masterpaths/${this.props.uid}`).then( res => {
-      const results = res.data;
-      this.setState({ results });
-      this.setState({ pathQty : results.length})
-    }).catch( err => {
-      alert("Problem loading search results.")
-    })
-    
-    } else {
-      axios.get(`/api/apprenticepaths/${this.props.uid}`).then( res => {
+      axios.get("/api/masterpaths").then( res => {
         const results = res.data;
         this.setState({ results });
         this.setState({ pathQty : results.length})
+        this.setState({ isLoaded: true })
+        console.log("Retrieved Master Paths")
+      }).catch( err => {
+        alert("Problem loading search results.")
+      })
+    } else {
+      axios.get("/api/apprenticepaths").then( res => {
+        const results = res.data;
+        this.setState({ results });
+        this.setState({ pathQty : results.length})
+        console.log("Retrieved Apprentice Paths")
       }).catch( err => {
         alert("Problem loading search results.")
       })
@@ -71,7 +75,7 @@ class Paths extends Component {
           key={e.path_name}
           isSearching
           img = {e.img}
-          author = {e.username}
+          author = {e.first_name + " " + e.last_name}
           pathName = {e.path_name}
           abstract = {e.abstract ? e.abstract.slice(0, 160) : ''}
           tld = {e.skill_name}
@@ -96,6 +100,13 @@ class Paths extends Component {
             subtitle = {`${this.state.pathQty} paths found`}
           />
         </div>
+        {this.state.isLoaded ?
+          null
+          :
+          <div className="resultsWrapper flexH ml-xl mr-xl aifs wrap">
+            <CardBlank/>
+          </div>
+        }
         <div className="resultsWrapper flexH ml-xl mr-xl aifs wrap">
           {renderCards}
         </div>
@@ -105,13 +116,11 @@ class Paths extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor, userContext, user, path } = state 
-  const { uid } = user
+  const { bgColor, userContext, path } = state 
   const { pid } = path
   return {
       bgColor,
       userContext,
-      uid,
       path,
       pid
   }

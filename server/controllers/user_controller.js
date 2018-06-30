@@ -7,23 +7,22 @@ module.exports = {
 
   //TODO: Work on this next
   authorizeUser: (req, res) => {
-    console.log("LOGGING IN", req.body);
+    //console.log("LOGGING IN", req.body);
     const { username, password } = req.body
-    console.log("PASSWORD ", password);
+    //console.log("PASSWORD ", password);
     const dbInstance = req.app.get('db')
     dbInstance.read_hash([username])
     .then(([{ hash }]) => {
-      console.log("HASH ", hash);
+      //console.log("HASH ", hash);
       bcrypt.compare(password, hash, (err, result) => {
         if (err) {
           console.log("Error comparing password")
           console.log(err)
           res.status(500).send(err)
         } else if (result) {
-          console.log("before the storm")
           dbInstance.read_user([ username, hash, null ])
           .then(user => {
-            console.log("User: ", user)
+            console.log("User returned: ", user)
               //massive always returns an array, so user is the only object in the array
               req.session.user = user[0].uid
               //copy user so uid remains on session after uid is deleted
@@ -65,7 +64,7 @@ module.exports = {
             .then(user => {
                 req.session.user = user[0].uid;
                 console.log("Req.session.user = ", req.session.user)
-                console.log("Success signing up user")
+                //console.log("Success signing up user")
                 res.status(200).send();
             })
             .catch(err => {

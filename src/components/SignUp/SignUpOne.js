@@ -17,6 +17,7 @@ class SignUpOne extends Component {
     }
     this.updateFirstName = this.updateFirstName.bind(this)
     this.updateLastName = this.updateLastName.bind(this)
+    this.nextPage = this.nextPage.bind(this)
   }
 
   updateFirstName(e) {
@@ -25,6 +26,12 @@ class SignUpOne extends Component {
 
   updateLastName(e) {
     this.props.action_updateUserLastName(e.target.value)
+  }
+
+  nextPage(e) {
+    if (e.key === 'Enter' && this.props.first_name.length > 0 && this.props.last_name.length > 0) {
+      this.props.enterCallback()
+    }
   }
 
   render() {
@@ -39,6 +46,7 @@ class SignUpOne extends Component {
             value={this.props.first_name}
             placeholder = 'Enter first name'
             callback = {this.updateFirstName}
+            autoFocus
           />
         </div>
         <div className="mr-s">
@@ -46,6 +54,7 @@ class SignUpOne extends Component {
             value={this.props.last_name}
             placeholder = 'Enter last name'
             callback = {this.updateLastName}
+            enterCallback = {this.nextPage}
           />
         </div>
         <div className="mla">

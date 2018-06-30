@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Search from '../Search/Search'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
 import { rand } from '../../helpers'
 
 
@@ -21,16 +22,19 @@ class Home extends Component {
     // this.animationListener = this.animationListener.bind(this)
   }
 
-  // componentDidMount() {
-  //   window.addEventListener('resize', this.handleResize)
-  //   this.setState({windowHeight : window.innerHeight})
-  //   setTimeout(() => { 
-  //     let d = document.querySelector(".animationBox")
-  //     d.classList.add("blurb")
-  //     console.log(d)
-  //     d.addEventListener("animationiteration", this.animationListener)
-  //    }, 1000)
-  // }
+  componentDidMount() {
+    if (this.props.isLoggedIn) {
+      this.props.history.push("/feed")
+    }
+    // window.addEventListener('resize', this.handleResize)
+    // this.setState({windowHeight : window.innerHeight})
+    // setTimeout(() => { 
+    //   let d = document.querySelector(".animationBox")
+    //   d.classList.add("blurb")
+    //   console.log(d)
+    //   d.addEventListener("animationiteration", this.animationListener)
+    //  }, 1000)
+  }
 
   // handleResize(e) {
   //   this.setState({windowHeight : e.target.innerHeight})
@@ -64,10 +68,11 @@ class Home extends Component {
 }
 
 function mapStateToProps(state) {
-  const { bgColor } = state 
+  const { bgColor, isLoggedIn } = state 
   return {
-      bgColor
+      bgColor,
+      isLoggedIn
   }
 }
 
-export default connect(mapStateToProps)(Home)
+export default connect(mapStateToProps)(withRouter(Home))

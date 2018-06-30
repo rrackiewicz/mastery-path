@@ -1,4 +1,4 @@
-SELECT username, img, hrs, rating, path_name, abstract, paths.pid, pub, skill_name
+SELECT username, first_name, last_name, img, hrs, rating, path_name, abstract, paths.pid, pub, skill_name
 FROM users
     JOIN masters
         ON users.uid = masters.uid

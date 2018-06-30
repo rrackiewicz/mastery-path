@@ -68,7 +68,9 @@ class Card extends Component {
           <div className="flexH pl-m pr-m pb-m">
             <div className="flexV">
               <div className="cardBody_Author mb-xs">
-                {this.props.author}
+                <span className="links dottedHorizontalBorder">
+                  {this.props.author}
+                </span>
               </div>
               <div className="flexH">
                 <Pill 

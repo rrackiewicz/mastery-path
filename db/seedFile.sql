@@ -69,7 +69,7 @@ CREATE TABLE paths_skills (
 
 CREATE TABLE nodes (
     nid SERIAL PRIMARY KEY,
-    pid INTEGER REFERENCES paths(pid),
+    pid INTEGER REFERENCES paths(pid) ON UPDATE CASCADE ON DELETE CASCADE,
     node_name VARCHAR(40),
     ord INTEGER,
     depth INTEGER
@@ -77,7 +77,7 @@ CREATE TABLE nodes (
 
 CREATE TABLE content (
     cid SERIAL PRIMARY KEY,
-    nid INTEGER REFERENCES nodes(nid),
+    nid INTEGER REFERENCES nodes(nid) ON UPDATE CASCADE ON DELETE CASCADE,
     content_type VARCHAR(40),
     content VARCHAR(100000),
     ord INTEGER

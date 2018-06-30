@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Logo from '../Logo/Logo'
 import Field from '../Field/Field'
 import Button from '../Button/Button'
+import Modal from '../Modal/Modal'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { action_updateIsSignedUp } from '../../ducks/reducer'
@@ -20,12 +21,14 @@ class SignUpFour extends Component {
       isValid: false,
       doMatch: false,
       score: 0,
-      color: 'red'
+      color: 'red',
+      modalIsVisible: false
     }
     this.updateUserPassword = this.updateUserPassword.bind(this)
     this.updateMatchPassword = this.updateMatchPassword.bind(this)
     this.formatStrength = this.formatStrength.bind(this)
     this.submitUser = this.submitUser.bind(this)
+    this.completeSubmission = this.completeSubmission.bind(this)
   }
 
   updateUserPassword(e) {
@@ -124,11 +127,15 @@ class SignUpFour extends Component {
       user.password = this.state.passwordOne
       axios.post("/api/auth/signup", user).then( res => {
         this.props.action_updateIsSignedUp(true)
-        this.props.history.push("/auth")
+        this.setState({modalIsVisible : true})
       }).catch (err => {
 
       })
     }
+  }
+
+  completeSubmission(){
+    this.props.history.push("/auth")
   }
 
   render() {
@@ -151,6 +158,7 @@ class SignUpFour extends Component {
             placeholder = 'Enter password'
             callback = {this.updateUserPassword}
             isPassword
+            autoFocus
           />
         </div>
         <div className="passwordStrength mr-m flexH aic jcc" style={ indicator }>
@@ -188,6 +196,17 @@ class SignUpFour extends Component {
           textColor = '#363636'
           isDisabled = {!this.state.isValid || !this.state.doMatch}
         />
+         {this.state.modalIsVisible ?
+          <Modal 
+            title = "Account Activation Required"
+            content = "Before we begin, you will need to activate your account by clicking on the invitation link sent to the email address you signed up with. Easy peasy! Welcome to Mastery Path."
+            okText = "Ok"
+            okCallback = {this.completeSubmission}
+            bgColor = {this.props.bgColor}
+            oneButton
+          />
+          : null
+      }
       </div>
     )
   }

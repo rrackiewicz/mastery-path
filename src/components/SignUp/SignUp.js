@@ -26,6 +26,7 @@ class SignUp extends Component {
         return (
           <SignUpOne
             callback = {this.changeStep}
+            enterCallback = {this.advanceStep}
           />
         )
       case 2: 

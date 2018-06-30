@@ -300,6 +300,12 @@ a:visited, a:active, a:link {
   background-repeat: repeat-x;
 }
 
+.links {
+  font-size: 1rem;
+  font-weight: lighter;
+  color: rgba(255, 255, 255, 1);
+}
+
 .message {
   color: #ffffff;
   font-size: 1rem;

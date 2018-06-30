@@ -19,7 +19,7 @@ class Title extends Component {
     this.newPath = this.newPath.bind(this)
     this.filterPaths = this.filterPaths.bind(this)
     this.sortPaths = this.sortPaths.bind(this)
-    this.assignPath = this.assignPath.bind
+    this.assignPath = this.assignPath.bind(this)
   }
 
   newPath(val) {
@@ -28,9 +28,15 @@ class Title extends Component {
       const { pid } = res.data;
       this.props.action_updatePathId(pid)
       //route depends on whether user is logged in or not
+      //NOTE: This code is duplicated in Login.js. Always check for updates until this is modularized.
       if (this.props.isLoggedIn) {
-        //TODO: Check to see if user is in Master table. If not, add them
-        this.props.history.push(`/path/${this.props.pid}`) 
+        axios.post("/api/master").then( res => {
+          console.log("Master added to master table")
+          const { mid } = res.data.uid
+          this.assignPath(mid);
+        }).catch( err => {
+          alert("Failed to assign master to master table")
+        }) 
       } 
       else {
         //TODO: Defer adding user to Master table until after they are signed in.
@@ -42,13 +48,15 @@ class Title extends Component {
     })
   }
 
-  assignPath() {
+  //NOTE: This code is duplicated in Login.js. Always check for updates until this is modularized.
+  assignPath(mid) {
     const pid = this.props.pid
+    console.log(`Mid: ${mid}, Pid: ${pid}`)
     this.props.history.push(`/path/${pid}`)
-    axios.post(`/api/paths/${pid}`).then( res => {
+    axios.post(`/api/paths/${pid}/${mid}`).then( res => {
       console.log("Assign path: ", res.data)
     }).catch( err => {
-      alert("Failed to assign path to user")
+      console.log("Failed to assign path to user")
     })
   }
 

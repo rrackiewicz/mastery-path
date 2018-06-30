@@ -66,6 +66,7 @@ class SignUpTwo extends Component {
             placeholder = 'Enter username'
             callback = {this.updateUsername}
             enterCallback = {this.nextPage}
+            autoFocus
           />
         </div>
         {this.props.username.length > 0 ?

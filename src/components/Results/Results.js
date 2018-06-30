@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Search from '../Search/Search'
 import Title from '../Title/Title'
 import Card from '../Card/Card'
+import CardBlank from '../CardBlank/CardBlank'
 import { connect } from 'react-redux'
 import axios from 'axios'
 
@@ -14,7 +15,8 @@ class Results extends Component {
     super()
     this.state = {
       results: [],
-      pathQty: 0
+      pathQty: 0,
+      isLoaded: false
     }
     this.loadResults=this.loadResults.bind(this)
   }
@@ -28,6 +30,7 @@ class Results extends Component {
       const results = res.data;
       this.setState({ results });
       this.setState({ pathQty : results.length})
+      this.setState({ isLoaded: true })
     }).catch( err => {
       alert("Problem loading search results.")
     })
@@ -41,7 +44,7 @@ class Results extends Component {
           key={e.path_name}
           isSearching
           img = {e.img}
-          author = {e.username}
+          author = {e.first_name + " " + e.last_name}
           pathName = {e.path_name}
           abstract = {e.abstract.slice(0, 160)}
           // callback = {this.displayPathDetails} //Not implemented
@@ -66,6 +69,13 @@ class Results extends Component {
             subtitle = {`${this.state.pathQty} paths found`}
           />
         </div>
+        {this.state.isLoaded ?
+          null
+          :
+          <div className="resultsWrapper flexH ml-xl mr-xl aifs wrap">
+            <CardBlank/>
+          </div>
+        }
         <div className="resultsWrapper flexH ml-xl mr-xl aifs wrap">
           {renderCards}
         </div>

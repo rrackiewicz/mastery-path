@@ -81,6 +81,7 @@ class SignUpThree extends Component {
             placeholder = 'Enter email address'
             callback = {this.updateUserEmail}
             enterCallback = {this.nextPage}
+            autoFocus
           />
         </div>
         {this.props.email.length > 0 ?
