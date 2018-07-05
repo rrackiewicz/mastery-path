@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Rating from 'react-rating'
 import Pill from '../Pill/Pill'
 import Badge from '../Badge/Badge'
 
@@ -47,8 +48,12 @@ class Card extends Component {
       backgroundImage: `url(${this.props.img})`
     }
 
+    const rating = {
+      color: this.props.bgColor,
+    }
+
     return (
-      <div onClick={this.packagePath} onMouseEnter={this.toggleFollow} onMouseLeave={this.toggleFollow} className="card flexV jcc" style={{'background' : this.props.bgColor}}>
+      <div onMouseEnter={this.toggleFollow} onMouseLeave={this.toggleFollow} className="card flexV jcc" style={{'background' : this.props.bgColor}}>
         <div className="cardTitle" style={titleImage}>
           {this.state.isHovered ? 
             <button className="followButton mt-xs ml-xs">{this.props.badge}</button>
@@ -58,12 +63,15 @@ class Card extends Component {
         </div>
         <div className="cardBody" style={this.props.isSearching ? roundBottom : flatBottom}>
           <div className="flexV pa-m">
-            <div className="cardBody_Title mb-s">
-              {this.props.pathName}
+            <div onClick={this.packagePath} className="cardBody_Title mb-s">
+              <span className="links dottedHorizontalBorder">
+                {this.props.pathName}
+              </span>
             </div>
             <div className="cardBody_Copy">
               {this.props.abstract}
             </div>
+
           </div>
           <div className="flexH pl-m pr-m pb-m">
             <div className="flexV">
@@ -72,13 +80,8 @@ class Card extends Component {
                   {this.props.author}
                 </span>
               </div>
-              <div className="flexH">
-                <Pill 
-                  payload={this.props.tld}
-                />
-              </div>
               <div className="mt-s cardBody_Hours">
-                <span className="far fa-clock"></span> {this.props.hours} Hours
+                <span className="far fa-clock fa-sm"></span> {this.props.hours} Hours
               </div>
               <div>
                 <Badge 
@@ -86,9 +89,20 @@ class Card extends Component {
                 />
               </div>
             </div>
-            <div className="flexV mla ratingContainer pa-s" >
-              <div className="cardBody_Rating ma" style={{'color' : this.props.bgColor}}>{this.props.rating}</div>
-              <div className="cardBody_Copy ma" style={{'color' : this.props.bgColor}}>Rating</div>
+            <div className="flexV mla ratingContainer pa-s" style={rating}> 
+              <Rating 
+                initialRating = {(Math.round(this.props.rating * 2) / 2).toFixed(1)}
+                emptySymbol="fal fa-star fa-xs"
+                fullSymbol="fas fa-star fa-xs"
+                fractions={2}
+                readonly
+              />
+              <div className="cardBody_Rating mt-s">
+                <span>{(this.props.rating * 1).toFixed(1)}</span> out of 5 rating
+              </div>
+            
+              {/* <div className="cardBody_Rating ma" style={{'color' : this.props.bgColor}}>{this.props.rating}</div> */}
+              {/* <div className="cardBody_Copy ma" style={{'color' : this.props.bgColor}}>Rating</div> */}
               <div>&nbsp;</div>
               {/* <div className="cardBody_Copy" style={{'color' : this.props.bgColor}}>Subs</div>
               <div className="cardBody_Copy" style={{'color' : this.props.bgColor}}>Complete</div> */}

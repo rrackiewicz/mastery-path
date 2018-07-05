@@ -2,7 +2,8 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux'
 import Field from '../Field/Field'
 import Button from '../Button/Button'
-import { action_add_node, action_updateNodeName, action_delete_node, action_updateSelectedNode } from '../../ducks/reducer'
+import BoxHeader from '../BoxHeader/BoxHeader'
+import { action_add_node, action_updateNodeName, action_delete_node, action_updateSelectedNode, action_updateNodeIsComplete } from '../../ducks/reducer'
 import { depthToDewey, extractDepth, nextSibling } from '../../helpers'
 
 import '../../spacers.css'
@@ -20,6 +21,7 @@ class Node extends Component {
     this.stickyPath = this.stickyPath.bind(this)
     this.deleteNode = this.deleteNode.bind(this)
     this.updateSelectedNode = this.updateSelectedNode.bind(this)
+    this.updateCompletion = this.updateCompletion.bind(this)
   }
 
   updateNodeName(e) {
@@ -59,6 +61,10 @@ class Node extends Component {
 		this.props.action_updateSelectedNode(this.props.index)
   }
 
+  updateCompletion() {
+    this.props.action_updateNodeIsComplete(this.props.index, !this.props.isComplete)
+  }
+
 
   render() {
     //console.log(`Node props for id:${this.props.index} is: `,  this.props)
@@ -73,8 +79,15 @@ class Node extends Component {
 
     return (
       <div onClick={this.updateSelectedNode} style={indent} className="nodeContainer flexH aic pa-xs nowrap">
-        <div style={{color: this.props.bgColor}} className="nodeContainerHeader mr-xs flexH aic jcc">
-          {depthToDewey(extractDepth(this.props.nodes))[this.props.index]}
+        <div className="mr-xs">
+          <BoxHeader
+            payload = {depthToDewey(extractDepth(this.props.nodes))[this.props.index]}
+            isFilled = {this.props.isComplete}
+            width = {34}
+            height = {34}
+            bgColor = {this.props.bgColor}
+            textColor = '#ffffff'
+          />
         </div>
         <div className="fone">
           <Field 
@@ -87,8 +100,14 @@ class Node extends Component {
         {this.props.isSelected ?
           <div className="mla">
             <Button 
+              payload = ''
+              icon = {this.props.isComplete ? "far fa-check-square fa-lg" : "far fa-square fa-lg"}
+              callback = {this.updateCompletion}
+              bgColor = {this.props.bgColor}
+              textColor = 'white'
+            />
+            <Button 
               payload = "Edit"
-              icon = "fas fa-edit"
               callback = {this.props.callback}
               bgColor = {this.props.bgColor}
               textColor = 'white'
@@ -123,7 +142,7 @@ class Node extends Component {
 }
 function mapStateToProps(state) {
   const { bgColor, path, selectedNode } = state
-	const { nodes } = path
+  const { nodes } = path
 
   return {
       bgColor,
@@ -136,7 +155,8 @@ let actions = {
   action_add_node,
   action_updateNodeName,
   action_delete_node,
-  action_updateSelectedNode
+  action_updateSelectedNode,
+  action_updateNodeIsComplete
 }
 
 export default connect(mapStateToProps, actions)(Node)

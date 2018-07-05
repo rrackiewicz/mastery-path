@@ -44,7 +44,10 @@ function reset(dbInstance) {
             return axios.put('http://localhost:4000/api/auth/reset', { username, newPassword: username });
         })
       ])
-        .then(responses => console.log(responses.map(({ data }) => data), "done refreshing db"))
+        .then(responses => {
+          // console.log(responses.map(({ data }) => data))
+          console.log("Done refreshing db")
+        })
         .catch(console.error)
     })
     .catch(console.error)
@@ -92,6 +95,7 @@ exports.requireAdmin = function requireAdmin(req, res, next) {
 app.get('/api/resource/:url', pc.getUrlData)
 app.get('/api/search/:searchid', sc.getResults)
 app.get('/api/paths/:pid', pc.getPath)
+app.post('/api/paths/verifypathname', pc.verifyPathName)
 app.post('/api/paths', pc.createPath)
 app.post('/api/paths/:pid/:mid', pc.assignPath)
 app.post('/api/master', uc.addMaster)

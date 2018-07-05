@@ -31,57 +31,72 @@ module.exports = {
   uploadPath: (req, res) => {
     const { pid, pub, path_name, abstract, img, learningDomain, learningSubdomains, hrs, rating, nodes } = req.body
     const dbInstance = req.app.get('db')
-    dbInstance.upload_path([pid, pub, path_name, abstract, img, hrs, rating])
+    //console.log("Begin uploading path")
+    dbInstance.upload_path([pid, path_name, abstract, img, hrs, rating, pub])
     .then(() => {
-      console.log("Path successfully updated")
-      res.status(200).send()
-    })
-    .catch(() => res.status(500).send())
-
-    dbInstance.new_skill([pid, learningDomain, true])
-    .then(() => {
-      res.status(200).send()
-    })
-    .catch(() => res.status(500).send())
-
-    learningSubdomains.forEach(e => {
-      dbInstance.new_skill([pid, e, false])
-      .then(() => {
-        res.status(200).send()
+      //console.log("Begin add tld skill")
+      //console.log(pid, learningDomain)
+      //FIXME: Don't call new_skill if tld skill length = 0. Therefore, pull the nested code out and run it serially like before.
+      dbInstance.new_skill([pid, learningDomain, true])
+      .then(() => {  
+        //console.log("Successfully added tld skill")  
+        learningSubdomains.forEach((e,i) => {
+          dbInstance.new_skill([pid, e, false])
+          .then(() => {
+            //console.log(`Successfully added secondary skill ${i}`)
+          })
+          .catch(err => {
+            console.log("--Error inserting secondary skill ")
+            console.log(err)
+            res.status(500).send()
+          })
+        })
       })
-      .catch(() => res.status(500).send())
+      .catch(err => {
+        console.log("--Error inserting tld skill")
+        console.log(err)
+        res.status(500).send()
+      })
     })
-  
-    //Clear nodes deletes all copies of existing nodes at path pid before inserting the new copy of nodes
+    .catch(() => {
+      console.log("Error uploading path")
+      console.log(err)
+      res.status(500).send()
+    })
+
+    console.log("Begin clearing nodes")
     dbInstance.clear_nodes([pid])
     .then(() => {
+      console.log("Begin Adding nodes")
       nodes.forEach((ne, ni) => {
-        dbInstance.new_node([pid, ne.node_name, ni, ne.depth])
-        .then((nodeId) => {
-          // console.log(`Node successfully inserted for path ${pid`)
+        dbInstance.new_node([pid, ne.node_name, ni, ne.depth, ne.is_complete])
+        .then(nodeId => {
+          console.log("n".repeat(ni+1))
           const nid = nodeId[0].nid
-          ne.content.forEach((ce, ci) => {
+          ne.content.forEach((ce, ci) => { 
             dbInstance.new_content([nid, ce.content_type, ce.content, ci])
             .then(() => {
-              // console.log(`Content successfully inserted at node ${nid`)
+              console.log("c".repeat(ci+1))
             })
-            .catch(() => {
-              console.log("Problem inserting content") 
+            .catch(err => {
+              console.log("--Problem inserting content")
               res.status(500).send()
             })
-          })
-          res.status(200).send()
+          }) 
         })
-        .catch(() => {
-          console.log("Problem inserting node")  
+        .catch(err => {
+          console.log("--Problem inserting node")  
+          console.log(err)
           res.status(500).send()
         })
       })
     })
-    .catch(() => {
-      console.log("Problem clearing nodes")
+    .catch(err => {
+      console.log("--Problem clearing nodes")
+      console.log(err)
       res.status(500).send()
     })
+    res.status(200).send()
   },
 
   //TODO: GET with uid on params
@@ -117,7 +132,8 @@ module.exports = {
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).send()})
+      res.status(500).send()
+    })
   },
 
   getUrlData(req, res) {
@@ -125,6 +141,23 @@ module.exports = {
     og(url, function(err, meta){
       console.log(url, meta)
       res.status(200).send(meta)
+    })
+  },
+
+  verifyPathName: (req, res) => {
+    const { path_name, pid } = req.body
+    const dbInstance = req.app.get('db')
+    console.log(pathname)
+    dbInstance.verify_path_name([ path_name, pid ])
+    .then((returnedPath) => {
+      console.log("catch")
+      console.log(returnedPath)
+      res.status(200).send(returnedPath)
+    })
+    .catch((err) => {
+      console.log("throw")
+      console.log(err);
+      res.status(500).send()
     })
   }
 }

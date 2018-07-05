@@ -26,7 +26,8 @@ class TitleSimple extends Component {
       this.props.history.push("/paths")
       this.props.action_updateIsBuilding(false)
     }).catch(err => {
-      alert('Problem submitting path.')
+      console.log(err)
+      console.log('Problem submitting path.')
     })
 	}
 

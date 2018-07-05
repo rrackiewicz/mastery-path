@@ -277,18 +277,6 @@ textArea {
   border-radius: 3px;
 }
 
-.nodeContainerHeader {
-  background: white;
-  width: 34px;
-  height: 34px;
-}
-
-.stepContainerHeader {
-  background: white;
-  width: 100px;
-  height: 34px;
-}
-
 a:visited, a:active, a:link {
   color:rgba(0,0,238, .5)
 }
@@ -298,6 +286,7 @@ a:visited, a:active, a:link {
   background-position: bottom;
   background-size: 4px 1px;
   background-repeat: repeat-x;
+  cursor: pointer;
 }
 
 .links {

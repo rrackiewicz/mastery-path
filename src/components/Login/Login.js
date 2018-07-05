@@ -94,15 +94,17 @@ class Login extends Component {
             value={this.state.password}
             placeholder = 'Enter password'
             callback = {this.updatePassword}
+            // enterCallback = {this.logInUser}
             isPassword
           />
         </div>
         <div className="">
           <Button 
-              payload = 'Log in'
-              callback = {this.logInUser}
-              bgColor = {this.props.bgColor}
-              textColor = '#ffffff'
+            payload = 'Log in'
+            callback = {this.logInUser}
+            bgColor = {this.props.bgColor}
+            textColor = '#ffffff'
+            isDisabled = {this.state.username.length === 0 || this.state.password.length === 0}
           />
           <span className="links dottedHorizontalBorder ml-m">
             Forgot Password?

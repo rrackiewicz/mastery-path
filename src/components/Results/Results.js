@@ -29,6 +29,7 @@ class Results extends Component {
     axios.get(`/api/search/${this.props.match.params.searchid}`).then( res => {
       const results = res.data;
       this.setState({ results });
+      console.log(results)
       this.setState({ pathQty : results.length})
       this.setState({ isLoaded: true })
     }).catch( err => {
@@ -38,7 +39,7 @@ class Results extends Component {
 
   render() {
     
-    const renderCards = this.state.results.map((e,i) => {
+    const renderCards = this.state.results.map(e => {
       return (
         <Card 
           key={e.path_name}

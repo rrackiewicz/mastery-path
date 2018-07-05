@@ -15,7 +15,7 @@ class Modal extends Component {
 
     const modal = {
       background: this.props.bgColor,
-      color: this.textColor
+      color: this.props.textColor
     }
 
     return (

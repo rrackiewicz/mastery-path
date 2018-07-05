@@ -2,7 +2,6 @@
   width: 300px;
   margin-right: 16px;
   margin-bottom: 16px;
-  cursor: pointer;
 }
 
 .cardTitle, .cardBody, .cardFooter {
@@ -61,13 +60,12 @@
 }
 
 .ratingContainer {
-  background:rgba(255, 255, 255, 1);
+  background: white;
   border-radius: 3px; 
 }
 
 .cardBody_Rating {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: .8rem;
 }
 
 .followButton {
@@ -83,4 +81,8 @@
 .followButton:hover {
   background: hsl(141, 71.3%, 47.8%, 60%);
   color: white;
+}
+
+.rating {
+  color: "#ffffff"
 }

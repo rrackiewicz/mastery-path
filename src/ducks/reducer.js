@@ -21,6 +21,7 @@ const initialState = {
     nodes: [
       {
         nid: 0,
+        is_complete: false,
         node_name: 'Why Learn Computer Science?',
         depth: 0,
         content: [
@@ -36,6 +37,7 @@ const initialState = {
       },
       {
         nid: 1,
+        is_complete: false,
         node_name: 'Subject Guides',
         depth: 0,
         content: [
@@ -51,6 +53,7 @@ const initialState = {
       },
       {
         nid: 2,
+        is_complete: false,
         node_name: 'Programming',
         depth: 1,
         content: [
@@ -66,6 +69,7 @@ const initialState = {
       },
       {
         nid: 3,
+        is_complete: false,
         node_name: 'Computer Architecture',
         depth: 1,
         content: [
@@ -81,6 +85,7 @@ const initialState = {
       },
       {
         nid: 4,
+        is_complete: true,
         node_name: 'Algorithms and Data Structures',
         depth: 1,
         content: [
@@ -96,6 +101,7 @@ const initialState = {
       },
       {
         nid: 5,
+        is_complete: false,
         node_name: 'Algorithms and Data Structures',
         depth: 1,
         content: [
@@ -111,6 +117,7 @@ const initialState = {
       },
       {
         nid: 6,
+        is_complete: false,
         node_name: 'Math for CS',
         depth: 1,
         content: [
@@ -126,6 +133,7 @@ const initialState = {
       },
       {
         nid: 7,
+        is_complete: false,
         node_name: 'Operating Systems',
         depth: 1,
         content: [
@@ -141,6 +149,7 @@ const initialState = {
       },
       {
         nid: 8,
+        is_complete: false,
         node_name: 'Computer Networking',
         depth: 1,
         content: [
@@ -156,6 +165,7 @@ const initialState = {
       },
       {
         nid: 9,
+        is_complete: false,
         node_name: 'Databases',
         depth: 1,
         content: [
@@ -171,6 +181,7 @@ const initialState = {
       },
       {
         nid: 10,
+        is_complete: false,
         node_name: 'Languages and Compilers',
         depth: 1,
         content: [
@@ -186,6 +197,7 @@ const initialState = {
       },
       {
         nid: 11,
+        is_complete: false,
         node_name: 'Distributed Systems',
         depth: 1,
         content: [
@@ -232,6 +244,7 @@ const UPDATE_PATHABSTRACT = "UPDATE_PATHABSTRACT"
 const UPDATE_PATHIMG = "UPDATE_PATHIMG"
 const UPDATE_PATHLEARNINGDOMAIN = "UPDATE_PATHLEARNINGDOMAIN"
 const UPDATE_PATHLEARNINGSUBDOMAINS = "UPDATE_PATHLEARNINGSUBDOMAINS"
+const DELETE_PATH_SUBDOMAIN = "DELETE_PATH_SUBDOMAIN"
 
 //PATH NODES
 const UPDATE_NODENAME = "UPDATE_NODENAME"
@@ -240,6 +253,7 @@ const UPDATE_NODEORDER = "UPDATE_NODEORDER"
 const ADD_NODE = "ADD_NODE"
 const DELETE_NODE = "DELETE_NODE"
 const UPDATE_PATH = "UPDATE_PATH" //wholesale swap in of entire path object
+const UPDATE_NODEISCOMPLETE = "UPDATE_NODEISCOMPLETE"
 
 //PATH CONTENT
 const ADD_CONTENT = "ADD_CONTENT" 
@@ -326,6 +340,17 @@ function reducer( state = initialState, action ){
       return Object.assign({}, state, {
         path: Object.assign({}, state.path, { learningSubdomains: action.payload })
       })
+
+    case DELETE_PATH_SUBDOMAIN:
+      {
+        const { path } = state
+        let learningSubdomainsCopy = [...path.learningSubdomains]
+        learningSubdomainsCopy.splice(action.payload, 1)
+
+        return Object.assign({}, state, {
+          path: Object.assign({}, state.path, { learningSubdomains: learningSubdomainsCopy })
+        })
+      }
 
     case UPDATE_NODENAME:
       {
@@ -437,7 +462,20 @@ function reducer( state = initialState, action ){
           })
         })
       }
-    
+  
+      case UPDATE_NODEISCOMPLETE:
+      {
+        const { path } = state
+        const { index, bool } = action.payload
+        let nodesCopy = [...path.nodes]
+        nodesCopy[index].is_complete = bool
+
+        return Object.assign({}, state, {
+          path: Object.assign({}, state.path, { nodes: nodesCopy })
+        })
+      }
+
+
       case UPDATE_CONTENTORDER:
       {
         const indexToSwapWithSelectedContent = action.payload
@@ -648,6 +686,13 @@ export function action_updatePathLearningSubdomains(learningSubdomains){
   }
 }
 
+export function action_Delete_Subdomain(index){
+  return {
+    type: DELETE_PATH_SUBDOMAIN,
+    payload: index
+  }
+}
+
 export function action_updateNodeName(index, node_name){
   return {
     type: UPDATE_NODENAME,
@@ -695,11 +740,20 @@ export function action_delete_node(index){
   }
 }
 
-
 export function action_add_content(content_type){
   return {
     type: ADD_CONTENT,
     payload: content_type
+  }
+}
+
+export function action_updateNodeIsComplete(index, bool){
+  return {
+    type: UPDATE_NODEISCOMPLETE,
+    payload: {
+      index,
+      bool
+    }
   }
 }
 

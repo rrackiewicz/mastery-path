@@ -4,7 +4,7 @@ WITH ins AS (
   VALUES
     ($2)
   ON CONFLICT(skill_name)
-  DO UPDATE SET skill_name=EXCLUDED.skill_name
+  DO UPDATE SET skill_name = EXCLUDED.skill_name
   RETURNING skid)
 
 INSERT INTO paths_skills

@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS resources;
 DROP TABLE IF EXISTS content;
 DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS paths_skills;
+-- DROP TABLE IF EXISTS apprentices_nodes;
 DROP TABLE IF EXISTS apprentices_paths;
 DROP TABLE IF EXISTS masters_paths;
 DROP TABLE IF EXISTS skills;
@@ -46,23 +47,30 @@ CREATE TABLE skills (
     skill_name VARCHAR(40) UNIQUE
 );
 
-
 CREATE TABLE masters_paths (
   mid INTEGER REFERENCES masters (mid) ON UPDATE CASCADE ON DELETE CASCADE,
-  pid INTEGER REFERENCES paths (pid) ON UPDATE CASCADE,
+  pid INTEGER REFERENCES paths (pid) ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT masters_paths_pkey PRIMARY KEY (mid, pid)
 );
 
 CREATE TABLE apprentices_paths (
   aid INTEGER REFERENCES apprentices (aid) ON UPDATE CASCADE ON DELETE CASCADE,
-  pid INTEGER REFERENCES paths (pid) ON UPDATE CASCADE,
+  pid INTEGER REFERENCES paths (pid) ON UPDATE CASCADE ON DELETE CASCADE,
   path_rating INTEGER,
   CONSTRAINT aprentices_paths_pkey PRIMARY KEY (aid, pid)
 );
 
+-- Bug in here 
+-- CREATE TABLE apprentices_nodes (
+--   aid INTEGER REFERENCES apprentices (aid) ON UPDATE CASCADE ON DELETE CASCADE,
+--   nid INTEGER REFERENCES nodes (nid) ON UPDATE CASCADE ON DELETE CASCADE,
+--   is_complete BOOLEAN,
+--   CONSTRAINT aprentices_nodes_pkey PRIMARY KEY (aid, nid)
+-- );
+
 CREATE TABLE paths_skills (
   pid INTEGER REFERENCES paths (pid) ON UPDATE CASCADE ON DELETE CASCADE,
-  skid INTEGER REFERENCES skills (skid) ON UPDATE CASCADE,
+  skid INTEGER REFERENCES skills (skid) ON UPDATE CASCADE ON DELETE CASCADE,
   is_tld BOOLEAN,
   CONSTRAINT paths_skills_pkey PRIMARY KEY (pid, skid)
 );
@@ -72,7 +80,8 @@ CREATE TABLE nodes (
     pid INTEGER REFERENCES paths(pid) ON UPDATE CASCADE ON DELETE CASCADE,
     node_name VARCHAR(40),
     ord INTEGER,
-    depth INTEGER
+    depth INTEGER,
+    is_complete BOOLEAN
 );
 
 CREATE TABLE content (
@@ -99,7 +108,7 @@ CREATE TABLE resource_completion (
 INSERT INTO users
     (first_name, last_name, username, email, admin)
 VALUES
-    ('Ray', 'Rack', 'a', 'rayrack@gmail.com', true), 
+    ('Ray', 'Rack', 'a', 'rayrack@gmail.com', true),
     ('Sam', 'Spade', 'maltesefalcon2020', 'masteroftheopera@gmail.com', false),
     ('Nathan', 'Bundy', 'greenpowerranger', 'huxster1911@gmail.com', false),
     ('Portia', 'Venice', '0fleshpounder0', 'portiaofvenice@gmail.com', false),
@@ -133,7 +142,10 @@ VALUES
     
     ('CSS the Way Your Grandma Used to Make It', true, 'Aenean nec mi ipsum. Proin ac elit volutpat, finibus orci ut, condimentum magna. Quisque porta magna ut interdum pretium. Aliquam luctus, arcu at pellentesque tempor, arcu mauris cursus ante, id posuere quam erat vitae nunc.', 'https://www.intechnic.com/hubfs/Blog/Featured%20Images/30%20Creative%20Website%20Examples%20of%20CSS%20Animation.jpg?t=1513302636369', 4.8, 345),
     
-    ('PostgreSql Unhinged', true, 'Aenean nec mi ipsum. Proin ac elit volutpat, finibus orci ut, condimentum magna. Quisque porta magna ut interdum pretium. Aliquam luctus, arcu at pellentesque tempor, arcu mauris cursus ante, id posuere quam erat vitae nunc.', 'https://cdn-images-1.medium.com/max/1600/1*RtfJRF1-YoMOTGZb3j1-sA.jpeg', 4.9, 125);
+    ('PostgreSql Unhinged', true, 'Aenean nec mi ipsum. Proin ac elit volutpat, finibus orci ut, condimentum magna. Quisque porta magna ut interdum pretium. Aliquam luctus, arcu at pellentesque tempor, arcu mauris cursus ante, id posuere quam erat vitae nunc.', 'https://cdn-images-1.medium.com/max/1600/1*RtfJRF1-YoMOTGZb3j1-sA.jpeg', 4.9, 125),
+    
+    ('Computer Science for Self-Learners and Bootcamp Grads', true, 'If you’re a self-taught engineer or bootcamp grad, you owe it to yourself to learn computer science. Thankfully, you can give yourself a world-class CS education without investing years and a small fortune in a degree program.', 'https://images.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn1.tnwcdn.com%2Fwp-content%2Fblogs.dir%2F1%2Ffiles%2F2016%2F04%2FComputer_Science_2.jpg&f=1', 4.9, 1200)
+    ;
 
 INSERT INTO skills
     (skill_name)
@@ -152,7 +164,8 @@ VALUES
     (1, 4),
     (1, 5),
     (3, 6),
-    (2, 7);
+    (2, 7),
+    (1, 8);
 
 INSERT INTO apprentices_paths
     (aid, pid)
@@ -175,46 +188,55 @@ VALUES
     (5, 4, true),
     (6, 4, true),
     (7, 2, true),
+    (8, 1, true),
     (1, 3, false),
     (2, 3, false),
     (3, 3, false),
     (4, 3, false);   
 
 INSERT INTO nodes
-    (pid, node_name, ord, depth)
+    (pid, node_name, ord, depth, is_complete)
 VALUES
-    (1, 'Introduction', 1, 0),
-    (1, 'Resources', 2, 0),
-    (1, 'Coding Environment', 3, 0),
-    (1, 'Code', 4, 0),
-    (1, 'Types', 5, 0),
-    (1, 'Numbers', 6, 1),
-    (1, 'Strings', 7, 1),
-    (1, 'Booleans', 8, 1),
-    (1, 'Objects', 9, 1),
-    (1, 'Functions', 10, 1),
-    (1, 'Undefined', 11, 1),
-    (1, 'Type Coercion', 12, 1),
-    (1, 'Program Structure', 13, 0),
-    (1, 'Key Words', 14, 1),
-    (1, 'Variables', 15, 1),
-    (1, 'Naming', 16, 2),
-    (1, 'Updating', 17, 2),
-    (1, 'Assignment', 18, 2),
-    (2, 'Introduction', 1, 0),
-    (3, 'Introduction', 1, 0),
-    (4, 'Introduction', 1, 0),
-    (5, 'Introduction', 1, 0),
-    (6, 'Introduction', 1, 0),
-    (7, 'Introduction', 1, 0);
+    (8, 'Why Learn Computer Science?', 1, 0, false),
+    (8, 'Subject Guides', 2, 0, false),
+    (8, 'Programming', 3, 1, false),
+    (8, 'Computer Architecture', 4, 1, false),
+    (8, 'Algorithms and Data Structures', 5, 1, false),
+    (8, 'Algorithms and Data Structures', 6, 1, false),
+    (8, 'Math for CS', 7, 1, false),
+    (8, 'Operating Systems', 8, 1, false),
+    (8, 'Computer Networking', 9, 1, false),
+    (8, 'Languages and Compilers', 10, 1, false),
+    (8, 'Databases', 11, 1, false),
+    (8, 'Distributed Systems', 12, 1, false);
 
 INSERT INTO content
     (nid, content_type, content, ord)
 VALUES
-    (1, 'h1', 'Intro To Javascript', 1),
-    (1, 'p', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus placerat nunc vel blandit tempus. Morbi sollicitudin venenatis efficitur. Vivamus lobortis ornare justo at rhoncus. Sed a laoreet leo. Maecenas quis sodales arcu. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin at sem a turpis vulputate fringilla et ac ex. Praesent semper diam neque, rutrum luctus dui consectetur at. Nulla imperdiet tortor id elementum volutpat. In accumsan interdum urna eu pretium.', 2),
-    (2, 'h1', 'Resources', 1),
-    (2, 'p', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus placerat nunc vel blandit tempus. Morbi sollicitudin venenatis efficitur. Vivamus lobortis ornare justo at rhoncus. Sed a laoreet leo. Maecenas quis sodales arcu. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin at sem a turpis vulputate fringilla et ac ex. Praesent semper diam neque, rutrum luctus dui consectetur at. Nulla imperdiet tortor id elementum volutpat. In accumsan interdum urna eu pretium.', 2);
+    (1, 'h1', 'Why Learn Computer Science?', 1),
+    (1, 'p', '', 2),
+    (2, 'h1', 'Subject Guides', 1),
+    (2, 'p', '', 2),
+    (3, 'h1', 'Programming', 1),
+    (3, 'p', '', 2),
+    (4, 'h1', 'Computer Architecture', 1),
+    (4, 'p', '', 2),
+    (5, 'h1', 'Algorithms and Data Structures', 1),
+    (5, 'p', '', 2),
+    (6, 'h1', 'Algorithms and Data Structures', 1),
+    (6, 'p', '', 2),
+    (7, 'h1', 'Math for CS', 1),
+    (7, 'p', '', 2),
+    (8, 'h1', 'Operating Systems', 1),
+    (8, 'p', '', 2),
+    (9, 'h1', 'Computer Networking', 1),
+    (9, 'p', '', 2),
+    (10, 'h1', 'Databases', 1),
+    (10, 'p', '', 2),
+    (11, 'h1', 'Languages and Compilers', 1),
+    (11, 'p', '', 2),
+    (12, 'h1', 'Distributed Systems', 1),
+    (12, 'p', '', 2);
 
 -- NOTE TO FUTURE SELF. DON'T FORGET TO DROP NEW TABLES YOU ADD! IN REVERSE ORDER!
 -- Don't forget trailing ;

@@ -4,12 +4,14 @@ import Pill from '../Pill/Pill'
 import Field from '../Field/Field'
 import Error from '../Error/Error'
 import TextArea from '../TextArea/TextArea'
+import axios from 'axios'
 import { connect } from 'react-redux'
 import { action_updatePathName } from '../../ducks/reducer'
 import { action_updatePathAbstract } from '../../ducks/reducer'
 import { action_updatePathImg } from '../../ducks/reducer'
 import { action_updatePathLearningDomain } from '../../ducks/reducer'
 import { action_updatePathLearningSubdomains } from '../../ducks/reducer'
+import { action_Delete_Subdomain } from '../../ducks/reducer'
 
 import '../../spacers.css'
 import './PanelPathDetails.css'
@@ -21,6 +23,7 @@ class PanelPathDetails extends Component {
     this.state = {
 			path : {
 				learningSubdomain: '',
+				nameIsAvailable: true
 			}
 		}
 		this.updatePathName = this.updatePathName.bind(this)
@@ -28,12 +31,30 @@ class PanelPathDetails extends Component {
 		this.updateImage = this.updateImage.bind(this)
 		this.updateLearningDomain = this.updateLearningDomain.bind(this)
 		this.updateLearningSubdomain = this.updateLearningSubdomain.bind(this)
-		this.updateLearningSubdomains = this.updateLearningSubdomains.bind(this)
 		this.addLearningSubdomain = this.addLearningSubdomain.bind(this)
+		this.deleteSubdomain = this.deleteSubdomain.bind(this)
 		// this.removeLearningSubdomain = this.removeLearningSubdomain.bind(this)
 	}
 
 	updatePathName(e) {
+		//this if even necessary?
+		console.log(e.target.value)
+		const payload = { path_name: e.target.value, pid: this.props.pid}
+		console.log(payload)
+			axios.post("/api/paths/verifypathname", payload).then( res => {
+				if (res.data.length === 0) {
+					console.log("then", res.data)
+					this.setState({nameIsAvailable : true})
+				}
+				else {
+					console.log("catch", res.data)
+					this.setState({nameIsAvailable : false})
+				}
+			
+			}).catch(err => {
+				console.log(err)
+			})
+
 		this.props.action_updatePathName(e.target.value)
 	}
 
@@ -53,10 +74,6 @@ class PanelPathDetails extends Component {
 		this.setState({learningSubdomain : e.target.value}) 
 	}
 
-	updateLearningSubdomains() {
-		//FIXME: Add in new action handler for pushing a sill into []
-	}
-
 	//FIXME:
 	addLearningSubdomain(e) {
 		if (e.key === 'Enter') {
@@ -67,9 +84,9 @@ class PanelPathDetails extends Component {
     }
 	}
 
-	// removeLearningSubdomain() {
-
-	// }
+	deleteSubdomain(index) {
+		this.props.action_Delete_Subdomain(index)
+	}
 
 
 	render(){
@@ -83,6 +100,10 @@ class PanelPathDetails extends Component {
 				<div key={e} className="pillConainter">
 				<Pill 
 					payload = {e}
+					callback = {this.deleteSubdomain}
+					icon = "fas fa-times fa-sm"
+					canDelete
+					index = {i}
 				/>
 				</div>
 			)
@@ -97,7 +118,7 @@ class PanelPathDetails extends Component {
 			<div className="panel mt-s">
 				<h3 style={titleOverlay} className="panelTitle">Path Details</h3>
 				<div>
-					<label>Path Name</label>
+					<label>Path Name (Required)</label>
 					<div className="flexH mt-xs">
 						<div className="fone mr-s">
 							<Field 
@@ -105,6 +126,16 @@ class PanelPathDetails extends Component {
 								placeholder = 'Choose wisely!'
 								callback = {this.updatePathName}
 							/>
+							{this.props.path_name.length > 0 ?
+								<Error 
+									iconGood = "fas fa-check-circle fa-sm"
+									iconBad = "fas fa-times-circle fa-sm"
+									payload = {this.state.nameIsAvailable ? "Path name is available." : "Path name is taken." }
+									warning = {this.state.nameIsAvailable ? false : true}
+								/>
+								:
+								null
+							}
 						</div>
 						<div>
 							<Button 
@@ -122,7 +153,7 @@ class PanelPathDetails extends Component {
 				</div>
 
 				<div className="mt-m">
-					<label>Abstract</label>
+					<label>Abstract (Required)</label>
 					<div className="mt-xs">
 						<TextArea 
 							value={this.props.abstract}
@@ -131,14 +162,14 @@ class PanelPathDetails extends Component {
 							rows = {4}
 						/>
 					</div>
-						<Error 
-							payload = {`${this.props.abstract.length} / 160 characters`}
-							warning = {this.props.abstract.length > 160 ? true : false}
-						/>
+					<Error 
+						payload = {`${this.props.abstract.length} / 160 characters`}
+						warning = {this.props.abstract.length > 160 ? true : false}
+					/>
 				</div>
 
 				<div className="mt-m">
-					<label>Learning Domain</label>
+					<label>Learning Domain (Required)</label>
 					<div className="mt-xs">
 						<Field 
 							value={this.props.learningDomain}
@@ -258,7 +289,8 @@ let actions = {
 	action_updatePathAbstract,
 	action_updatePathImg,
 	action_updatePathLearningDomain,
-	action_updatePathLearningSubdomains
+	action_updatePathLearningSubdomains,
+	action_Delete_Subdomain
 }
 
 export default connect(mapStateToProps, actions)(PanelPathDetails)

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Field from '../Field/Field'
 import Dropdown from '../Dropdown/Dropdown'
+import BoxHeader from '../BoxHeader/BoxHeader'
 import { connect } from 'react-redux'
 import { depthToDewey, extractDepth, nearestParent, rootParent } from '../../helpers'
 import { action_updateNodeName } from '../../ducks/reducer'
@@ -92,9 +93,15 @@ class PanelNodeDetails extends Component {
 				<div className="mt-m">
 					<label>Node Name</label>
 					<div className="flexH mt-xs">
-						<div style={{color: this.props.bgColor}} className="nodeContainerHeader flexH aic jcc">
-          	{depthToDewey(extractDepth(this.props.nodes))[this.props.selectedNode]}
-        		</div>
+						<BoxHeader 
+							payload = {depthToDewey(extractDepth(this.props.nodes))[this.props.selectedNode]}
+							isFilled
+							width = {34}
+							height = {34}
+							bgColor = {this.props.bgColor}
+							textColor = '#ffffff'
+						/>
+          	
 						<Field 
 							value={this.props.nodes[this.props.selectedNode].node_name}
 							placeholder = 'Type Node Name'
@@ -106,22 +113,32 @@ class PanelNodeDetails extends Component {
 				<div className="mt-m">
 					<label>Nearest Parent</label>
 					<div className="flexH mt-xs">
-						<div style={{color: this.props.bgColor}} className="nodeContainerHeader flexH aic jcc">
-							{depthToDewey(extractDepth(this.props.nodes))[this.getNearestParent()]}
-        		</div>
-						<Field 
-							value={this.props.nodes[this.state.nearestParent].node_name + ' ' + this.state.dotNotationToNearestParent}
-							isDisabled
-						/>
+					<BoxHeader
+						payload = {depthToDewey(extractDepth(this.props.nodes))[this.getNearestParent()]}
+						isFilled
+						width = {34}
+						height = {34}
+						bgColor = {this.props.bgColor}
+						textColor = '#ffffff'
+					/>
+					<Field 
+						value={this.props.nodes[this.state.nearestParent].node_name + ' ' + this.state.dotNotationToNearestParent}
+						isDisabled
+					/>
 					</div>
 				</div>
 
 				<div className="mt-m">
 					<label>Root Parent</label>
 					<div className="flexH mt-xs">
-						<div style={{color: this.props.bgColor}} className="nodeContainerHeader flexH aic jcc">
-          		{depthToDewey(extractDepth(this.props.nodes))[this.getRootParent()]}
-        		</div>
+						<BoxHeader 
+          		payload = {depthToDewey(extractDepth(this.props.nodes))[this.getRootParent()]}
+							isFilled
+							width = {34}
+							height = {34}
+							bgColor = {this.props.bgColor}
+							textColor = '#ffffff'
+						/>
 						<Field 
 							value={this.props.nodes[this.state.rootParent].node_name + ' ' + this.state.dotNotationToRootParent}
 							placeholder = 'Type Node Name'

@@ -89,6 +89,7 @@ class PanelBuilder extends Component {
 				<Node 
 					key = {e+i}
 					index = {i}
+					isComplete = {e.is_complete}
 					callback = {this.props.callback} 
 					addNodeCallback = {this.jumpTo}
 					isSelected = {this.props.selectedNode === i ? true : false}

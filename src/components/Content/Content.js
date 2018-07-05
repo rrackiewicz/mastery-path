@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Field from '../Field/Field'
 import TextArea from '../TextArea/TextArea'
 import Button from '../Button/Button'
+import BoxHeader from '../BoxHeader/BoxHeader'
 import Preview from '../Preview/Preview'
 import { action_updateSelectedContent, action_updateContentContent, action_delete_content } from '../../ducks/reducer'
 
@@ -162,8 +163,15 @@ class Content extends Component {
 
     return (
       <div onClick={() => this.props.action_updateSelectedContent(this.props.index)} style={selected}className="contentContainer flexH aifs pa-xs nowrap">
-        <div style={{color: this.props.bgColor}} className="nodeContainerHeader mr-xs flexH aic jcc">
-          { this.renderIcon() }
+        <div className="mr-xs">
+        <BoxHeader 
+          payload = { this.renderIcon() }
+          isFilled
+          width = {34}
+          height = {34}
+          bgColor = {this.props.bgColor}
+          textColor = '#ffffff'
+        />
         </div>
         <div className="fone">
           {this.renderContentType()}

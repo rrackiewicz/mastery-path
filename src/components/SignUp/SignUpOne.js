@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Logo from '../Logo/Logo'
 import Field from '../Field/Field'
 import Button from '../Button/Button'
+import BoxHeader from '../BoxHeader/BoxHeader'
 import { connect } from 'react-redux'
 import { action_updateUserFirstName } from '../../ducks/reducer'
 import { action_updateUserLastName } from '../../ducks/reducer'
@@ -38,8 +39,15 @@ class SignUpOne extends Component {
     return (
       <div className="loginContainer flexH aic wrap pl-xl pr-xl" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
         <Logo />
-        <div style={{color: this.props.bgColor}} className="stepContainerHeader ml-l mr-s flexH aic jcc ">
-          Step 1 of 4
+        <div className="ml-l mr-s">
+        <BoxHeader 
+          payload = 'Step 1 of 4'
+          isFilled
+          width = {100}
+          height = {34}
+          bgColor = {this.props.bgColor}
+          textColor = '#ffffff'
+        />
         </div>
         <div className="mr-m mr-s">
           <Field 

@@ -35,7 +35,7 @@ class Error extends Component {
     return (
         <div style={this.props.warning ? mergeError : mergeNormal} className="error mt-xs ml-s">
           <div>
-            {this.props.payload}
+           <span><span className={this.props.warning ? this.props.iconBad : this.props.iconGood}></span>&nbsp;&nbsp;{this.props.payload}</span>
           </div>
         </div>
     )
